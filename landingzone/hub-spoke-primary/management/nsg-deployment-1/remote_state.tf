@@ -11,6 +11,7 @@ data "terraform_remote_state" "management_network_deployment_1" {
     key                  = "hub-spoke-primary/management/network-deployment-1.tfstate"
     subscription_id      = var.tfstate_subscription_id
     use_azuread_auth     = true
-    use_msi              = true
+    use_oidc             = true
+
   }
 }
