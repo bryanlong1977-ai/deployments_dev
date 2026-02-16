@@ -10,6 +10,6 @@ data "terraform_remote_state" "identity_network_deployment_1" {
     key                  = "hub-spoke-primary/identity/network-deployment-1.tfstate"
     subscription_id      = var.subscription_id
     use_azuread_auth     = true
-    use_msi              = false
+    use_msi              = true
   }
 }
