@@ -1,0 +1,24 @@
+# Landing Zone Deployment - Cloud AI Consulting/Secure Cloud Foundations
+# Generated: 2026-02-16T20:42:35.097670+00:00
+
+customer_name = "Cloud AI Consulting"
+project_name = "Secure Cloud Foundations"
+environment = "Production"
+region = "West US 3"
+
+# Network Configuration
+hub_vnet_cidr = ""
+
+# Feature Flags
+enable_firewall = true
+enable_vpn_gateway = false
+enable_bastion = false
+
+# Tags
+tags = {
+  Customer    = "Cloud AI Consulting"
+  Project     = "Secure Cloud Foundations"
+  Environment = "Production"
+  ManagedBy   = "Terraform"
+  CreatedBy   = "CloudCraft"
+}
