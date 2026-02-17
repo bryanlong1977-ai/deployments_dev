@@ -1,6 +1,6 @@
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
 # Resource Group Outputs
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
 
 output "rsv_resource_group_name" {
   description = "Name of the Recovery Services Vault resource group"
@@ -22,33 +22,38 @@ output "storage_resource_group_id" {
   value       = azurerm_resource_group.storage.id
 }
 
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
 # Recovery Services Vault Outputs
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
 
-output "recovery_services_vault_id" {
+output "rsv_id" {
   description = "ID of the Recovery Services Vault"
-  value       = azurerm_recovery_services_vault.rsv.id
+  value       = azurerm_recovery_services_vault.main.id
 }
 
-output "recovery_services_vault_name" {
+output "rsv_name" {
   description = "Name of the Recovery Services Vault"
-  value       = azurerm_recovery_services_vault.rsv.name
+  value       = azurerm_recovery_services_vault.main.name
 }
 
-output "recovery_services_vault_identity_principal_id" {
+output "rsv_identity_principal_id" {
   description = "Principal ID of the Recovery Services Vault managed identity"
-  value       = azurerm_recovery_services_vault.rsv.identity[0].principal_id
+  value       = azurerm_recovery_services_vault.main.identity[0].principal_id
 }
 
-output "recovery_services_vault_identity_tenant_id" {
+output "rsv_identity_tenant_id" {
   description = "Tenant ID of the Recovery Services Vault managed identity"
-  value       = azurerm_recovery_services_vault.rsv.identity[0].tenant_id
+  value       = azurerm_recovery_services_vault.main.identity[0].tenant_id
 }
 
-#------------------------------------------------------------------------------
-# Storage Account Outputs - VM Diagnostics
-#------------------------------------------------------------------------------
+output "rsv_private_endpoint_id" {
+  description = "ID of the Recovery Services Vault private endpoint"
+  value       = azurerm_private_endpoint.rsv.id
+}
+
+#--------------------------------------------------------------
+# Storage Account VM Outputs
+#--------------------------------------------------------------
 
 output "storage_account_vm_id" {
   description = "ID of the VM diagnostics storage account"
@@ -71,9 +76,9 @@ output "storage_account_vm_primary_access_key" {
   sensitive   = true
 }
 
-#------------------------------------------------------------------------------
-# Storage Account Outputs - Network Diagnostics
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
+# Storage Account Network Outputs
+#--------------------------------------------------------------
 
 output "storage_account_ntwk_id" {
   description = "ID of the network diagnostics storage account"
@@ -96,28 +101,28 @@ output "storage_account_ntwk_primary_access_key" {
   sensitive   = true
 }
 
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
 # Private Endpoint Outputs
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
 
-output "rsv_backup_private_endpoint_id" {
-  description = "ID of the RSV Azure Backup private endpoint"
-  value       = azurerm_private_endpoint.rsv_backup.id
+output "storage_vm_private_endpoint_ids" {
+  description = "IDs of the VM storage account private endpoints"
+  value = {
+    blob  = azurerm_private_endpoint.storage_vm_blob.id
+    file  = azurerm_private_endpoint.storage_vm_file.id
+    queue = azurerm_private_endpoint.storage_vm_queue.id
+    table = azurerm_private_endpoint.storage_vm_table.id
+  }
 }
 
-output "rsv_siterecovery_private_endpoint_id" {
-  description = "ID of the RSV Site Recovery private endpoint"
-  value       = azurerm_private_endpoint.rsv_siterecovery.id
-}
-
-output "storage_vm_blob_private_endpoint_id" {
-  description = "ID of the VM storage blob private endpoint"
-  value       = azurerm_private_endpoint.storage_vm_blob.id
-}
-
-output "storage_ntwk_blob_private_endpoint_id" {
-  description = "ID of the network storage blob private endpoint"
-  value       = azurerm_private_endpoint.storage_ntwk_blob.id
+output "storage_ntwk_private_endpoint_ids" {
+  description = "IDs of the network storage account private endpoints"
+  value = {
+    blob  = azurerm_private_endpoint.storage_ntwk_blob.id
+    file  = azurerm_private_endpoint.storage_ntwk_file.id
+    queue = azurerm_private_endpoint.storage_ntwk_queue.id
+    table = azurerm_private_endpoint.storage_ntwk_table.id
+  }
 }
 
 # ============================================

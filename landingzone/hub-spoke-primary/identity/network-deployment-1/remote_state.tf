@@ -1,9 +1,9 @@
-#------------------------------------------------------------------------------
-# Remote State - Connectivity Network Deployment 1
-# This retrieves outputs from the Hub VNet deployment for peering and DNS links
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
+# Remote State Data Sources
+#--------------------------------------------------------------
 
-data "terraform_remote_state" "connectivity_network_1" {
+# Reference to Connectivity Network Deployment 1 outputs
+data "terraform_remote_state" "connectivity_network_deployment_1" {
   backend = "azurerm"
   config = {
     resource_group_name  = "rg-storage-ncus-01"

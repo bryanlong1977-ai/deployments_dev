@@ -39,12 +39,12 @@ on:
           - development
         default: 'production'
 
-env:
-  TF_VERSION: '1.5.0'
-
 permissions:
   id-token: write
   contents: read
+
+env:
+  TF_VERSION: '1.5.0'
 
 jobs:
   step_1_connectivity_network_deployment_1_plan:
@@ -58,9 +58,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -105,9 +105,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -149,9 +149,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -196,9 +196,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -240,9 +240,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -287,9 +287,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -331,9 +331,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -378,9 +378,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -422,9 +422,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -469,9 +469,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -513,9 +513,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -560,9 +560,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -604,9 +604,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -651,9 +651,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -695,9 +695,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -742,9 +742,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -786,9 +786,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -833,9 +833,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -877,9 +877,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -924,9 +924,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -968,9 +968,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1015,9 +1015,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1059,9 +1059,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1106,9 +1106,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1150,9 +1150,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1197,9 +1197,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1241,9 +1241,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1288,9 +1288,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1332,9 +1332,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1379,9 +1379,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1423,9 +1423,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1470,9 +1470,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1514,9 +1514,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1561,9 +1561,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1605,9 +1605,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1652,9 +1652,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1696,9 +1696,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1743,9 +1743,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1787,9 +1787,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -1834,9 +1834,9 @@ jobs:
       - name: Azure Login (OIDC)
         uses: azure/login@v1
         with:
-            client-id: ${{ secrets.ARM_CLIENT_ID }}
-            tenant-id: ${{ secrets.ARM_TENANT_ID }}
-            subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

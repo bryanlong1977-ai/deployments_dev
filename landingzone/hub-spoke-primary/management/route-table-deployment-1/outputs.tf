@@ -1,43 +1,73 @@
-# Outputs for Route Table Deployment 1 - Management Subscription
-
+#--------------------------------------------------------------
+# Route Table Outputs
+#--------------------------------------------------------------
 output "route_table_id" {
-  value       = azurerm_route_table.management_rt.id
-  description = "The ID of the management route table"
+  description = "The ID of the route table"
+  value       = azurerm_route_table.mgmt_rt.id
 }
 
 output "route_table_name" {
-  value       = azurerm_route_table.management_rt.name
-  description = "The name of the management route table"
+  description = "The name of the route table"
+  value       = azurerm_route_table.mgmt_rt.name
 }
 
 output "route_table_resource_group_name" {
-  value       = azurerm_resource_group.route_table_rg.name
   description = "The name of the resource group containing the route table"
+  value       = azurerm_resource_group.route_table_rg.name
 }
 
-output "route_table_resource_group_id" {
-  value       = azurerm_resource_group.route_table_rg.id
-  description = "The ID of the resource group containing the route table"
+output "route_table_location" {
+  description = "The location of the route table"
+  value       = azurerm_route_table.mgmt_rt.location
 }
 
-output "default_route_id" {
-  value       = azurerm_route.default_to_firewall.id
-  description = "The ID of the default route to the firewall"
+#--------------------------------------------------------------
+# Route Outputs
+#--------------------------------------------------------------
+output "route_to_firewall_id" {
+  description = "The ID of the default route to firewall"
+  value       = azurerm_route.route_to_firewall.id
 }
 
+output "route_to_firewall_name" {
+  description = "The name of the default route to firewall"
+  value       = azurerm_route.route_to_firewall.name
+}
+
+#--------------------------------------------------------------
+# Subnet Association Outputs
+#--------------------------------------------------------------
 output "pe_subnet_route_table_association_id" {
+  description = "The ID of the route table association for the Private Endpoint subnet"
   value       = azurerm_subnet_route_table_association.pe_subnet_association.id
-  description = "The ID of the route table association for the private endpoint subnet"
 }
 
 output "tools_subnet_route_table_association_id" {
+  description = "The ID of the route table association for the Tools subnet"
   value       = azurerm_subnet_route_table_association.tools_subnet_association.id
-  description = "The ID of the route table association for the tools subnet"
 }
 
-output "route_table_subnets" {
-  value       = azurerm_route_table.management_rt.subnets
-  description = "List of subnet IDs associated with the route table"
+#--------------------------------------------------------------
+# Summary Outputs
+#--------------------------------------------------------------
+output "associated_subnet_names" {
+  description = "List of subnet names associated with this route table"
+  value = [
+    var.pe_subnet_name,
+    var.tools_subnet_name
+  ]
+}
+
+output "route_table_routes" {
+  description = "Summary of routes configured in the route table"
+  value = {
+    default_route = {
+      name                   = azurerm_route.route_to_firewall.name
+      address_prefix         = azurerm_route.route_to_firewall.address_prefix
+      next_hop_type          = azurerm_route.route_to_firewall.next_hop_type
+      next_hop_in_ip_address = azurerm_route.route_to_firewall.next_hop_in_ip_address
+    }
+  }
 }
 
 # ============================================

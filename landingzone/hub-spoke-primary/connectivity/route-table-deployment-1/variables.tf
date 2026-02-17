@@ -1,13 +1,13 @@
 # Variables for Route Table Deployment 1 - Connectivity Subscription
 
 variable "subscription_id" {
-  description = "The subscription ID where resources will be deployed"
+  description = "The Azure subscription ID for the connectivity subscription"
   type        = string
   default     = "81abf5a8-5c86-4ca7-8af8-8b3596a58d07"
 }
 
 variable "region" {
-  description = "The Azure region where resources will be deployed"
+  description = "The Azure region for resource deployment"
   type        = string
   default     = "West US 3"
 }
@@ -24,6 +24,12 @@ variable "route_table_resource_group_name" {
   default     = "rg-rt-hub-prd-wus3-01"
 }
 
+variable "vnet_name" {
+  description = "The name of the hub virtual network"
+  type        = string
+  default     = "vnet-hub-prd-wus3-01"
+}
+
 variable "bgp_route_propagation_enabled" {
   description = "Whether to enable BGP route propagation on the route table"
   type        = bool
@@ -37,9 +43,9 @@ variable "tags" {
     customer      = "Cloud AI Consulting"
     project       = "Secure Cloud Foundations"
     environment   = "Production"
-    deployment_id = "8b492308-bab3-41e1-a8cb-1348dfea4227"
+    deployment_id = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
     subscription  = "connectivity"
-    deployed_by   = "Terraform"
+    managed_by    = "terraform"
   }
 }
 

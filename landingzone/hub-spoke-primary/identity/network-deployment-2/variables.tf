@@ -1,3 +1,7 @@
+# =============================================================================
+# Subscription Variables
+# =============================================================================
+
 variable "subscription_id" {
   description = "The subscription ID for the Identity subscription"
   type        = string
@@ -10,165 +14,155 @@ variable "management_subscription_id" {
   default     = "39f647ab-5261-47b0-ad91-1719dcd107a1"
 }
 
-variable "region" {
-  description = "The Azure region for resource deployment"
-  type        = string
-  default     = "westus3"
-}
+# =============================================================================
+# Common Variables
+# =============================================================================
 
-variable "environment" {
-  description = "The environment name (e.g., Production, Development)"
-  type        = string
-  default     = "Production"
-}
-
-variable "customer_name" {
-  description = "The customer name for tagging"
+variable "customer" {
+  description = "Customer name for tagging"
   type        = string
   default     = "Cloud AI Consulting"
 }
 
-variable "project_name" {
-  description = "The project name for tagging"
+variable "project" {
+  description = "Project name for tagging"
   type        = string
   default     = "Secure Cloud Foundations"
 }
 
+variable "environment" {
+  description = "Environment (Production, Development, etc.)"
+  type        = string
+  default     = "Production"
+}
+
 variable "deployment_id" {
-  description = "The unique deployment identifier"
+  description = "Unique deployment identifier"
   type        = string
-  default     = "8b492308-bab3-41e1-a8cb-1348dfea4227"
+  default     = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
 }
 
-variable "tags" {
-  description = "Additional tags to apply to resources"
-  type        = map(string)
-  default     = {}
-}
-
-# VNet Configuration
-variable "vnet_name" {
-  description = "The name of the Identity VNet"
+variable "region" {
+  description = "Primary Azure region for deployment"
   type        = string
-  default     = "vnet-idm-prd-wus3-01"
+  default     = "westus3"
 }
 
-variable "vnet_resource_group_name" {
-  description = "The resource group name for the Identity VNet"
+variable "management_region" {
+  description = "Azure region for Management subscription resources"
   type        = string
-  default     = "rg-network-prd-idm-wus3-01"
+  default     = "westus3"
 }
 
-# Diagnostic Settings Configuration
+# =============================================================================
+# Diagnostic Settings Variables
+# =============================================================================
+
 variable "vnet_diagnostic_setting_name" {
-  description = "The name of the diagnostic setting for the VNet"
+  description = "Name for the VNet diagnostic setting"
   type        = string
   default     = "diag-vnet-idm-prd-wus3-01"
 }
 
 variable "diagnostic_retention_days" {
-  description = "The number of days to retain diagnostic logs"
+  description = "Number of days to retain diagnostic logs"
   type        = number
   default     = 90
 }
 
-variable "enable_metrics" {
-  description = "Enable metrics collection for diagnostic settings"
-  type        = bool
-  default     = true
-}
+# =============================================================================
+# Flow Log Variables
+# =============================================================================
 
-# VNet Flow Log Configuration
 variable "vnet_flow_log_name" {
-  description = "The name of the VNet flow log"
+  description = "Name for the VNet flow log"
   type        = string
   default     = "fl-vnet-idm-prd-wus3-01"
 }
 
 variable "flow_log_enabled" {
-  description = "Enable VNet flow logging"
+  description = "Enable flow logging"
   type        = bool
   default     = true
 }
 
 variable "flow_log_version" {
-  description = "The version of flow log format"
+  description = "Flow log version (1 or 2)"
   type        = number
   default     = 2
 }
 
 variable "flow_log_retention_enabled" {
-  description = "Enable retention policy for flow logs"
+  description = "Enable flow log retention"
   type        = bool
   default     = true
 }
 
 variable "flow_log_retention_days" {
-  description = "The number of days to retain flow logs"
+  description = "Number of days to retain flow logs"
   type        = number
   default     = 90
 }
 
 variable "traffic_analytics_enabled" {
-  description = "Enable traffic analytics for flow logs"
+  description = "Enable traffic analytics"
   type        = bool
   default     = true
 }
 
 variable "traffic_analytics_interval" {
-  description = "The interval in minutes for traffic analytics processing"
+  description = "Traffic analytics processing interval in minutes (10 or 60)"
   type        = number
   default     = 10
 
   validation {
     condition     = contains([10, 60], var.traffic_analytics_interval)
-    error_message = "Traffic analytics interval must be either 10 or 60 minutes."
+    error_message = "Traffic analytics interval must be 10 or 60 minutes."
   }
 }
 
-# Network Watcher Configuration
-variable "network_watcher_name" {
-  description = "The name of the Network Watcher"
+# =============================================================================
+# Remote State Configuration Variables
+# =============================================================================
+
+variable "tfstate_resource_group_name" {
+  description = "Resource group name for Terraform state storage"
   type        = string
-  default     = "nw-idm-prd-wus3-01"
+  default     = "rg-storage-ncus-01"
 }
 
-variable "network_watcher_resource_group_name" {
-  description = "The resource group name for the Network Watcher"
+variable "tfstate_storage_account_name" {
+  description = "Storage account name for Terraform state"
   type        = string
-  default     = "rg-nw-prd-idm-wus3-01"
+  default     = "sacloudaiconsulting01"
 }
 
-# Log Analytics Configuration
-variable "log_analytics_workspace_name" {
-  description = "The name of the Log Analytics Workspace in Management subscription"
+variable "tfstate_container_name" {
+  description = "Container name for Terraform state"
   type        = string
-  default     = "law-mgmt-prd-wus3-01"
+  default     = "tfstate"
 }
 
-variable "log_analytics_resource_group_name" {
-  description = "The resource group name for the Log Analytics Workspace"
+variable "tfstate_subscription_id" {
+  description = "Subscription ID where Terraform state storage resides"
   type        = string
-  default     = "rg-log-prd-mgmt-wus3-01"
-}
-
-# Storage Account Configuration
-variable "network_storage_account_name" {
-  description = "The name of the network storage account for flow logs"
-  type        = string
-  default     = "saclouidmntwkprdwus301"
-}
-
-variable "storage_resource_group_name" {
-  description = "The resource group name for the storage account"
-  type        = string
-  default     = "rg-st-prd-idm-wus3-01"
+  default     = "53fea26b-011b-4520-b157-e31b034c7900"
 }
 
 # ============================================
 # Standard Landing Zone Variables
 # These variables are common across all deployments
 # ============================================
+
+variable "customer_name" {
+  description = "Customer name for the Landing Zone"
+  type        = string
+}
+
+variable "project_name" {
+  description = "Project name for the Landing Zone"
+  type        = string
+}
 
 variable "hub_vnet_cidr" {
   description = "CIDR block for the hub VNet"
@@ -192,4 +186,10 @@ variable "enable_bastion" {
   description = "Enable Azure Bastion for secure VM access"
   type        = bool
   default     = true
+}
+
+variable "tags" {
+  description = "Resource tags to apply to all resources"
+  type        = map(string)
+  default     = {}
 }

@@ -1,15 +1,15 @@
 # Resource Group Outputs
-output "hub_network_resource_group_name" {
+output "network_resource_group_name" {
   description = "Name of the hub network resource group"
   value       = azurerm_resource_group.hub_network.name
 }
 
-output "hub_network_resource_group_id" {
+output "network_resource_group_id" {
   description = "ID of the hub network resource group"
   value       = azurerm_resource_group.hub_network.id
 }
 
-output "hub_network_resource_group_location" {
+output "network_resource_group_location" {
   description = "Location of the hub network resource group"
   value       = azurerm_resource_group.hub_network.location
 }
@@ -25,14 +25,14 @@ output "network_watcher_resource_group_id" {
 }
 
 # Virtual Network Outputs
-output "hub_vnet_id" {
-  description = "ID of the hub virtual network"
-  value       = azurerm_virtual_network.hub.id
-}
-
 output "hub_vnet_name" {
   description = "Name of the hub virtual network"
   value       = azurerm_virtual_network.hub.name
+}
+
+output "hub_vnet_id" {
+  description = "ID of the hub virtual network"
+  value       = azurerm_virtual_network.hub.id
 }
 
 output "hub_vnet_address_space" {
@@ -45,7 +45,7 @@ output "hub_vnet_guid" {
   value       = azurerm_virtual_network.hub.guid
 }
 
-# Subnet Outputs
+# Subnet Outputs - Private Endpoints
 output "subnet_pe_id" {
   description = "ID of the private endpoints subnet"
   value       = azurerm_subnet.pe.id
@@ -56,11 +56,12 @@ output "subnet_pe_name" {
   value       = azurerm_subnet.pe.name
 }
 
-output "subnet_pe_address_prefix" {
-  description = "Address prefix of the private endpoints subnet"
-  value       = azurerm_subnet.pe.address_prefixes[0]
+output "subnet_pe_address_prefixes" {
+  description = "Address prefixes of the private endpoints subnet"
+  value       = azurerm_subnet.pe.address_prefixes
 }
 
+# Subnet Outputs - Tools
 output "subnet_tools_id" {
   description = "ID of the tools subnet"
   value       = azurerm_subnet.tools.id
@@ -71,11 +72,12 @@ output "subnet_tools_name" {
   value       = azurerm_subnet.tools.name
 }
 
-output "subnet_tools_address_prefix" {
-  description = "Address prefix of the tools subnet"
-  value       = azurerm_subnet.tools.address_prefixes[0]
+output "subnet_tools_address_prefixes" {
+  description = "Address prefixes of the tools subnet"
+  value       = azurerm_subnet.tools.address_prefixes
 }
 
+# Subnet Outputs - Firewall Management
 output "subnet_fw_mgmt_id" {
   description = "ID of the firewall management subnet"
   value       = azurerm_subnet.fw_mgmt.id
@@ -86,11 +88,12 @@ output "subnet_fw_mgmt_name" {
   value       = azurerm_subnet.fw_mgmt.name
 }
 
-output "subnet_fw_mgmt_address_prefix" {
-  description = "Address prefix of the firewall management subnet"
-  value       = azurerm_subnet.fw_mgmt.address_prefixes[0]
+output "subnet_fw_mgmt_address_prefixes" {
+  description = "Address prefixes of the firewall management subnet"
+  value       = azurerm_subnet.fw_mgmt.address_prefixes
 }
 
+# Subnet Outputs - Firewall Untrust
 output "subnet_fw_untrust_id" {
   description = "ID of the firewall untrust subnet"
   value       = azurerm_subnet.fw_untrust.id
@@ -101,11 +104,12 @@ output "subnet_fw_untrust_name" {
   value       = azurerm_subnet.fw_untrust.name
 }
 
-output "subnet_fw_untrust_address_prefix" {
-  description = "Address prefix of the firewall untrust subnet"
-  value       = azurerm_subnet.fw_untrust.address_prefixes[0]
+output "subnet_fw_untrust_address_prefixes" {
+  description = "Address prefixes of the firewall untrust subnet"
+  value       = azurerm_subnet.fw_untrust.address_prefixes
 }
 
+# Subnet Outputs - Firewall Trust
 output "subnet_fw_trust_id" {
   description = "ID of the firewall trust subnet"
   value       = azurerm_subnet.fw_trust.id
@@ -116,11 +120,12 @@ output "subnet_fw_trust_name" {
   value       = azurerm_subnet.fw_trust.name
 }
 
-output "subnet_fw_trust_address_prefix" {
-  description = "Address prefix of the firewall trust subnet"
-  value       = azurerm_subnet.fw_trust.address_prefixes[0]
+output "subnet_fw_trust_address_prefixes" {
+  description = "Address prefixes of the firewall trust subnet"
+  value       = azurerm_subnet.fw_trust.address_prefixes
 }
 
+# Subnet Outputs - Gateway
 output "subnet_gateway_id" {
   description = "ID of the gateway subnet"
   value       = azurerm_subnet.gateway.id
@@ -131,11 +136,12 @@ output "subnet_gateway_name" {
   value       = azurerm_subnet.gateway.name
 }
 
-output "subnet_gateway_address_prefix" {
-  description = "Address prefix of the gateway subnet"
-  value       = azurerm_subnet.gateway.address_prefixes[0]
+output "subnet_gateway_address_prefixes" {
+  description = "Address prefixes of the gateway subnet"
+  value       = azurerm_subnet.gateway.address_prefixes
 }
 
+# Subnet Outputs - Route Server
 output "subnet_route_server_id" {
   description = "ID of the route server subnet"
   value       = azurerm_subnet.route_server.id
@@ -146,23 +152,23 @@ output "subnet_route_server_name" {
   value       = azurerm_subnet.route_server.name
 }
 
-output "subnet_route_server_address_prefix" {
-  description = "Address prefix of the route server subnet"
-  value       = azurerm_subnet.route_server.address_prefixes[0]
+output "subnet_route_server_address_prefixes" {
+  description = "Address prefixes of the route server subnet"
+  value       = azurerm_subnet.route_server.address_prefixes
 }
 
 # Network Watcher Outputs
-output "network_watcher_id" {
-  description = "ID of the Network Watcher"
-  value       = azurerm_network_watcher.hub.id
-}
-
 output "network_watcher_name" {
   description = "Name of the Network Watcher"
   value       = azurerm_network_watcher.hub.name
 }
 
-# Map of all subnet IDs for easy reference
+output "network_watcher_id" {
+  description = "ID of the Network Watcher"
+  value       = azurerm_network_watcher.hub.id
+}
+
+# Subnet Map Output for downstream deployments
 output "subnet_ids" {
   description = "Map of subnet names to their IDs"
   value = {
@@ -176,7 +182,6 @@ output "subnet_ids" {
   }
 }
 
-# Map of all subnet names for easy reference
 output "subnet_names" {
   description = "Map of subnet purposes to their names"
   value = {

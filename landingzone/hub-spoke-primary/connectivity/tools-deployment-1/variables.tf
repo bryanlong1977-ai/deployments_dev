@@ -1,6 +1,6 @@
-# =============================================================================
+#--------------------------------------------------------------
 # Subscription Variables
-# =============================================================================
+#--------------------------------------------------------------
 
 variable "subscription_id" {
   description = "The subscription ID for the Connectivity subscription"
@@ -20,19 +20,15 @@ variable "identity_subscription_id" {
   default     = "53fea26b-011b-4520-b157-e31b034c7900"
 }
 
-# =============================================================================
-# Region Variables
-# =============================================================================
+#--------------------------------------------------------------
+# General Variables
+#--------------------------------------------------------------
 
 variable "region" {
   description = "The Azure region for resource deployment"
   type        = string
   default     = "westus3"
 }
-
-# =============================================================================
-# Tags Variables
-# =============================================================================
 
 variable "tags" {
   description = "Tags to apply to all resources"
@@ -41,105 +37,102 @@ variable "tags" {
     customer      = "Cloud AI Consulting"
     project       = "Secure Cloud Foundations"
     environment   = "Production"
-    deployment_id = "8b492308-bab3-41e1-a8cb-1348dfea4227"
-    deployed_by   = "Terraform"
+    deployment_id = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
+    managed_by    = "Terraform"
   }
 }
 
-# =============================================================================
-# Resource Group Variables
-# =============================================================================
-
-variable "ampls_resource_group_name" {
-  description = "The name of the resource group for Azure Monitor Private Link Scope"
-  type        = string
-  default     = "rg-mpls-prd-hub-wus3-01"
-}
-
-variable "storage_resource_group_name" {
-  description = "The name of the resource group for Storage Accounts"
-  type        = string
-  default     = "rg-st-prd-hub-wus3-01"
-}
-
-# =============================================================================
+#--------------------------------------------------------------
 # Azure Monitor Private Link Scope Variables
-# =============================================================================
+#--------------------------------------------------------------
 
 variable "ampls_name" {
-  description = "The name of the Azure Monitor Private Link Scope"
+  description = "Name of the Azure Monitor Private Link Scope"
   type        = string
   default     = "ampls-hub-prd-wus3-01"
 }
 
+variable "ampls_resource_group_name" {
+  description = "Name of the resource group for Azure Monitor Private Link Scope"
+  type        = string
+  default     = "rg-mpls-prd-hub-wus3-01"
+}
+
+variable "ampls_private_endpoint_name" {
+  description = "Name of the private endpoint for Azure Monitor Private Link Scope"
+  type        = string
+  default     = "pep-ampls-hub-prd-wus3-01"
+}
+
 variable "ampls_ingestion_access_mode" {
-  description = "The ingestion access mode for AMPLS (Open or PrivateOnly)"
+  description = "The ingestion access mode for the Azure Monitor Private Link Scope"
   type        = string
   default     = "PrivateOnly"
-
   validation {
     condition     = contains(["Open", "PrivateOnly"], var.ampls_ingestion_access_mode)
-    error_message = "The ingestion access mode must be either 'Open' or 'PrivateOnly'."
+    error_message = "Ingestion access mode must be 'Open' or 'PrivateOnly'."
   }
 }
 
 variable "ampls_query_access_mode" {
-  description = "The query access mode for AMPLS (Open or PrivateOnly)"
+  description = "The query access mode for the Azure Monitor Private Link Scope"
   type        = string
   default     = "PrivateOnly"
-
   validation {
     condition     = contains(["Open", "PrivateOnly"], var.ampls_query_access_mode)
-    error_message = "The query access mode must be either 'Open' or 'PrivateOnly'."
+    error_message = "Query access mode must be 'Open' or 'PrivateOnly'."
   }
 }
 
-# =============================================================================
+#--------------------------------------------------------------
 # Storage Account Variables
-# =============================================================================
+#--------------------------------------------------------------
 
-variable "storage_account_vm_name" {
-  description = "The name of the VM storage account"
+variable "storage_resource_group_name" {
+  description = "Name of the resource group for storage accounts"
+  type        = string
+  default     = "rg-st-prd-hub-wus3-01"
+}
+
+variable "vm_storage_account_name" {
+  description = "Name of the VM diagnostics storage account"
   type        = string
   default     = "saclouhubvmprdwus301"
 }
 
-variable "storage_account_ntwk_name" {
-  description = "The name of the network storage account"
+variable "ntwk_storage_account_name" {
+  description = "Name of the network diagnostics storage account"
   type        = string
   default     = "saclouhubntwkprdwus301"
 }
 
 variable "storage_account_tier" {
-  description = "The storage account tier"
+  description = "The tier of the storage account"
   type        = string
   default     = "Standard"
-
   validation {
     condition     = contains(["Standard", "Premium"], var.storage_account_tier)
-    error_message = "The storage account tier must be either 'Standard' or 'Premium'."
+    error_message = "Storage account tier must be 'Standard' or 'Premium'."
   }
 }
 
 variable "storage_account_replication_type" {
-  description = "The storage account replication type"
+  description = "The replication type for the storage account"
   type        = string
   default     = "GRS"
-
   validation {
     condition     = contains(["LRS", "GRS", "RAGRS", "ZRS", "GZRS", "RAGZRS"], var.storage_account_replication_type)
-    error_message = "The storage account replication type must be one of: LRS, GRS, RAGRS, ZRS, GZRS, RAGZRS."
+    error_message = "Storage account replication type must be one of: LRS, GRS, RAGRS, ZRS, GZRS, RAGZRS."
   }
 }
 
 variable "storage_account_kind" {
-  description = "The storage account kind"
+  description = "The kind of storage account"
   type        = string
   default     = "StorageV2"
-
   validation {
     condition     = contains(["BlobStorage", "BlockBlobStorage", "FileStorage", "Storage", "StorageV2"], var.storage_account_kind)
-    error_message = "The storage account kind must be one of: BlobStorage, BlockBlobStorage, FileStorage, Storage, StorageV2."
+    error_message = "Storage account kind must be one of: BlobStorage, BlockBlobStorage, FileStorage, Storage, StorageV2."
   }
 }
 
@@ -147,84 +140,62 @@ variable "storage_min_tls_version" {
   description = "The minimum TLS version for the storage account"
   type        = string
   default     = "TLS1_2"
-
   validation {
     condition     = contains(["TLS1_0", "TLS1_1", "TLS1_2"], var.storage_min_tls_version)
-    error_message = "The minimum TLS version must be one of: TLS1_0, TLS1_1, TLS1_2."
+    error_message = "Minimum TLS version must be one of: TLS1_0, TLS1_1, TLS1_2."
   }
 }
 
-variable "storage_allow_nested_items_to_be_public" {
-  description = "Allow nested items within the storage account to be public"
-  type        = bool
-  default     = false
-}
-
 variable "storage_public_network_access_enabled" {
-  description = "Enable public network access to the storage account"
+  description = "Whether public network access is enabled for the storage account"
   type        = bool
   default     = false
 }
 
-variable "storage_blob_delete_retention_days" {
+variable "blob_delete_retention_days" {
   description = "Number of days to retain deleted blobs"
   type        = number
   default     = 90
-
   validation {
-    condition     = var.storage_blob_delete_retention_days >= 1 && var.storage_blob_delete_retention_days <= 365
+    condition     = var.blob_delete_retention_days >= 1 && var.blob_delete_retention_days <= 365
     error_message = "Blob delete retention days must be between 1 and 365."
   }
 }
 
-variable "storage_container_delete_retention_days" {
+variable "container_delete_retention_days" {
   description = "Number of days to retain deleted containers"
   type        = number
   default     = 90
-
   validation {
-    condition     = var.storage_container_delete_retention_days >= 1 && var.storage_container_delete_retention_days <= 365
+    condition     = var.container_delete_retention_days >= 1 && var.container_delete_retention_days <= 365
     error_message = "Container delete retention days must be between 1 and 365."
   }
 }
 
-variable "diagnostic_retention_days" {
-  description = "Number of days to retain diagnostic logs"
-  type        = number
-  default     = 90
-
+variable "storage_network_default_action" {
+  description = "The default action for storage account network rules"
+  type        = string
+  default     = "Deny"
   validation {
-    condition     = var.diagnostic_retention_days >= 0 && var.diagnostic_retention_days <= 365
-    error_message = "Diagnostic retention days must be between 0 and 365."
+    condition     = contains(["Allow", "Deny"], var.storage_network_default_action)
+    error_message = "Storage network default action must be 'Allow' or 'Deny'."
   }
 }
 
-# =============================================================================
-# Remote State Variables
-# =============================================================================
-
-variable "tfstate_resource_group_name" {
-  description = "The name of the resource group containing the Terraform state storage account"
-  type        = string
-  default     = "rg-storage-ncus-01"
+variable "storage_network_bypass" {
+  description = "The bypass options for storage account network rules"
+  type        = list(string)
+  default     = ["AzureServices", "Logging", "Metrics"]
 }
 
-variable "tfstate_storage_account_name" {
-  description = "The name of the Terraform state storage account"
-  type        = string
-  default     = "sacloudaiconsulting01"
-}
+#--------------------------------------------------------------
+# Private Endpoint Subnet Variable
+#--------------------------------------------------------------
 
-variable "tfstate_container_name" {
-  description = "The name of the Terraform state container"
+variable "pe_subnet_name" {
+  description = "Name of the private endpoint subnet"
   type        = string
-  default     = "tfstate"
-}
-
-variable "tfstate_subscription_id" {
-  description = "The subscription ID for the Terraform state storage account"
-  type        = string
-  default     = "53fea26b-011b-4520-b157-e31b034c7900"
+  default     = "snet-pe-hub-wus3-01"
 }
 
 # ============================================

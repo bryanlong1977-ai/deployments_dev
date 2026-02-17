@@ -1,23 +1,21 @@
-# Outputs for Route Table Deployment 1 - Identity Subscription
-
 output "route_table_id" {
   description = "The ID of the Identity route table"
-  value       = azurerm_route_table.identity_rt.id
+  value       = azurerm_route_table.identity.id
 }
 
 output "route_table_name" {
   description = "The name of the Identity route table"
-  value       = azurerm_route_table.identity_rt.name
+  value       = azurerm_route_table.identity.name
 }
 
 output "route_table_resource_group_name" {
-  description = "The name of the resource group containing the route table"
-  value       = azurerm_resource_group.route_table_rg.name
+  description = "The resource group name containing the route table"
+  value       = azurerm_resource_group.route_table.name
 }
 
 output "route_table_resource_group_id" {
   description = "The ID of the resource group containing the route table"
-  value       = azurerm_resource_group.route_table_rg.id
+  value       = azurerm_resource_group.route_table.id
 }
 
 output "default_route_id" {
@@ -25,27 +23,17 @@ output "default_route_id" {
   value       = azurerm_route.default_to_firewall.id
 }
 
-output "default_route_name" {
-  description = "The name of the default route to firewall"
-  value       = azurerm_route.default_to_firewall.name
-}
-
-output "subnet_route_table_associations" {
+output "subnet_route_table_association_ids" {
   description = "Map of subnet names to their route table association IDs"
   value = {
-    pe      = azurerm_subnet_route_table_association.pe_subnet.id
-    tools   = azurerm_subnet_route_table_association.tools_subnet.id
-    inbound = azurerm_subnet_route_table_association.inbound_subnet.id
-    outbound = azurerm_subnet_route_table_association.outbound_subnet.id
-    dc      = azurerm_subnet_route_table_association.dc_subnet.id
-    ib_mgmt = azurerm_subnet_route_table_association.ib_mgmt_subnet.id
-    ib_lan1 = azurerm_subnet_route_table_association.ib_lan1_subnet.id
+    (var.subnet_pe_name)      = azurerm_subnet_route_table_association.pe.id
+    (var.subnet_tools_name)   = azurerm_subnet_route_table_association.tools.id
+    (var.subnet_inbound_name) = azurerm_subnet_route_table_association.inbound.id
+    (var.subnet_outbound_name) = azurerm_subnet_route_table_association.outbound.id
+    (var.subnet_dc_name)      = azurerm_subnet_route_table_association.dc.id
+    (var.subnet_ib_mgmt_name) = azurerm_subnet_route_table_association.ib_mgmt.id
+    (var.subnet_ib_lan1_name) = azurerm_subnet_route_table_association.ib_lan1.id
   }
-}
-
-output "firewall_trust_lb_ip" {
-  description = "The firewall Trust ILB IP address used as next hop"
-  value       = var.firewall_trust_lb_ip
 }
 
 # ============================================
@@ -65,15 +53,15 @@ output "vnet_name" {
 
 output "resource_group_name" {
   description = "The name of the resource group"
-  value       = azurerm_resource_group.route_table_rg.name
+  value       = azurerm_resource_group.route_table.name
 }
 
 output "resource_group_id" {
   description = "The ID of the resource group"
-  value       = azurerm_resource_group.route_table_rg.id
+  value       = azurerm_resource_group.route_table.id
 }
 
 output "location" {
   description = "The Azure region of the deployment"
-  value       = azurerm_resource_group.route_table_rg.location
+  value       = azurerm_resource_group.route_table.location
 }

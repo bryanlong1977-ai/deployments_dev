@@ -1,12 +1,12 @@
 # Outputs for Route Table Deployment 1 - Connectivity Subscription
 
 output "route_table_id" {
-  description = "The ID of the route table"
+  description = "The ID of the hub route table"
   value       = azurerm_route_table.hub_route_table.id
 }
 
 output "route_table_name" {
-  description = "The name of the route table"
+  description = "The name of the hub route table"
   value       = azurerm_route_table.hub_route_table.name
 }
 
@@ -25,6 +25,11 @@ output "route_table_location" {
   value       = azurerm_route_table.hub_route_table.location
 }
 
+output "vnet_name" {
+  description = "The name of the hub virtual network (for reference)"
+  value       = var.vnet_name
+}
+
 # ============================================
 # Standard Outputs (auto-generated for cross-deployment compatibility)
 # These outputs are required by downstream deployments via terraform_remote_state
@@ -32,11 +37,6 @@ output "route_table_location" {
 
 output "vnet_id" {
   description = "The ID of the deployed Virtual Network"
-  value       = null  # TODO: Set to the correct resource reference
-}
-
-output "vnet_name" {
-  description = "The name of the deployed Virtual Network"
   value       = null  # TODO: Set to the correct resource reference
 }
 
@@ -62,7 +62,7 @@ output "hub_vnet_id" {
 
 output "hub_vnet_name" {
   description = "The name of the hub Virtual Network (alias for vnet_name)"
-  value       = null  # TODO: Set to the correct resource reference
+  value       = var.vnet_name
 }
 
 output "hub_resource_group_name" {

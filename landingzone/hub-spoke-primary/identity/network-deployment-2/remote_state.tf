@@ -1,44 +1,42 @@
-# Remote state reference for Identity Network Deployment 1
+# =============================================================================
+# Remote State Data Sources
+# =============================================================================
+
+# Reference Identity Network Deployment 1 for VNet and Network Watcher
 data "terraform_remote_state" "identity_network_deployment_1" {
   backend = "azurerm"
   config = {
-    resource_group_name  = "rg-storage-ncus-01"
-    storage_account_name = "sacloudaiconsulting01"
-    container_name       = "tfstate"
+    resource_group_name  = var.tfstate_resource_group_name
+    storage_account_name = var.tfstate_storage_account_name
+    container_name       = var.tfstate_container_name
     key                  = "hub-spoke-primary/identity/network-deployment-1.tfstate"
-    subscription_id      = "53fea26b-011b-4520-b157-e31b034c7900"
+    subscription_id      = var.tfstate_subscription_id
     use_azuread_auth     = true
-    use_oidc             = true
-
   }
 }
 
-# Remote state reference for Management Tools Deployment 1 (Log Analytics Workspace)
+# Reference Management Tools Deployment 1 for Log Analytics Workspace
 data "terraform_remote_state" "management_tools_deployment_1" {
   backend = "azurerm"
   config = {
-    resource_group_name  = "rg-storage-ncus-01"
-    storage_account_name = "sacloudaiconsulting01"
-    container_name       = "tfstate"
+    resource_group_name  = var.tfstate_resource_group_name
+    storage_account_name = var.tfstate_storage_account_name
+    container_name       = var.tfstate_container_name
     key                  = "hub-spoke-primary/management/tools-deployment-1.tfstate"
-    subscription_id      = "53fea26b-011b-4520-b157-e31b034c7900"
+    subscription_id      = var.tfstate_subscription_id
     use_azuread_auth     = true
-    use_oidc             = true
-
   }
 }
 
-# Remote state reference for Identity Tools Deployment 1 (Storage Account for flow logs)
+# Reference Identity Tools Deployment 1 for Network Storage Account
 data "terraform_remote_state" "identity_tools_deployment_1" {
   backend = "azurerm"
   config = {
-    resource_group_name  = "rg-storage-ncus-01"
-    storage_account_name = "sacloudaiconsulting01"
-    container_name       = "tfstate"
+    resource_group_name  = var.tfstate_resource_group_name
+    storage_account_name = var.tfstate_storage_account_name
+    container_name       = var.tfstate_container_name
     key                  = "hub-spoke-primary/identity/tools-deployment-1.tfstate"
-    subscription_id      = "53fea26b-011b-4520-b157-e31b034c7900"
+    subscription_id      = var.tfstate_subscription_id
     use_azuread_auth     = true
-    use_oidc             = true
-
   }
 }

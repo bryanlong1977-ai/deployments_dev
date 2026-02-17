@@ -1,33 +1,29 @@
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
 # Remote State Data Sources
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
 
-# Reference Identity Network Deployment 1 outputs (VNet, Subnets, DNS Zones)
-data "terraform_remote_state" "identity_network_deployment_1" {
+# Reference Identity Network Deployment 1 for subnet and DNS zone information
+data "terraform_remote_state" "identity_network_1" {
   backend = "azurerm"
   config = {
-    resource_group_name  = "rg-storage-ncus-01"
-    storage_account_name = "sacloudaiconsulting01"
-    container_name       = "tfstate"
-    key                  = "hub-spoke-primary/identity/network-deployment-1.tfstate"
-    subscription_id      = "53fea26b-011b-4520-b157-e31b034c7900"
+    resource_group_name  = var.remote_state_resource_group_name
+    storage_account_name = var.remote_state_storage_account_name
+    container_name       = var.remote_state_container_name
+    key                  = var.identity_network_state_key
+    subscription_id      = var.subscription_id
     use_azuread_auth     = true
-    use_oidc             = true
-
   }
 }
 
-# Reference Management Tools Deployment 1 outputs (Log Analytics Workspace)
-data "terraform_remote_state" "management_tools_deployment_1" {
+# Reference Management Tools Deployment 1 for Log Analytics Workspace
+data "terraform_remote_state" "management_tools_1" {
   backend = "azurerm"
   config = {
-    resource_group_name  = "rg-storage-ncus-01"
-    storage_account_name = "sacloudaiconsulting01"
-    container_name       = "tfstate"
-    key                  = "hub-spoke-primary/management/tools-deployment-1.tfstate"
-    subscription_id      = "53fea26b-011b-4520-b157-e31b034c7900"
+    resource_group_name  = var.remote_state_resource_group_name
+    storage_account_name = var.remote_state_storage_account_name
+    container_name       = var.remote_state_container_name
+    key                  = var.management_tools_state_key
+    subscription_id      = var.subscription_id
     use_azuread_auth     = true
-    use_oidc             = true
-
   }
 }

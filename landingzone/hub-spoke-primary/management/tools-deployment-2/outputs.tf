@@ -1,12 +1,14 @@
+#--------------------------------------------------------------
 # Automation Account Outputs
+#--------------------------------------------------------------
 output "automation_account_id" {
   description = "The ID of the Automation Account"
-  value       = azurerm_automation_account.main.id
+  value       = azurerm_automation_account.this.id
 }
 
 output "automation_account_name" {
   description = "The name of the Automation Account"
-  value       = azurerm_automation_account.main.name
+  value       = azurerm_automation_account.this.name
 }
 
 output "automation_account_resource_group_name" {
@@ -15,29 +17,26 @@ output "automation_account_resource_group_name" {
 }
 
 output "automation_account_identity_principal_id" {
-  description = "The principal ID of the Automation Account managed identity"
-  value       = azurerm_automation_account.main.identity[0].principal_id
+  description = "The principal ID of the Automation Account's managed identity"
+  value       = azurerm_automation_account.this.identity[0].principal_id
 }
 
 output "automation_account_identity_tenant_id" {
-  description = "The tenant ID of the Automation Account managed identity"
-  value       = azurerm_automation_account.main.identity[0].tenant_id
+  description = "The tenant ID of the Automation Account's managed identity"
+  value       = azurerm_automation_account.this.identity[0].tenant_id
 }
 
-output "automation_account_private_endpoint_id" {
-  description = "The ID of the Automation Account private endpoint"
-  value       = azurerm_private_endpoint.automation_account.id
-}
-
+#--------------------------------------------------------------
 # Recovery Services Vault Outputs
+#--------------------------------------------------------------
 output "recovery_services_vault_id" {
   description = "The ID of the Recovery Services Vault"
-  value       = azurerm_recovery_services_vault.main.id
+  value       = azurerm_recovery_services_vault.this.id
 }
 
 output "recovery_services_vault_name" {
   description = "The name of the Recovery Services Vault"
-  value       = azurerm_recovery_services_vault.main.name
+  value       = azurerm_recovery_services_vault.this.name
 }
 
 output "recovery_services_vault_resource_group_name" {
@@ -46,21 +45,18 @@ output "recovery_services_vault_resource_group_name" {
 }
 
 output "recovery_services_vault_identity_principal_id" {
-  description = "The principal ID of the Recovery Services Vault managed identity"
-  value       = azurerm_recovery_services_vault.main.identity[0].principal_id
+  description = "The principal ID of the Recovery Services Vault's managed identity"
+  value       = azurerm_recovery_services_vault.this.identity[0].principal_id
 }
 
 output "recovery_services_vault_identity_tenant_id" {
-  description = "The tenant ID of the Recovery Services Vault managed identity"
-  value       = azurerm_recovery_services_vault.main.identity[0].tenant_id
+  description = "The tenant ID of the Recovery Services Vault's managed identity"
+  value       = azurerm_recovery_services_vault.this.identity[0].tenant_id
 }
 
-output "recovery_services_vault_private_endpoint_id" {
-  description = "The ID of the Recovery Services Vault private endpoint"
-  value       = azurerm_private_endpoint.recovery_services_vault.id
-}
-
-# Storage Account VM Outputs
+#--------------------------------------------------------------
+# Storage Account Outputs - VM Diagnostics
+#--------------------------------------------------------------
 output "storage_account_vm_id" {
   description = "The ID of the VM diagnostics storage account"
   value       = azurerm_storage_account.vm.id
@@ -72,17 +68,19 @@ output "storage_account_vm_name" {
 }
 
 output "storage_account_vm_primary_blob_endpoint" {
-  description = "The primary blob endpoint of the VM diagnostics storage account"
+  description = "The primary blob endpoint for the VM storage account"
   value       = azurerm_storage_account.vm.primary_blob_endpoint
 }
 
 output "storage_account_vm_primary_access_key" {
-  description = "The primary access key of the VM diagnostics storage account"
+  description = "The primary access key for the VM storage account"
   value       = azurerm_storage_account.vm.primary_access_key
   sensitive   = true
 }
 
-# Storage Account Network Outputs
+#--------------------------------------------------------------
+# Storage Account Outputs - Network Diagnostics
+#--------------------------------------------------------------
 output "storage_account_ntwk_id" {
   description = "The ID of the network diagnostics storage account"
   value       = azurerm_storage_account.ntwk.id
@@ -94,41 +92,50 @@ output "storage_account_ntwk_name" {
 }
 
 output "storage_account_ntwk_primary_blob_endpoint" {
-  description = "The primary blob endpoint of the network diagnostics storage account"
+  description = "The primary blob endpoint for the network storage account"
   value       = azurerm_storage_account.ntwk.primary_blob_endpoint
 }
 
 output "storage_account_ntwk_primary_access_key" {
-  description = "The primary access key of the network diagnostics storage account"
+  description = "The primary access key for the network storage account"
   value       = azurerm_storage_account.ntwk.primary_access_key
   sensitive   = true
 }
 
+#--------------------------------------------------------------
 # Storage Resource Group Output
+#--------------------------------------------------------------
 output "storage_resource_group_name" {
-  description = "The name of the storage accounts resource group"
+  description = "The resource group name for storage accounts"
   value       = azurerm_resource_group.storage.name
 }
 
-# Private Endpoint IDs
-output "storage_vm_private_endpoint_ids" {
-  description = "Map of private endpoint IDs for VM storage account"
-  value = {
-    blob  = azurerm_private_endpoint.storage_vm_blob.id
-    file  = azurerm_private_endpoint.storage_vm_file.id
-    queue = azurerm_private_endpoint.storage_vm_queue.id
-    table = azurerm_private_endpoint.storage_vm_table.id
-  }
+output "storage_resource_group_id" {
+  description = "The resource group ID for storage accounts"
+  value       = azurerm_resource_group.storage.id
 }
 
-output "storage_ntwk_private_endpoint_ids" {
-  description = "Map of private endpoint IDs for network storage account"
-  value = {
-    blob  = azurerm_private_endpoint.storage_ntwk_blob.id
-    file  = azurerm_private_endpoint.storage_ntwk_file.id
-    queue = azurerm_private_endpoint.storage_ntwk_queue.id
-    table = azurerm_private_endpoint.storage_ntwk_table.id
-  }
+#--------------------------------------------------------------
+# Private Endpoint Outputs
+#--------------------------------------------------------------
+output "automation_account_pe_webhook_id" {
+  description = "The ID of the Automation Account Webhook private endpoint"
+  value       = azurerm_private_endpoint.automation_webhook.id
+}
+
+output "automation_account_pe_dsc_id" {
+  description = "The ID of the Automation Account DSC private endpoint"
+  value       = azurerm_private_endpoint.automation_dsc.id
+}
+
+output "recovery_services_vault_pe_backup_id" {
+  description = "The ID of the Recovery Services Vault Backup private endpoint"
+  value       = azurerm_private_endpoint.rsv_backup.id
+}
+
+output "recovery_services_vault_pe_siterecovery_id" {
+  description = "The ID of the Recovery Services Vault Site Recovery private endpoint"
+  value       = azurerm_private_endpoint.rsv_siterecovery.id
 }
 
 # ============================================

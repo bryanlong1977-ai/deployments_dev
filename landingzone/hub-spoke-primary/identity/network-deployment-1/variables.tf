@@ -1,7 +1,3 @@
-#------------------------------------------------------------------------------
-# Subscription Variables
-#------------------------------------------------------------------------------
-
 variable "subscription_id" {
   description = "The subscription ID for the Identity subscription"
   type        = string
@@ -9,14 +5,10 @@ variable "subscription_id" {
 }
 
 variable "connectivity_subscription_id" {
-  description = "The subscription ID for the Connectivity subscription"
+  description = "The subscription ID for the Connectivity subscription (for peering)"
   type        = string
   default     = "81abf5a8-5c86-4ca7-8af8-8b3596a58d07"
 }
-
-#------------------------------------------------------------------------------
-# Location Variables
-#------------------------------------------------------------------------------
 
 variable "region" {
   description = "The Azure region for resource deployment"
@@ -24,9 +16,27 @@ variable "region" {
   default     = "westus3"
 }
 
-#------------------------------------------------------------------------------
-# Resource Group Variables
-#------------------------------------------------------------------------------
+variable "environment" {
+  description = "The environment for resource deployment"
+  type        = string
+  default     = "Production"
+}
+
+variable "tags" {
+  description = "Tags to apply to all resources"
+  type        = map(string)
+  default = {
+    customer      = "Cloud AI Consulting"
+    project       = "Secure Cloud Foundations"
+    environment   = "Production"
+    deployment_id = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
+    managed_by    = "Terraform"
+  }
+}
+
+#--------------------------------------------------------------
+# Resource Group Names
+#--------------------------------------------------------------
 
 variable "network_resource_group_name" {
   description = "Name of the network resource group"
@@ -41,14 +51,14 @@ variable "network_watcher_resource_group_name" {
 }
 
 variable "dns_resource_group_name" {
-  description = "Name of the DNS resource group for Private DNS Resolver and Zones"
+  description = "Name of the DNS resource group"
   type        = string
   default     = "rg-dns-prd-identity-wus3-01"
 }
 
-#------------------------------------------------------------------------------
-# Virtual Network Variables
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
+# Virtual Network Configuration
+#--------------------------------------------------------------
 
 variable "vnet_name" {
   description = "Name of the Identity virtual network"
@@ -59,23 +69,23 @@ variable "vnet_name" {
 variable "vnet_address_space" {
   description = "Address space for the Identity virtual network"
   type        = list(string)
-  default     = ["10.0.1.0/24"]
+  default     = ["10.0.4.0/24"]
 }
 
-#------------------------------------------------------------------------------
-# Subnet Variables
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
+# Subnet Configuration
+#--------------------------------------------------------------
 
-variable "subnet_pe_name" {
+variable "subnet_private_endpoints_name" {
   description = "Name of the private endpoints subnet"
   type        = string
   default     = "snet-pe-idm-wus3-01"
 }
 
-variable "subnet_pe_address_prefix" {
+variable "subnet_private_endpoints_prefix" {
   description = "Address prefix for the private endpoints subnet"
   type        = string
-  default     = "10.0.1.0/26"
+  default     = "10.0.4.0/26"
 }
 
 variable "subnet_tools_name" {
@@ -84,110 +94,132 @@ variable "subnet_tools_name" {
   default     = "snet-tools-idm-wus3-01"
 }
 
-variable "subnet_tools_address_prefix" {
+variable "subnet_tools_prefix" {
   description = "Address prefix for the tools subnet"
   type        = string
-  default     = "10.0.1.64/26"
+  default     = "10.0.4.64/26"
 }
 
-variable "subnet_inbound_name" {
+variable "subnet_dns_inbound_name" {
   description = "Name of the DNS resolver inbound subnet"
   type        = string
   default     = "snet-inbound-idm-wus3-01"
 }
 
-variable "subnet_inbound_address_prefix" {
+variable "subnet_dns_inbound_prefix" {
   description = "Address prefix for the DNS resolver inbound subnet"
   type        = string
-  default     = "10.0.1.128/28"
+  default     = "10.0.4.128/28"
 }
 
-variable "subnet_outbound_name" {
+variable "subnet_dns_outbound_name" {
   description = "Name of the DNS resolver outbound subnet"
   type        = string
   default     = "snet-outbound-idm-wus3-01"
 }
 
-variable "subnet_outbound_address_prefix" {
+variable "subnet_dns_outbound_prefix" {
   description = "Address prefix for the DNS resolver outbound subnet"
   type        = string
-  default     = "10.0.1.144/28"
+  default     = "10.0.4.144/28"
 }
 
-variable "subnet_dc_name" {
+variable "subnet_domain_controllers_name" {
   description = "Name of the domain controllers subnet"
   type        = string
   default     = "snet-dc-idm-wus3-01"
 }
 
-variable "subnet_dc_address_prefix" {
+variable "subnet_domain_controllers_prefix" {
   description = "Address prefix for the domain controllers subnet"
   type        = string
-  default     = "10.0.1.160/27"
+  default     = "10.0.4.160/27"
 }
 
-variable "subnet_ib_mgmt_name" {
+variable "subnet_infoblox_mgmt_name" {
   description = "Name of the Infoblox management subnet"
   type        = string
   default     = "snet-ib-mgmt-idm-wus3-01"
 }
 
-variable "subnet_ib_mgmt_address_prefix" {
+variable "subnet_infoblox_mgmt_prefix" {
   description = "Address prefix for the Infoblox management subnet"
   type        = string
-  default     = "10.0.1.192/28"
+  default     = "10.0.4.192/28"
 }
 
-variable "subnet_ib_lan1_name" {
+variable "subnet_infoblox_lan1_name" {
   description = "Name of the Infoblox LAN1 subnet"
   type        = string
   default     = "snet-ib-lan1-idm-wus3-01"
 }
 
-variable "subnet_ib_lan1_address_prefix" {
+variable "subnet_infoblox_lan1_prefix" {
   description = "Address prefix for the Infoblox LAN1 subnet"
   type        = string
-  default     = "10.0.1.208/28"
+  default     = "10.0.4.208/28"
 }
 
-#------------------------------------------------------------------------------
-# Network Watcher Variables
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
+# Network Watcher Configuration
+#--------------------------------------------------------------
 
 variable "network_watcher_name" {
-  description = "Name of the network watcher"
+  description = "Name of the Network Watcher"
   type        = string
   default     = "nw-idm-prd-wus3-01"
 }
 
-#------------------------------------------------------------------------------
-# Private DNS Resolver Variables
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
+# VNet Peering Configuration
+#--------------------------------------------------------------
 
-variable "private_dns_resolver_name" {
+variable "peering_identity_to_hub_name" {
+  description = "Name of the peering from Identity VNet to Hub VNet"
+  type        = string
+  default     = "peer-identity-to-hub"
+}
+
+variable "peering_hub_to_identity_name" {
+  description = "Name of the peering from Hub VNet to Identity VNet"
+  type        = string
+  default     = "peer-hub-to-identity"
+}
+
+variable "use_remote_gateways" {
+  description = "Whether to use remote gateways from the hub (set to false if hub gateway not yet deployed)"
+  type        = bool
+  default     = false
+}
+
+#--------------------------------------------------------------
+# DNS Resolver Configuration
+#--------------------------------------------------------------
+
+variable "dns_resolver_name" {
   description = "Name of the Private DNS Resolver"
   type        = string
   default     = "pdr-identity-prd-wus3-01"
 }
 
 variable "dns_resolver_inbound_endpoint_name" {
-  description = "Name of the DNS resolver inbound endpoint"
+  description = "Name of the DNS Resolver inbound endpoint"
   type        = string
   default     = "drie-identity-prd-wus3-01"
 }
 
 variable "dns_resolver_outbound_endpoint_name" {
-  description = "Name of the DNS resolver outbound endpoint"
+  description = "Name of the DNS Resolver outbound endpoint"
   type        = string
   default     = "droe-identity-prd-wus3-01"
 }
 
-#------------------------------------------------------------------------------
-# Private DNS Zones Variables
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
+# Private DNS Zones Configuration
+#--------------------------------------------------------------
 
 variable "private_dns_zones" {
-  description = "List of private DNS zones to create"
+  description = "List of Private DNS zone names to create"
   type        = list(string)
   default = [
     "privatelink.blob.core.windows.net",
@@ -208,9 +240,9 @@ variable "private_dns_zones" {
   ]
 }
 
-#------------------------------------------------------------------------------
-# DNS Forwarding Variables
-#------------------------------------------------------------------------------
+#--------------------------------------------------------------
+# DNS Forwarding Configuration
+#--------------------------------------------------------------
 
 variable "dns_forwarding_enabled" {
   description = "Whether DNS forwarding is enabled"
@@ -219,7 +251,7 @@ variable "dns_forwarding_enabled" {
 }
 
 variable "dns_forwarding_ruleset_name" {
-  description = "Name of the DNS forwarding ruleset"
+  description = "Name of the DNS Forwarding Ruleset"
   type        = string
   default     = "dnsfrs-identity-prd-wus3-01"
 }
@@ -240,32 +272,6 @@ variable "dns_forwarding_rules" {
   ]
 }
 
-#------------------------------------------------------------------------------
-# VNet Peering Variables
-#------------------------------------------------------------------------------
-
-variable "use_remote_gateways" {
-  description = "Whether to use remote gateways for VNet peering (set to false if no gateway exists in hub yet)"
-  type        = bool
-  default     = false
-}
-
-#------------------------------------------------------------------------------
-# Tags Variables
-#------------------------------------------------------------------------------
-
-variable "tags" {
-  description = "Tags to apply to all resources"
-  type        = map(string)
-  default = {
-    customer      = "Cloud AI Consulting"
-    project       = "Secure Cloud Foundations"
-    environment   = "Production"
-    deployment_id = "8b492308-bab3-41e1-a8cb-1348dfea4227"
-    managed_by    = "Terraform"
-  }
-}
-
 # ============================================
 # Standard Landing Zone Variables
 # These variables are common across all deployments
@@ -279,12 +285,6 @@ variable "customer_name" {
 variable "project_name" {
   description = "Project name for the Landing Zone"
   type        = string
-}
-
-variable "environment" {
-  description = "Environment (production, staging, development)"
-  type        = string
-  default     = "production"
 }
 
 variable "hub_vnet_cidr" {

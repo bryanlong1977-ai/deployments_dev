@@ -1,51 +1,58 @@
+# =============================================================================
+# Diagnostic Setting Outputs
+# =============================================================================
+
 output "vnet_diagnostic_setting_id" {
-  description = "The ID of the VNet diagnostic setting"
-  value       = azurerm_monitor_diagnostic_setting.identity_vnet_diag.id
+  description = "ID of the VNet diagnostic setting"
+  value       = azurerm_monitor_diagnostic_setting.vnet_diagnostics.id
 }
 
 output "vnet_diagnostic_setting_name" {
-  description = "The name of the VNet diagnostic setting"
-  value       = azurerm_monitor_diagnostic_setting.identity_vnet_diag.name
+  description = "Name of the VNet diagnostic setting"
+  value       = azurerm_monitor_diagnostic_setting.vnet_diagnostics.name
 }
 
+# =============================================================================
+# Flow Log Outputs
+# =============================================================================
+
 output "vnet_flow_log_id" {
-  description = "The ID of the VNet flow log"
-  value       = azurerm_network_watcher_flow_log.identity_vnet_flow_log.id
+  description = "ID of the VNet flow log"
+  value       = azurerm_network_watcher_flow_log.vnet_flow_log.id
 }
 
 output "vnet_flow_log_name" {
-  description = "The name of the VNet flow log"
-  value       = azurerm_network_watcher_flow_log.identity_vnet_flow_log.name
+  description = "Name of the VNet flow log"
+  value       = azurerm_network_watcher_flow_log.vnet_flow_log.name
 }
 
+output "vnet_flow_log_enabled" {
+  description = "Whether flow logging is enabled"
+  value       = azurerm_network_watcher_flow_log.vnet_flow_log.enabled
+}
+
+# =============================================================================
+# Reference Outputs (from remote state)
+# =============================================================================
+
 output "vnet_id" {
-  description = "The ID of the Identity VNet (from remote state)"
-  value       = data.azurerm_virtual_network.identity_vnet.id
+  description = "ID of the Identity VNet (from remote state)"
+  value       = data.terraform_remote_state.identity_network_deployment_1.outputs.vnet_id
 }
 
 output "vnet_name" {
-  description = "The name of the Identity VNet"
-  value       = data.azurerm_virtual_network.identity_vnet.name
+  description = "Name of the Identity VNet (from remote state)"
+  value       = data.terraform_remote_state.identity_network_deployment_1.outputs.vnet_name
 }
 
 output "log_analytics_workspace_id" {
-  description = "The ID of the Log Analytics Workspace used for diagnostics"
-  value       = data.azurerm_log_analytics_workspace.management_law.id
+  description = "ID of the Log Analytics workspace used for diagnostics"
+  value       = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_id
 }
 
-output "storage_account_id" {
-  description = "The ID of the storage account used for flow logs"
-  value       = data.azurerm_storage_account.identity_network_storage.id
-}
-
-output "network_watcher_name" {
-  description = "The name of the Network Watcher"
-  value       = data.azurerm_network_watcher.identity_nw.name
-}
-
-output "network_watcher_resource_group_name" {
-  description = "The resource group name of the Network Watcher"
-  value       = data.azurerm_network_watcher.identity_nw.resource_group_name
+output "network_storage_account_id" {
+  description = "ID of the network storage account used for flow logs"
+  value       = data.terraform_remote_state.identity_tools_deployment_1.outputs.network_storage_account_id
 }
 
 # ============================================

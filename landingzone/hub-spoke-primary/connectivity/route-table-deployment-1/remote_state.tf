@@ -1,3 +1,3 @@
 # Remote State References for Route Table Deployment 1 - Connectivity Subscription
-# This deployment creates a standalone route table that is not associated with any subnets.
-# No dependencies on previous deployments are required for this initial route table creation.
+# No remote state dependencies required for this deployment
+# The route table is created standalone without subnet associations per requirements

@@ -1,5 +1,5 @@
 variable "subscription_id" {
-  description = "The subscription ID where resources will be deployed"
+  description = "The Azure subscription ID for the Connectivity subscription"
   type        = string
   default     = "81abf5a8-5c86-4ca7-8af8-8b3596a58d07"
 }
@@ -7,16 +7,10 @@ variable "subscription_id" {
 variable "region" {
   description = "The Azure region for resource deployment"
   type        = string
-  default     = "West US 3"
+  default     = "westus3"
 }
 
-variable "environment" {
-  description = "The environment name (Production, Development, etc.)"
-  type        = string
-  default     = "Production"
-}
-
-variable "hub_network_resource_group_name" {
+variable "network_resource_group_name" {
   description = "Name of the resource group for hub network resources"
   type        = string
   default     = "rg-network-prd-hub-wus3-01"
@@ -28,16 +22,22 @@ variable "network_watcher_resource_group_name" {
   default     = "rg-nw-prd-hub-wus3-01"
 }
 
-variable "hub_vnet_name" {
+variable "vnet_name" {
   description = "Name of the hub virtual network"
   type        = string
   default     = "vnet-hub-prd-wus3-01"
 }
 
-variable "hub_vnet_address_space" {
+variable "vnet_address_space" {
   description = "Address space for the hub virtual network"
   type        = list(string)
-  default     = ["10.0.0.0/23"]
+  default     = ["10.0.0.0/22"]
+}
+
+variable "dns_servers" {
+  description = "List of DNS server IP addresses for the virtual network"
+  type        = list(string)
+  default     = []
 }
 
 variable "subnet_pe_name" {
@@ -50,6 +50,12 @@ variable "subnet_pe_address_prefix" {
   description = "Address prefix for the private endpoints subnet"
   type        = string
   default     = "10.0.0.0/26"
+}
+
+variable "private_endpoint_network_policies" {
+  description = "Network policies for private endpoints (Enabled or Disabled)"
+  type        = string
+  default     = "Disabled"
 }
 
 variable "subnet_tools_name" {
@@ -137,8 +143,8 @@ variable "tags" {
     customer      = "Cloud AI Consulting"
     project       = "Secure Cloud Foundations"
     environment   = "Production"
-    deployment_id = "8b492308-bab3-41e1-a8cb-1348dfea4227"
-    deployed_by   = "Terraform"
+    deployment_id = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
+    managed_by    = "Terraform"
   }
 }
 
@@ -155,6 +161,12 @@ variable "customer_name" {
 variable "project_name" {
   description = "Project name for the Landing Zone"
   type        = string
+}
+
+variable "environment" {
+  description = "Environment (production, staging, development)"
+  type        = string
+  default     = "production"
 }
 
 variable "hub_vnet_cidr" {

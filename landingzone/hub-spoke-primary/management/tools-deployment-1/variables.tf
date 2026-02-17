@@ -1,71 +1,47 @@
-# Variables for Tools Deployment 1 - Management Subscription
-
-# ============================================================================
-# SUBSCRIPTION AND DEPLOYMENT CONTEXT
-# ============================================================================
-
 variable "subscription_id" {
   description = "The Azure subscription ID where resources will be deployed"
   type        = string
   default     = "39f647ab-5261-47b0-ad91-1719dcd107a1"
 }
 
-variable "customer_name" {
-  description = "Customer name for tagging"
-  type        = string
-  default     = "Cloud AI Consulting"
-}
-
-variable "project_name" {
-  description = "Project name for tagging"
-  type        = string
-  default     = "Secure Cloud Foundations"
-}
-
-variable "environment" {
-  description = "Environment name (Production, Development, etc.)"
-  type        = string
-  default     = "Production"
-}
-
-variable "deployment_id" {
-  description = "Unique deployment identifier"
-  type        = string
-  default     = "8b492308-bab3-41e1-a8cb-1348dfea4227"
-}
-
 variable "region" {
-  description = "Azure region for resource deployment"
+  description = "The Azure region where resources will be deployed"
   type        = string
-  default     = "westus3"
+  default     = "West US 3"
 }
 
-# ============================================================================
-# RESOURCE GROUP NAMES
-# ============================================================================
+variable "tags" {
+  description = "Tags to apply to all resources"
+  type        = map(string)
+  default = {
+    customer      = "Cloud AI Consulting"
+    project       = "Secure Cloud Foundations"
+    environment   = "Production"
+    deployment_id = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
+    managed_by    = "Terraform"
+  }
+}
 
-variable "kv_resource_group_name" {
-  description = "Name of the resource group for Key Vaults"
+# Resource Group Names
+variable "key_vault_resource_group_name" {
+  description = "Name of the resource group for Key Vault"
   type        = string
   default     = "rg-kv-prd-mgmt-wus3-01"
 }
 
-variable "log_resource_group_name" {
+variable "log_analytics_resource_group_name" {
   description = "Name of the resource group for Log Analytics Workspace"
   type        = string
   default     = "rg-log-prd-mgmt-wus3-01"
 }
 
-variable "mi_resource_group_name" {
+variable "managed_identity_resource_group_name" {
   description = "Name of the resource group for Managed Identity"
   type        = string
   default     = "rg-mi-prd-mgmt-wus3-01"
 }
 
-# ============================================================================
-# LOG ANALYTICS WORKSPACE
-# ============================================================================
-
+# Log Analytics Workspace Variables
 variable "log_analytics_workspace_name" {
   description = "Name of the Log Analytics Workspace"
   type        = string
@@ -73,53 +49,31 @@ variable "log_analytics_workspace_name" {
 }
 
 variable "log_analytics_sku" {
-  description = "SKU for the Log Analytics Workspace"
+  description = "SKU of the Log Analytics Workspace"
   type        = string
   default     = "PerGB2018"
-
-  validation {
-    condition     = var.log_analytics_sku == null || contains(["Free", "PerNode", "Premium", "Standard", "Standalone", "Unlimited", "CapacityReservation", "PerGB2018"], var.log_analytics_sku)
-    error_message = "Log Analytics SKU must be one of: Free, PerNode, Premium, Standard, Standalone, Unlimited, CapacityReservation, PerGB2018."
-  }
 }
 
 variable "log_analytics_retention_days" {
   description = "Retention period in days for Log Analytics Workspace"
   type        = number
   default     = 90
-
-  validation {
-    condition     = var.log_analytics_retention_days >= 30 && var.log_analytics_retention_days <= 730
-    error_message = "Log Analytics retention must be between 30 and 730 days."
-  }
 }
 
-variable "log_analytics_internet_ingestion_enabled" {
-  description = "Enable internet ingestion for Log Analytics"
-  type        = bool
-  default     = true
+variable "log_analytics_daily_quota_gb" {
+  description = "Daily quota in GB for Log Analytics Workspace (-1 for unlimited)"
+  type        = number
+  default     = -1
 }
 
-variable "log_analytics_internet_query_enabled" {
-  description = "Enable internet query for Log Analytics"
-  type        = bool
-  default     = true
-}
-
-# ============================================================================
-# MANAGED IDENTITY
-# ============================================================================
-
+# Managed Identity Variables
 variable "managed_identity_name" {
   description = "Name of the User Assigned Managed Identity"
   type        = string
   default     = "mi-mgmt-prd-wus3-01"
 }
 
-# ============================================================================
-# KEY VAULTS
-# ============================================================================
-
+# Key Vault Variables
 variable "key_vault_prd_name" {
   description = "Name of the Production Key Vault"
   type        = string
@@ -133,38 +87,15 @@ variable "key_vault_nprd_name" {
 }
 
 variable "key_vault_sku" {
-  description = "SKU for Key Vault (standard or premium)"
+  description = "SKU of the Key Vault"
   type        = string
   default     = "standard"
-
-  validation {
-    condition     = var.key_vault_sku == null || contains(["standard", "premium"], var.key_vault_sku)
-    error_message = "Key Vault SKU must be 'standard' or 'premium'."
-  }
 }
 
-variable "key_vault_enabled_for_deployment" {
-  description = "Enable Key Vault for Azure Virtual Machine deployment"
-  type        = bool
-  default     = true
-}
-
-variable "key_vault_enabled_for_disk_encryption" {
-  description = "Enable Key Vault for Azure Disk Encryption"
-  type        = bool
-  default     = true
-}
-
-variable "key_vault_enabled_for_template_deployment" {
-  description = "Enable Key Vault for ARM template deployment"
-  type        = bool
-  default     = true
-}
-
-variable "key_vault_rbac_authorization_enabled" {
-  description = "Enable RBAC authorization for Key Vault (recommended)"
-  type        = bool
-  default     = true
+variable "key_vault_soft_delete_retention_days" {
+  description = "Number of days to retain soft-deleted keys"
+  type        = number
+  default     = 90
 }
 
 variable "key_vault_purge_protection_enabled" {
@@ -173,15 +104,28 @@ variable "key_vault_purge_protection_enabled" {
   default     = true
 }
 
-variable "key_vault_soft_delete_retention_days" {
-  description = "Soft delete retention period in days for Key Vault"
-  type        = number
-  default     = 90
+variable "key_vault_rbac_authorization_enabled" {
+  description = "Enable RBAC authorization for Key Vault"
+  type        = bool
+  default     = true
+}
 
-  validation {
-    condition     = var.key_vault_soft_delete_retention_days >= 7 && var.key_vault_soft_delete_retention_days <= 90
-    error_message = "Key Vault soft delete retention must be between 7 and 90 days."
-  }
+variable "key_vault_enabled_for_deployment" {
+  description = "Allow Azure Virtual Machines to retrieve certificates stored as secrets"
+  type        = bool
+  default     = true
+}
+
+variable "key_vault_enabled_for_disk_encryption" {
+  description = "Allow Azure Disk Encryption to retrieve secrets and unwrap keys"
+  type        = bool
+  default     = true
+}
+
+variable "key_vault_enabled_for_template_deployment" {
+  description = "Allow Azure Resource Manager to retrieve secrets"
+  type        = bool
+  default     = true
 }
 
 variable "key_vault_public_network_access_enabled" {
@@ -194,44 +138,78 @@ variable "key_vault_network_acls_default_action" {
   description = "Default action for Key Vault network ACLs"
   type        = string
   default     = "Deny"
-
-  validation {
-    condition     = var.key_vault_network_acls_default_action == null || contains(["Allow", "Deny"], var.key_vault_network_acls_default_action)
-    error_message = "Key Vault network ACLs default action must be 'Allow' or 'Deny'."
-  }
 }
 
 variable "key_vault_network_acls_bypass" {
-  description = "Services that can bypass Key Vault network ACLs"
+  description = "Services to bypass Key Vault network ACLs"
   type        = string
   default     = "AzureServices"
-
-  validation {
-    condition     = var.key_vault_network_acls_bypass == null || contains(["None", "AzureServices"], var.key_vault_network_acls_bypass)
-    error_message = "Key Vault network ACLs bypass must be 'None' or 'AzureServices'."
-  }
 }
 
-# ============================================================================
-# PRIVATE ENDPOINT NAMES
-# ============================================================================
-
-variable "key_vault_prd_pe_name" {
-  description = "Name of the Private Endpoint for Production Key Vault"
+# Private Endpoint Variables
+variable "private_endpoint_subnet_name" {
+  description = "Name of the subnet for private endpoints"
   type        = string
-  default     = "pe-kvcloumgmtprdwus301"
+  default     = "snet-pe-mgmt-wus3-01"
 }
 
-variable "key_vault_nprd_pe_name" {
-  description = "Name of the Private Endpoint for Non-Production Key Vault"
+variable "key_vault_prd_private_endpoint_name" {
+  description = "Name of the private endpoint for Production Key Vault"
   type        = string
-  default     = "pe-kvcloumgmtnprdwus301"
+  default     = "pep-kvcloumgmtprdwus301"
+}
+
+variable "key_vault_nprd_private_endpoint_name" {
+  description = "Name of the private endpoint for Non-Production Key Vault"
+  type        = string
+  default     = "pep-kvcloumgmtnprdwus301"
+}
+
+# Remote State Variables
+variable "tfstate_resource_group_name" {
+  description = "Resource group name for Terraform state storage"
+  type        = string
+  default     = "rg-storage-ncus-01"
+}
+
+variable "tfstate_storage_account_name" {
+  description = "Storage account name for Terraform state"
+  type        = string
+  default     = "sacloudaiconsulting01"
+}
+
+variable "tfstate_container_name" {
+  description = "Container name for Terraform state"
+  type        = string
+  default     = "tfstate"
+}
+
+variable "tfstate_subscription_id" {
+  description = "Subscription ID where Terraform state storage resides"
+  type        = string
+  default     = "53fea26b-011b-4520-b157-e31b034c7900"
 }
 
 # ============================================
 # Standard Landing Zone Variables
 # These variables are common across all deployments
 # ============================================
+
+variable "customer_name" {
+  description = "Customer name for the Landing Zone"
+  type        = string
+}
+
+variable "project_name" {
+  description = "Project name for the Landing Zone"
+  type        = string
+}
+
+variable "environment" {
+  description = "Environment (production, staging, development)"
+  type        = string
+  default     = "production"
+}
 
 variable "hub_vnet_cidr" {
   description = "CIDR block for the hub VNet"
@@ -255,10 +233,4 @@ variable "enable_bastion" {
   description = "Enable Azure Bastion for secure VM access"
   type        = bool
   default     = true
-}
-
-variable "tags" {
-  description = "Resource tags to apply to all resources"
-  type        = map(string)
-  default     = {}
 }

@@ -11,7 +11,7 @@ output "route_table_name" {
 }
 
 output "route_table_resource_group_name" {
-  description = "The resource group name containing the route table"
+  description = "The name of the resource group containing the route table"
   value       = azurerm_resource_group.route_table_rg.name
 }
 
@@ -21,21 +21,18 @@ output "route_table_resource_group_id" {
 }
 
 output "route_to_firewall_id" {
-  description = "The ID of the default route to firewall"
+  description = "The ID of the route directing traffic to the firewall"
   value       = azurerm_route.route_to_firewall.id
 }
 
-output "subnet_route_table_associations" {
+output "subnet_route_table_association_ids" {
   description = "Map of subnet names to their route table association IDs"
   value = {
-    "snet-pe-dmz-wus3-01"         = azurerm_subnet_route_table_association.pe_subnet_association.id
-    "snet-tools-dmz-wus3-01"      = azurerm_subnet_route_table_association.tools_subnet_association.id
-    "snet-ns-mgmt-dmz-wus3-01"    = azurerm_subnet_route_table_association.ns_mgmt_subnet_association.id
-    "snet-ns-client-dmz-wus3-01"  = azurerm_subnet_route_table_association.ns_client_subnet_association.id
-    "snet-ns-server-dmz-wus3-01"  = azurerm_subnet_route_table_association.ns_server_subnet_association.id
-    "snet-ifw-mgmt-dmz-wus3-01"   = azurerm_subnet_route_table_association.ifw_mgmt_subnet_association.id
-    "snet-ifw-untrust-dmz-wus3-01" = azurerm_subnet_route_table_association.ifw_untrust_subnet_association.id
-    "snet-ifw-trust-dmz-wus3-01"  = azurerm_subnet_route_table_association.ifw_trust_subnet_association.id
+    "snet-pe-dmz-wus3-01"          = azurerm_subnet_route_table_association.pe_subnet_rt_association.id
+    "snet-tools-dmz-wus3-01"       = azurerm_subnet_route_table_association.tools_subnet_rt_association.id
+    "snet-ifw-mgmt-dmz-wus3-01"    = azurerm_subnet_route_table_association.ifw_mgmt_subnet_rt_association.id
+    "snet-ifw-untrust-dmz-wus3-01" = azurerm_subnet_route_table_association.ifw_untrust_subnet_rt_association.id
+    "snet-ifw-trust-dmz-wus3-01"   = azurerm_subnet_route_table_association.ifw_trust_subnet_rt_association.id
   }
 }
 

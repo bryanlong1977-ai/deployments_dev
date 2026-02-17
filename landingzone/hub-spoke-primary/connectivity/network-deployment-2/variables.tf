@@ -1,390 +1,289 @@
-#----------------------------------------------------------
-# Subscription Variables
-#----------------------------------------------------------
 variable "subscription_id" {
-  description = "The subscription ID for the Connectivity subscription"
   type        = string
+  description = "The subscription ID for the Connectivity subscription"
   default     = "81abf5a8-5c86-4ca7-8af8-8b3596a58d07"
 }
 
 variable "management_subscription_id" {
-  description = "The subscription ID for the Management subscription"
   type        = string
+  description = "The subscription ID for the Management subscription"
   default     = "39f647ab-5261-47b0-ad91-1719dcd107a1"
 }
 
-variable "identity_subscription_id" {
-  description = "The subscription ID for the Identity subscription"
-  type        = string
-  default     = "53fea26b-011b-4520-b157-e31b034c7900"
-}
-
-#----------------------------------------------------------
-# Common Variables
-#----------------------------------------------------------
 variable "region" {
-  description = "The Azure region for resource deployment"
   type        = string
+  description = "The Azure region for resource deployment"
   default     = "westus3"
 }
 
-variable "environment" {
-  description = "The environment name (Production, Development, etc.)"
-  type        = string
-  default     = "Production"
-}
-
-variable "customer_name" {
-  description = "The customer name for tagging"
-  type        = string
-  default     = "Cloud AI Consulting"
-}
-
-variable "project_name" {
-  description = "The project name for tagging"
-  type        = string
-  default     = "Secure Cloud Foundations"
-}
-
-variable "deployment_id" {
-  description = "The unique deployment identifier"
-  type        = string
-  default     = "8b492308-bab3-41e1-a8cb-1348dfea4227"
+variable "tags" {
+  type        = map(string)
+  description = "Tags to apply to all resources"
+  default = {
+    customer      = "Cloud AI Consulting"
+    project       = "Secure Cloud Foundations"
+    environment   = "Production"
+    deployment_id = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
+    managed_by    = "Terraform"
+  }
 }
 
 variable "availability_zones" {
-  description = "List of availability zones for zone-redundant resources"
   type        = list(string)
+  description = "Availability zones for zone-redundant resources"
   default     = ["1", "2", "3"]
 }
 
-#----------------------------------------------------------
 # NAT Gateway Variables
-#----------------------------------------------------------
 variable "nat_gateway_resource_group_name" {
-  description = "The name of the resource group for NAT Gateway"
   type        = string
+  description = "Name of the resource group for NAT Gateway"
   default     = "rg-natgw-hub-prd-wus3-01"
 }
 
 variable "nat_gateway_name" {
-  description = "The name of the NAT Gateway"
   type        = string
+  description = "Name of the NAT Gateway"
   default     = "natgw-hub-prd-wus3-01"
 }
 
 variable "nat_gateway_sku" {
-  description = "The SKU of the NAT Gateway"
   type        = string
+  description = "SKU name for NAT Gateway"
   default     = "Standard"
 }
 
 variable "nat_gateway_idle_timeout" {
-  description = "The idle timeout in minutes for the NAT Gateway"
   type        = number
+  description = "Idle timeout in minutes for NAT Gateway"
   default     = 10
 }
 
-variable "public_ip_prefix_name" {
-  description = "The name of the Public IP Prefix for NAT Gateway"
+variable "nat_gateway_diagnostic_setting_name" {
   type        = string
+  description = "Name of the diagnostic setting for NAT Gateway"
+  default     = "diag-natgw-hub-prd-wus3-01"
+}
+
+# Public IP Prefix Variables
+variable "public_ip_prefix_name" {
+  type        = string
+  description = "Name of the public IP prefix for NAT Gateway"
   default     = "pipp-hub-prd-wus3-01"
 }
 
 variable "public_ip_prefix_length" {
-  description = "The prefix length for the Public IP Prefix (29 = 8 IPs)"
   type        = number
+  description = "Prefix length for the public IP prefix"
   default     = 29
 }
 
 variable "public_ip_prefix_sku" {
-  description = "The SKU of the Public IP Prefix"
   type        = string
+  description = "SKU for the public IP prefix"
   default     = "Standard"
 }
 
-variable "fw_untrust_subnet_name" {
-  description = "The name of the firewall untrust subnet for NAT Gateway association"
+variable "nat_pip_prefix_diagnostic_setting_name" {
   type        = string
-  default     = "snet-fw-untrust-hub-wus3-01"
+  description = "Name of the diagnostic setting for NAT Gateway Public IP Prefix"
+  default     = "diag-pipp-hub-prd-wus3-01"
 }
 
-#----------------------------------------------------------
 # ExpressRoute Gateway Variables
-#----------------------------------------------------------
-variable "expressroute_gateway_resource_group_name" {
-  description = "The name of the resource group for ExpressRoute Gateway"
-  type        = string
-  default     = "rg-ergw-hub-prd-wus3-01"
-}
-
 variable "expressroute_gateway_name" {
-  description = "The name of the ExpressRoute Gateway"
   type        = string
+  description = "Name of the ExpressRoute Gateway"
   default     = "ergw-hub-prd-wus3-01"
 }
 
 variable "expressroute_gateway_sku" {
-  description = "The SKU of the ExpressRoute Gateway"
   type        = string
+  description = "SKU for the ExpressRoute Gateway"
   default     = "Standard"
 }
 
-variable "expressroute_gateway_active_active" {
-  description = "Whether to enable active-active mode for the ExpressRoute Gateway"
-  type        = bool
-  default     = false
-}
-
-variable "expressroute_gateway_enable_bgp" {
-  description = "Whether to enable BGP for the ExpressRoute Gateway"
-  type        = bool
-  default     = true
-}
-
-variable "expressroute_gateway_ip_config_name" {
-  description = "The name of the IP configuration for ExpressRoute Gateway"
-  type        = string
-  default     = "ipconfig-ergw"
-}
-
-variable "expressroute_gateway_private_ip_allocation" {
-  description = "The private IP address allocation method"
-  type        = string
-  default     = "Dynamic"
-}
-
 variable "expressroute_gateway_pip_name" {
-  description = "The name of the Public IP for ExpressRoute Gateway"
   type        = string
+  description = "Name of the public IP for ExpressRoute Gateway"
   default     = "pip-ergw-hub-prd-wus3-01"
 }
 
 variable "expressroute_gateway_pip_allocation_method" {
-  description = "The allocation method for the ExpressRoute Gateway Public IP"
   type        = string
+  description = "Allocation method for ExpressRoute Gateway public IP"
   default     = "Static"
 }
 
 variable "expressroute_gateway_pip_sku" {
-  description = "The SKU of the ExpressRoute Gateway Public IP"
   type        = string
+  description = "SKU for ExpressRoute Gateway public IP"
   default     = "Standard"
 }
 
-variable "gateway_subnet_name" {
-  description = "The name of the Gateway Subnet"
+variable "expressroute_gateway_ip_config_name" {
   type        = string
-  default     = "GatewaySubnet"
+  description = "Name of the IP configuration for ExpressRoute Gateway"
+  default     = "ipconfig-ergw"
 }
 
-#----------------------------------------------------------
-# External Load Balancer Variables
-#----------------------------------------------------------
-variable "external_lb_resource_group_name" {
-  description = "The name of the resource group for External Load Balancer"
+variable "expressroute_gateway_private_ip_allocation" {
   type        = string
-  default     = "rg-elb-hub-prd-wus3-01"
+  description = "Private IP allocation method for ExpressRoute Gateway"
+  default     = "Dynamic"
+}
+
+variable "expressroute_gateway_diagnostic_setting_name" {
+  type        = string
+  description = "Name of the diagnostic setting for ExpressRoute Gateway"
+  default     = "diag-ergw-hub-prd-wus3-01"
+}
+
+variable "expressroute_pip_diagnostic_setting_name" {
+  type        = string
+  description = "Name of the diagnostic setting for ExpressRoute Gateway Public IP"
+  default     = "diag-pip-ergw-hub-prd-wus3-01"
+}
+
+# External Load Balancer Variables
+variable "external_lb_resource_group_name" {
+  type        = string
+  description = "Name of the resource group for External Load Balancer"
+  default     = "rg-lb-hub-prd-wus3-01"
 }
 
 variable "external_lb_name" {
-  description = "The name of the External Load Balancer"
   type        = string
+  description = "Name of the External Load Balancer"
   default     = "lbe-hub-prd-wus3-01"
 }
 
 variable "external_lb_sku" {
-  description = "The SKU of the External Load Balancer"
   type        = string
+  description = "SKU for the External Load Balancer"
   default     = "Standard"
 }
 
 variable "external_lb_sku_tier" {
-  description = "The SKU tier of the External Load Balancer"
   type        = string
+  description = "SKU tier for the External Load Balancer"
   default     = "Regional"
 }
 
 variable "external_lb_frontend_ip_config_name" {
-  description = "The name of the frontend IP configuration for External Load Balancer"
   type        = string
+  description = "Name of the frontend IP configuration for External Load Balancer"
   default     = "feip-external"
 }
 
 variable "external_lb_backend_pool_name" {
-  description = "The name of the backend address pool for External Load Balancer"
   type        = string
+  description = "Name of the backend pool for External Load Balancer"
   default     = "bepool-external"
 }
 
-variable "external_lb_probe_name" {
-  description = "The name of the health probe for External Load Balancer"
-  type        = string
-  default     = "probe-external"
-}
-
-variable "external_lb_probe_protocol" {
-  description = "The protocol for the External Load Balancer health probe"
-  type        = string
-  default     = "Tcp"
-}
-
-variable "external_lb_probe_port" {
-  description = "The port for the External Load Balancer health probe"
-  type        = number
-  default     = 443
-}
-
-variable "external_lb_probe_interval" {
-  description = "The interval in seconds for the health probe"
-  type        = number
-  default     = 5
-}
-
-variable "external_lb_probe_number" {
-  description = "The number of probes before marking unhealthy"
-  type        = number
-  default     = 2
-}
-
 variable "external_lb_pip_prefix_name" {
-  description = "The name of the Public IP Prefix for External Load Balancer"
   type        = string
-  default     = "pipp-elb-hub-prd-wus3-01"
+  description = "Name of the public IP prefix for External Load Balancer"
+  default     = "pipp-lbe-hub-prd-wus3-01"
 }
 
 variable "external_lb_pip_prefix_length" {
-  description = "The prefix length for the External LB Public IP Prefix"
   type        = number
+  description = "Prefix length for the External Load Balancer public IP prefix"
   default     = 31
 }
 
 variable "external_lb_pip_prefix_sku" {
-  description = "The SKU of the External LB Public IP Prefix"
   type        = string
+  description = "SKU for the External Load Balancer public IP prefix"
   default     = "Standard"
 }
 
 variable "external_lb_pip_name" {
-  description = "The name of the Public IP for External Load Balancer"
   type        = string
-  default     = "pip-elb-hub-prd-wus3-01"
+  description = "Name of the public IP for External Load Balancer"
+  default     = "pip-lbe-hub-prd-wus3-01"
 }
 
 variable "external_lb_pip_allocation_method" {
-  description = "The allocation method for the External LB Public IP"
   type        = string
+  description = "Allocation method for External Load Balancer public IP"
   default     = "Static"
 }
 
 variable "external_lb_pip_sku" {
-  description = "The SKU of the External LB Public IP"
   type        = string
+  description = "SKU for External Load Balancer public IP"
   default     = "Standard"
 }
 
-#----------------------------------------------------------
-# Diagnostic Settings Variables
-#----------------------------------------------------------
-variable "natgw_diagnostic_setting_name" {
-  description = "The name of the diagnostic setting for NAT Gateway"
+variable "external_lb_diagnostic_setting_name" {
   type        = string
-  default     = "diag-natgw-hub-prd-wus3-01"
+  description = "Name of the diagnostic setting for External Load Balancer"
+  default     = "diag-lbe-hub-prd-wus3-01"
 }
 
-variable "ergw_diagnostic_setting_name" {
-  description = "The name of the diagnostic setting for ExpressRoute Gateway"
-  type        = string
-  default     = "diag-ergw-hub-prd-wus3-01"
-}
-
-variable "elb_diagnostic_setting_name" {
-  description = "The name of the diagnostic setting for External Load Balancer"
-  type        = string
-  default     = "diag-elb-hub-prd-wus3-01"
-}
-
-variable "natgw_pip_prefix_diagnostic_setting_name" {
-  description = "The name of the diagnostic setting for NAT Gateway Public IP Prefix"
-  type        = string
-  default     = "diag-pipp-natgw-hub-prd-wus3-01"
-}
-
-variable "ergw_pip_diagnostic_setting_name" {
-  description = "The name of the diagnostic setting for ExpressRoute Gateway Public IP"
-  type        = string
-  default     = "diag-pip-ergw-hub-prd-wus3-01"
-}
-
-variable "elb_pip_diagnostic_setting_name" {
-  description = "The name of the diagnostic setting for External LB Public IP"
-  type        = string
-  default     = "diag-pip-elb-hub-prd-wus3-01"
-}
-
+# VNet Diagnostic Settings Variables
 variable "vnet_diagnostic_setting_name" {
-  description = "The name of the diagnostic setting for Virtual Network"
   type        = string
+  description = "Name of the diagnostic setting for the Hub VNet"
   default     = "diag-vnet-hub-prd-wus3-01"
 }
 
-#----------------------------------------------------------
 # VNet Flow Log Variables
-#----------------------------------------------------------
 variable "vnet_flow_log_name" {
-  description = "The name of the VNet Flow Log"
   type        = string
+  description = "Name of the VNet flow log"
   default     = "fl-vnet-hub-prd-wus3-01"
 }
 
 variable "vnet_flow_log_enabled" {
-  description = "Whether the VNet Flow Log is enabled"
   type        = bool
+  description = "Enable VNet flow logs"
   default     = true
 }
 
 variable "vnet_flow_log_version" {
-  description = "The version of the VNet Flow Log"
   type        = number
+  description = "Version of the flow log format"
   default     = 2
 }
 
 variable "vnet_flow_log_retention_enabled" {
-  description = "Whether retention is enabled for VNet Flow Logs"
   type        = bool
+  description = "Enable retention policy for VNet flow logs"
   default     = true
 }
 
 variable "vnet_flow_log_retention_days" {
-  description = "The number of days to retain VNet Flow Logs"
   type        = number
+  description = "Retention days for VNet flow logs"
   default     = 90
 }
 
-variable "vnet_flow_log_traffic_analytics_enabled" {
-  description = "Whether Traffic Analytics is enabled for VNet Flow Logs"
+variable "traffic_analytics_enabled" {
   type        = bool
+  description = "Enable traffic analytics for VNet flow logs"
   default     = true
 }
 
-variable "vnet_flow_log_traffic_analytics_interval" {
-  description = "The interval in minutes for Traffic Analytics"
+variable "traffic_analytics_interval" {
   type        = number
+  description = "Traffic analytics processing interval in minutes"
   default     = 10
 }
 
-#----------------------------------------------------------
-# DNS Integration Variables
-#----------------------------------------------------------
+# DNS Variables
 variable "hub_dns_vnet_link_name" {
-  description = "The name of the DNS forwarding ruleset VNet link for hub"
   type        = string
-  default     = "link-hub-vnet-dns"
+  description = "Name of the DNS forwarding ruleset VNet link for Hub"
+  default     = "link-hub-vnet-dns-frs"
 }
 
 variable "private_dns_zones" {
-  description = "List of Private DNS zones to link to the hub VNet"
   type        = list(string)
+  description = "List of private DNS zones to link to the Hub VNet"
   default = [
     "privatelink.blob.core.windows.net",
     "privatelink.queue.core.windows.net",
@@ -404,10 +303,57 @@ variable "private_dns_zones" {
   ]
 }
 
+variable "dns_zone_registration_enabled" {
+  type        = bool
+  description = "Enable auto-registration for DNS zone VNet links"
+  default     = false
+}
+
+# Remote State Configuration Variables
+variable "tfstate_resource_group_name" {
+  type        = string
+  description = "Resource group name for Terraform state storage"
+  default     = "rg-storage-ncus-01"
+}
+
+variable "tfstate_storage_account_name" {
+  type        = string
+  description = "Storage account name for Terraform state"
+  default     = "sacloudaiconsulting01"
+}
+
+variable "tfstate_container_name" {
+  type        = string
+  description = "Container name for Terraform state"
+  default     = "tfstate"
+}
+
+variable "tfstate_subscription_id" {
+  type        = string
+  description = "Subscription ID for Terraform state storage"
+  default     = "53fea26b-011b-4520-b157-e31b034c7900"
+}
+
 # ============================================
 # Standard Landing Zone Variables
 # These variables are common across all deployments
 # ============================================
+
+variable "customer_name" {
+  description = "Customer name for the Landing Zone"
+  type        = string
+}
+
+variable "project_name" {
+  description = "Project name for the Landing Zone"
+  type        = string
+}
+
+variable "environment" {
+  description = "Environment (production, staging, development)"
+  type        = string
+  default     = "production"
+}
 
 variable "hub_vnet_cidr" {
   description = "CIDR block for the hub VNet"
@@ -431,10 +377,4 @@ variable "enable_bastion" {
   description = "Enable Azure Bastion for secure VM access"
   type        = bool
   default     = true
-}
-
-variable "tags" {
-  description = "Resource tags to apply to all resources"
-  type        = map(string)
-  default     = {}
 }
