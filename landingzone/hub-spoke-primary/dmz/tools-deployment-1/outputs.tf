@@ -1,31 +1,4 @@
-# Storage Resource Group Outputs
-output "storage_resource_group_name" {
-  description = "Name of the storage resource group"
-  value       = azurerm_resource_group.storage.name
-}
-
-output "storage_resource_group_id" {
-  description = "ID of the storage resource group"
-  value       = azurerm_resource_group.storage.id
-}
-
-output "storage_resource_group_location" {
-  description = "Location of the storage resource group"
-  value       = azurerm_resource_group.storage.location
-}
-
-# RSV Resource Group Outputs
-output "rsv_resource_group_name" {
-  description = "Name of the RSV resource group"
-  value       = azurerm_resource_group.rsv.name
-}
-
-output "rsv_resource_group_id" {
-  description = "ID of the RSV resource group"
-  value       = azurerm_resource_group.rsv.id
-}
-
-# Storage Account Outputs - VM
+# Storage Account Outputs
 output "storage_account_vm_id" {
   description = "ID of the VM storage account"
   value       = azurerm_storage_account.vm.id
@@ -37,88 +10,71 @@ output "storage_account_vm_name" {
 }
 
 output "storage_account_vm_primary_blob_endpoint" {
-  description = "Primary blob endpoint for VM storage account"
+  description = "Primary blob endpoint of the VM storage account"
   value       = azurerm_storage_account.vm.primary_blob_endpoint
 }
 
-output "storage_account_vm_primary_access_key" {
-  description = "Primary access key for VM storage account"
-  value       = azurerm_storage_account.vm.primary_access_key
-  sensitive   = true
-}
-
-# Storage Account Outputs - Net
-output "storage_account_net_id" {
+output "storage_account_network_id" {
   description = "ID of the network storage account"
-  value       = azurerm_storage_account.net.id
+  value       = azurerm_storage_account.network.id
 }
 
-output "storage_account_net_name" {
+output "storage_account_network_name" {
   description = "Name of the network storage account"
-  value       = azurerm_storage_account.net.name
+  value       = azurerm_storage_account.network.name
 }
 
-output "storage_account_net_primary_blob_endpoint" {
-  description = "Primary blob endpoint for network storage account"
-  value       = azurerm_storage_account.net.primary_blob_endpoint
+output "storage_account_network_primary_blob_endpoint" {
+  description = "Primary blob endpoint of the network storage account"
+  value       = azurerm_storage_account.network.primary_blob_endpoint
 }
 
-output "storage_account_net_primary_access_key" {
-  description = "Primary access key for network storage account"
-  value       = azurerm_storage_account.net.primary_access_key
-  sensitive   = true
+# Resource Group Outputs
+output "storage_resource_group_name" {
+  description = "Name of the storage resource group"
+  value       = azurerm_resource_group.storage.name
 }
 
-# Private Endpoint Outputs - VM Storage
-output "pe_storage_vm_blob_id" {
-  description = "ID of the VM storage blob private endpoint"
+output "storage_resource_group_id" {
+  description = "ID of the storage resource group"
+  value       = azurerm_resource_group.storage.id
+}
+
+output "rsv_resource_group_name" {
+  description = "Name of the recovery services vault resource group"
+  value       = azurerm_resource_group.rsv.name
+}
+
+output "rsv_resource_group_id" {
+  description = "ID of the recovery services vault resource group"
+  value       = azurerm_resource_group.rsv.id
+}
+
+# Recovery Services Vault Outputs
+output "recovery_services_vault_id" {
+  description = "ID of the recovery services vault"
+  value       = azurerm_recovery_services_vault.dmz.id
+}
+
+output "recovery_services_vault_name" {
+  description = "Name of the recovery services vault"
+  value       = azurerm_recovery_services_vault.dmz.name
+}
+
+output "recovery_services_vault_identity_principal_id" {
+  description = "Principal ID of the recovery services vault managed identity"
+  value       = azurerm_recovery_services_vault.dmz.identity[0].principal_id
+}
+
+# Private Endpoint Outputs
+output "storage_vm_blob_private_endpoint_id" {
+  description = "ID of the VM storage account blob private endpoint"
   value       = azurerm_private_endpoint.storage_vm_blob.id
 }
 
-output "pe_storage_vm_blob_private_ip" {
-  description = "Private IP of the VM storage blob private endpoint"
-  value       = azurerm_private_endpoint.storage_vm_blob.private_service_connection[0].private_ip_address
-}
-
-output "pe_storage_vm_file_id" {
-  description = "ID of the VM storage file private endpoint"
-  value       = azurerm_private_endpoint.storage_vm_file.id
-}
-
-output "pe_storage_vm_queue_id" {
-  description = "ID of the VM storage queue private endpoint"
-  value       = azurerm_private_endpoint.storage_vm_queue.id
-}
-
-output "pe_storage_vm_table_id" {
-  description = "ID of the VM storage table private endpoint"
-  value       = azurerm_private_endpoint.storage_vm_table.id
-}
-
-# Private Endpoint Outputs - Net Storage
-output "pe_storage_net_blob_id" {
-  description = "ID of the network storage blob private endpoint"
-  value       = azurerm_private_endpoint.storage_net_blob.id
-}
-
-output "pe_storage_net_blob_private_ip" {
-  description = "Private IP of the network storage blob private endpoint"
-  value       = azurerm_private_endpoint.storage_net_blob.private_service_connection[0].private_ip_address
-}
-
-output "pe_storage_net_file_id" {
-  description = "ID of the network storage file private endpoint"
-  value       = azurerm_private_endpoint.storage_net_file.id
-}
-
-output "pe_storage_net_queue_id" {
-  description = "ID of the network storage queue private endpoint"
-  value       = azurerm_private_endpoint.storage_net_queue.id
-}
-
-output "pe_storage_net_table_id" {
-  description = "ID of the network storage table private endpoint"
-  value       = azurerm_private_endpoint.storage_net_table.id
+output "storage_network_blob_private_endpoint_id" {
+  description = "ID of the network storage account blob private endpoint"
+  value       = azurerm_private_endpoint.storage_network_blob.id
 }
 
 # ============================================

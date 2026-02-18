@@ -1,10 +1,10 @@
 # Landing Zone Deployment - Cloud AI Consulting/Secure Cloud Foundations
-# Generated: 2026-02-17T14:18:04.269746+00:00
+# Generated: 2026-02-18T13:46:49.276487+00:00
 
 customer_name = "Cloud AI Consulting"
 project_name = "Secure Cloud Foundations"
 environment = "Production"
-region = "West US 3"
+region = "East US 2"
 
 # Network Configuration
 hub_vnet_cidr = ""

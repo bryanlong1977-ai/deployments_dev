@@ -2,37 +2,45 @@
 
 output "route_table_id" {
   description = "The ID of the DMZ route table"
-  value       = azurerm_route_table.dmz_rt.id
+  value       = azurerm_route_table.dmz_route_table.id
 }
 
 output "route_table_name" {
   description = "The name of the DMZ route table"
-  value       = azurerm_route_table.dmz_rt.name
+  value       = azurerm_route_table.dmz_route_table.name
 }
 
 output "route_table_resource_group_name" {
-  description = "The name of the resource group containing the route table"
+  description = "The resource group name where the route table is deployed"
   value       = azurerm_resource_group.route_table_rg.name
 }
 
 output "route_table_resource_group_id" {
-  description = "The ID of the resource group containing the route table"
+  description = "The ID of the resource group where the route table is deployed"
   value       = azurerm_resource_group.route_table_rg.id
 }
 
-output "route_to_firewall_id" {
-  description = "The ID of the route directing traffic to the firewall"
+output "default_route_id" {
+  description = "The ID of the default route to the hub firewall"
   value       = azurerm_route.route_to_firewall.id
+}
+
+output "default_route_name" {
+  description = "The name of the default route to the hub firewall"
+  value       = azurerm_route.route_to_firewall.name
 }
 
 output "subnet_route_table_association_ids" {
   description = "Map of subnet names to their route table association IDs"
   value = {
-    "snet-pe-dmz-wus3-01"          = azurerm_subnet_route_table_association.pe_subnet_rt_association.id
-    "snet-tools-dmz-wus3-01"       = azurerm_subnet_route_table_association.tools_subnet_rt_association.id
-    "snet-ifw-mgmt-dmz-wus3-01"    = azurerm_subnet_route_table_association.ifw_mgmt_subnet_rt_association.id
-    "snet-ifw-untrust-dmz-wus3-01" = azurerm_subnet_route_table_association.ifw_untrust_subnet_rt_association.id
-    "snet-ifw-trust-dmz-wus3-01"   = azurerm_subnet_route_table_association.ifw_trust_subnet_rt_association.id
+    "snet-pe-dmz-eus2-01"         = azurerm_subnet_route_table_association.pe_subnet.id
+    "snet-tools-dmz-eus2-01"      = azurerm_subnet_route_table_association.tools_subnet.id
+    "snet-ns-mgmt-dmz-eus2-01"    = azurerm_subnet_route_table_association.ns_mgmt_subnet.id
+    "snet-ns-client-dmz-eus2-01"  = azurerm_subnet_route_table_association.ns_client_subnet.id
+    "snet-ns-server-dmz-eus2-01"  = azurerm_subnet_route_table_association.ns_server_subnet.id
+    "snet-ifw-mgmt-dmz-eus2-01"   = azurerm_subnet_route_table_association.ifw_mgmt_subnet.id
+    "snet-ifw-untrust-dmz-eus2-01" = azurerm_subnet_route_table_association.ifw_untrust_subnet.id
+    "snet-ifw-trust-dmz-eus2-01"  = azurerm_subnet_route_table_association.ifw_trust_subnet.id
   }
 }
 

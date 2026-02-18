@@ -26,33 +26,23 @@ output "storage_resource_group_id" {
 # Recovery Services Vault Outputs
 #--------------------------------------------------------------
 
-output "rsv_id" {
+output "recovery_services_vault_id" {
   description = "ID of the Recovery Services Vault"
-  value       = azurerm_recovery_services_vault.main.id
+  value       = azurerm_recovery_services_vault.rsv.id
 }
 
-output "rsv_name" {
+output "recovery_services_vault_name" {
   description = "Name of the Recovery Services Vault"
-  value       = azurerm_recovery_services_vault.main.name
+  value       = azurerm_recovery_services_vault.rsv.name
 }
 
-output "rsv_identity_principal_id" {
-  description = "Principal ID of the Recovery Services Vault managed identity"
-  value       = azurerm_recovery_services_vault.main.identity[0].principal_id
-}
-
-output "rsv_identity_tenant_id" {
-  description = "Tenant ID of the Recovery Services Vault managed identity"
-  value       = azurerm_recovery_services_vault.main.identity[0].tenant_id
-}
-
-output "rsv_private_endpoint_id" {
-  description = "ID of the Recovery Services Vault private endpoint"
-  value       = azurerm_private_endpoint.rsv.id
+output "recovery_services_vault_identity" {
+  description = "System assigned managed identity of the Recovery Services Vault"
+  value       = azurerm_recovery_services_vault.rsv.identity[0].principal_id
 }
 
 #--------------------------------------------------------------
-# Storage Account VM Outputs
+# Storage Account Outputs - VM
 #--------------------------------------------------------------
 
 output "storage_account_vm_id" {
@@ -77,7 +67,7 @@ output "storage_account_vm_primary_access_key" {
 }
 
 #--------------------------------------------------------------
-# Storage Account Network Outputs
+# Storage Account Outputs - Network
 #--------------------------------------------------------------
 
 output "storage_account_ntwk_id" {
@@ -104,6 +94,16 @@ output "storage_account_ntwk_primary_access_key" {
 #--------------------------------------------------------------
 # Private Endpoint Outputs
 #--------------------------------------------------------------
+
+output "rsv_backup_private_endpoint_id" {
+  description = "ID of the Recovery Services Vault backup private endpoint"
+  value       = azurerm_private_endpoint.rsv_backup.id
+}
+
+output "rsv_siterecovery_private_endpoint_id" {
+  description = "ID of the Recovery Services Vault site recovery private endpoint"
+  value       = azurerm_private_endpoint.rsv_siterecovery.id
+}
 
 output "storage_vm_private_endpoint_ids" {
   description = "IDs of the VM storage account private endpoints"

@@ -1,8 +1,4 @@
-# =============================================================================
-# Remote State Data Sources
-# =============================================================================
-
-# Reference Identity Network Deployment 1 for VNet and Network Watcher
+# Remote state for Identity Network Deployment 1 (VNet, Subnets, Network Watcher)
 data "terraform_remote_state" "identity_network_deployment_1" {
   backend = "azurerm"
   config = {
@@ -15,7 +11,7 @@ data "terraform_remote_state" "identity_network_deployment_1" {
   }
 }
 
-# Reference Management Tools Deployment 1 for Log Analytics Workspace
+# Remote state for Management Tools Deployment 1 (Log Analytics Workspace)
 data "terraform_remote_state" "management_tools_deployment_1" {
   backend = "azurerm"
   config = {
@@ -28,7 +24,7 @@ data "terraform_remote_state" "management_tools_deployment_1" {
   }
 }
 
-# Reference Identity Tools Deployment 1 for Network Storage Account
+# Remote state for Identity Tools Deployment 1 (Storage Account for flow logs)
 data "terraform_remote_state" "identity_tools_deployment_1" {
   backend = "azurerm"
   config = {

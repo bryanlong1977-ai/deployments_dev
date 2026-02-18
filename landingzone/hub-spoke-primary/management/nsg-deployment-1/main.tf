@@ -20,7 +20,7 @@ resource "azurerm_resource_group" "nsg_rg" {
   tags     = var.tags
 }
 
-# NSG for Private Endpoints Subnet
+# NSG for Private Endpoint Subnet
 resource "azurerm_network_security_group" "nsg_pe" {
   name                = var.nsg_pe_name
   location            = azurerm_resource_group.nsg_rg.location
@@ -36,55 +36,23 @@ resource "azurerm_network_security_group" "nsg_tools" {
   tags                = var.tags
 }
 
-# Security Rules for Private Endpoints NSG
-# Default Deny Inbound Rule
-resource "azurerm_network_security_rule" "nsg_pe_deny_all_inbound" {
-  name                        = "DenyAllInbound"
-  priority                    = 4096
-  direction                   = "Inbound"
-  access                      = "Deny"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.nsg_rg.name
-  network_security_group_name = azurerm_network_security_group.nsg_pe.name
-}
-
-# Default Deny Outbound Rule
-resource "azurerm_network_security_rule" "nsg_pe_deny_all_outbound" {
-  name                        = "DenyAllOutbound"
-  priority                    = 4096
-  direction                   = "Outbound"
-  access                      = "Deny"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.nsg_rg.name
-  network_security_group_name = azurerm_network_security_group.nsg_pe.name
-}
-
-# Allow HTTPS Inbound for Private Endpoints
-resource "azurerm_network_security_rule" "nsg_pe_allow_https_inbound" {
-  name                        = "AllowHTTPSInbound"
+# Security Rules for Private Endpoint NSG
+resource "azurerm_network_security_rule" "nsg_pe_allow_vnet_inbound" {
+  name                        = "AllowVnetInBound"
   priority                    = 100
   direction                   = "Inbound"
   access                      = "Allow"
-  protocol                    = "Tcp"
+  protocol                    = "*"
   source_port_range           = "*"
-  destination_port_range      = "443"
+  destination_port_range      = "*"
   source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "*"
+  destination_address_prefix  = "VirtualNetwork"
   resource_group_name         = azurerm_resource_group.nsg_rg.name
   network_security_group_name = azurerm_network_security_group.nsg_pe.name
 }
 
-# Allow Azure Load Balancer Inbound
-resource "azurerm_network_security_rule" "nsg_pe_allow_azurelb_inbound" {
-  name                        = "AllowAzureLoadBalancerInbound"
+resource "azurerm_network_security_rule" "nsg_pe_allow_azure_lb_inbound" {
+  name                        = "AllowAzureLoadBalancerInBound"
   priority                    = 110
   direction                   = "Inbound"
   access                      = "Allow"
@@ -97,9 +65,22 @@ resource "azurerm_network_security_rule" "nsg_pe_allow_azurelb_inbound" {
   network_security_group_name = azurerm_network_security_group.nsg_pe.name
 }
 
-# Allow VNet Outbound for Private Endpoints
+resource "azurerm_network_security_rule" "nsg_pe_deny_all_inbound" {
+  name                        = "DenyAllInBound"
+  priority                    = 4096
+  direction                   = "Inbound"
+  access                      = "Deny"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg_rg.name
+  network_security_group_name = azurerm_network_security_group.nsg_pe.name
+}
+
 resource "azurerm_network_security_rule" "nsg_pe_allow_vnet_outbound" {
-  name                        = "AllowVNetOutbound"
+  name                        = "AllowVnetOutBound"
   priority                    = 100
   direction                   = "Outbound"
   access                      = "Allow"
@@ -112,25 +93,22 @@ resource "azurerm_network_security_rule" "nsg_pe_allow_vnet_outbound" {
   network_security_group_name = azurerm_network_security_group.nsg_pe.name
 }
 
-# Security Rules for Tools NSG
-# Default Deny Inbound Rule
-resource "azurerm_network_security_rule" "nsg_tools_deny_all_inbound" {
-  name                        = "DenyAllInbound"
-  priority                    = 4096
-  direction                   = "Inbound"
-  access                      = "Deny"
+resource "azurerm_network_security_rule" "nsg_pe_allow_internet_outbound" {
+  name                        = "AllowInternetOutBound"
+  priority                    = 110
+  direction                   = "Outbound"
+  access                      = "Allow"
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "*"
   source_address_prefix       = "*"
-  destination_address_prefix  = "*"
+  destination_address_prefix  = "Internet"
   resource_group_name         = azurerm_resource_group.nsg_rg.name
-  network_security_group_name = azurerm_network_security_group.nsg_tools.name
+  network_security_group_name = azurerm_network_security_group.nsg_pe.name
 }
 
-# Default Deny Outbound Rule
-resource "azurerm_network_security_rule" "nsg_tools_deny_all_outbound" {
-  name                        = "DenyAllOutbound"
+resource "azurerm_network_security_rule" "nsg_pe_deny_all_outbound" {
+  name                        = "DenyAllOutBound"
   priority                    = 4096
   direction                   = "Outbound"
   access                      = "Deny"
@@ -140,28 +118,41 @@ resource "azurerm_network_security_rule" "nsg_tools_deny_all_outbound" {
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.nsg_rg.name
-  network_security_group_name = azurerm_network_security_group.nsg_tools.name
+  network_security_group_name = azurerm_network_security_group.nsg_pe.name
 }
 
-# Allow HTTPS Inbound for Tools
-resource "azurerm_network_security_rule" "nsg_tools_allow_https_inbound" {
-  name                        = "AllowHTTPSInbound"
+# Security Rules for Tools NSG
+resource "azurerm_network_security_rule" "nsg_tools_allow_vnet_inbound" {
+  name                        = "AllowVnetInBound"
   priority                    = 100
   direction                   = "Inbound"
   access                      = "Allow"
-  protocol                    = "Tcp"
+  protocol                    = "*"
   source_port_range           = "*"
-  destination_port_range      = "443"
+  destination_port_range      = "*"
   source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
+  resource_group_name         = azurerm_resource_group.nsg_rg.name
+  network_security_group_name = azurerm_network_security_group.nsg_tools.name
+}
+
+resource "azurerm_network_security_rule" "nsg_tools_allow_azure_lb_inbound" {
+  name                        = "AllowAzureLoadBalancerInBound"
+  priority                    = 110
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "AzureLoadBalancer"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.nsg_rg.name
   network_security_group_name = azurerm_network_security_group.nsg_tools.name
 }
 
-# Allow RDP Inbound for Tools (from VNet only)
 resource "azurerm_network_security_rule" "nsg_tools_allow_rdp_inbound" {
-  name                        = "AllowRDPInbound"
-  priority                    = 110
+  name                        = "AllowRDPInBound"
+  priority                    = 120
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
@@ -173,10 +164,9 @@ resource "azurerm_network_security_rule" "nsg_tools_allow_rdp_inbound" {
   network_security_group_name = azurerm_network_security_group.nsg_tools.name
 }
 
-# Allow SSH Inbound for Tools (from VNet only)
 resource "azurerm_network_security_rule" "nsg_tools_allow_ssh_inbound" {
-  name                        = "AllowSSHInbound"
-  priority                    = 120
+  name                        = "AllowSSHInBound"
+  priority                    = 130
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
@@ -188,24 +178,22 @@ resource "azurerm_network_security_rule" "nsg_tools_allow_ssh_inbound" {
   network_security_group_name = azurerm_network_security_group.nsg_tools.name
 }
 
-# Allow Azure Load Balancer Inbound
-resource "azurerm_network_security_rule" "nsg_tools_allow_azurelb_inbound" {
-  name                        = "AllowAzureLoadBalancerInbound"
-  priority                    = 130
+resource "azurerm_network_security_rule" "nsg_tools_deny_all_inbound" {
+  name                        = "DenyAllInBound"
+  priority                    = 4096
   direction                   = "Inbound"
-  access                      = "Allow"
+  access                      = "Deny"
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "*"
-  source_address_prefix       = "AzureLoadBalancer"
+  source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.nsg_rg.name
   network_security_group_name = azurerm_network_security_group.nsg_tools.name
 }
 
-# Allow VNet Outbound for Tools
 resource "azurerm_network_security_rule" "nsg_tools_allow_vnet_outbound" {
-  name                        = "AllowVNetOutbound"
+  name                        = "AllowVnetOutBound"
   priority                    = 100
   direction                   = "Outbound"
   access                      = "Allow"
@@ -218,28 +206,42 @@ resource "azurerm_network_security_rule" "nsg_tools_allow_vnet_outbound" {
   network_security_group_name = azurerm_network_security_group.nsg_tools.name
 }
 
-# Allow HTTPS Outbound for Tools (Azure services)
-resource "azurerm_network_security_rule" "nsg_tools_allow_https_outbound" {
-  name                        = "AllowHTTPSOutbound"
+resource "azurerm_network_security_rule" "nsg_tools_allow_internet_outbound" {
+  name                        = "AllowInternetOutBound"
   priority                    = 110
   direction                   = "Outbound"
   access                      = "Allow"
-  protocol                    = "Tcp"
+  protocol                    = "*"
   source_port_range           = "*"
-  destination_port_range      = "443"
+  destination_port_range      = "*"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "Internet"
+  resource_group_name         = azurerm_resource_group.nsg_rg.name
+  network_security_group_name = azurerm_network_security_group.nsg_tools.name
+}
+
+resource "azurerm_network_security_rule" "nsg_tools_deny_all_outbound" {
+  name                        = "DenyAllOutBound"
+  priority                    = 4096
+  direction                   = "Outbound"
+  access                      = "Deny"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.nsg_rg.name
   network_security_group_name = azurerm_network_security_group.nsg_tools.name
 }
 
-# Associate NSGs with Subnets
+# Associate NSG with Private Endpoint Subnet
 resource "azurerm_subnet_network_security_group_association" "nsg_pe_association" {
-  subnet_id                 = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_ids[var.subnet_pe_name]
+  subnet_id                 = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_pe_id
   network_security_group_id = azurerm_network_security_group.nsg_pe.id
 }
 
+# Associate NSG with Tools Subnet
 resource "azurerm_subnet_network_security_group_association" "nsg_tools_association" {
-  subnet_id                 = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_ids[var.subnet_tools_name]
+  subnet_id                 = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_tools_id
   network_security_group_id = azurerm_network_security_group.nsg_tools.id
 }

@@ -1,4 +1,4 @@
-# Remote State - DMZ Network Deployment 1
+# Remote state for DMZ Network Deployment 1 (for subnet references)
 data "terraform_remote_state" "dmz_network_deployment_1" {
   backend = "azurerm"
   config = {
@@ -11,7 +11,7 @@ data "terraform_remote_state" "dmz_network_deployment_1" {
   }
 }
 
-# Remote State - Identity Network Deployment 1 (for Private DNS Zones)
+# Remote state for Identity Network Deployment 1 (for Private DNS Zone references)
 data "terraform_remote_state" "identity_network_deployment_1" {
   backend = "azurerm"
   config = {
@@ -24,7 +24,7 @@ data "terraform_remote_state" "identity_network_deployment_1" {
   }
 }
 
-# Remote State - Management Tools Deployment 1 (for Log Analytics Workspace)
+# Remote state for Management Tools Deployment 1 (for Log Analytics Workspace reference)
 data "terraform_remote_state" "management_tools_deployment_1" {
   backend = "azurerm"
   config = {

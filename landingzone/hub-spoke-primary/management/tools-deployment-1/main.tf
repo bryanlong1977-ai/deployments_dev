@@ -13,7 +13,7 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
-# Data source to get current client configuration
+# Data source for current client configuration
 data "azurerm_client_config" "current" {}
 
 # Resource Group for Key Vault
@@ -49,7 +49,7 @@ resource "azurerm_log_analytics_workspace" "main" {
   tags = var.tags
 }
 
-# User Assigned Managed Identity
+# Managed Identity
 resource "azurerm_user_assigned_identity" "main" {
   name                = var.managed_identity_name
   location            = azurerm_resource_group.mi.location
@@ -109,17 +109,17 @@ resource "azurerm_private_endpoint" "kv_prd" {
   name                = var.key_vault_prd_private_endpoint_name
   location            = azurerm_resource_group.kv.location
   resource_group_name = azurerm_resource_group.kv.name
-  subnet_id           = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_ids[var.private_endpoint_subnet_name]
+  subnet_id           = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_ids["snet-pe-mgmt-eus2-01"]
 
   private_service_connection {
-    name                           = "psc-${var.key_vault_prd_name}"
+    name                           = var.key_vault_prd_private_service_connection_name
     private_connection_resource_id = azurerm_key_vault.prd.id
-    subresource_names              = ["vault"]
     is_manual_connection           = false
+    subresource_names              = ["vault"]
   }
 
   private_dns_zone_group {
-    name                 = "default"
+    name                 = var.key_vault_private_dns_zone_group_name
     private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.vaultcore.azure.net"]]
   }
 
@@ -131,17 +131,17 @@ resource "azurerm_private_endpoint" "kv_nprd" {
   name                = var.key_vault_nprd_private_endpoint_name
   location            = azurerm_resource_group.kv.location
   resource_group_name = azurerm_resource_group.kv.name
-  subnet_id           = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_ids[var.private_endpoint_subnet_name]
+  subnet_id           = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_ids["snet-pe-mgmt-eus2-01"]
 
   private_service_connection {
-    name                           = "psc-${var.key_vault_nprd_name}"
+    name                           = var.key_vault_nprd_private_service_connection_name
     private_connection_resource_id = azurerm_key_vault.nprd.id
-    subresource_names              = ["vault"]
     is_manual_connection           = false
+    subresource_names              = ["vault"]
   }
 
   private_dns_zone_group {
-    name                 = "default"
+    name                 = var.key_vault_private_dns_zone_group_name
     private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.vaultcore.azure.net"]]
   }
 

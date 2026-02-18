@@ -1,5 +1,5 @@
 variable "subscription_id" {
-  description = "The subscription ID for the DMZ subscription"
+  description = "The Azure subscription ID for the DMZ subscription"
   type        = string
   default     = "81abf5a8-5c86-4ca7-8af8-8b3596a58d07"
 }
@@ -7,85 +7,115 @@ variable "subscription_id" {
 variable "region" {
   description = "The Azure region for resource deployment"
   type        = string
-  default     = "West US 3"
-}
-
-variable "environment" {
-  description = "The environment for the deployment"
-  type        = string
-  default     = "Production"
+  default     = "East US 2"
 }
 
 variable "nsg_resource_group_name" {
-  description = "The name of the resource group for NSGs"
+  description = "Name of the resource group for NSGs"
   type        = string
-  default     = "rg-nsg-dmz-prd-wus3-01"
-}
-
-variable "nsg_pe_name" {
-  description = "The name of the NSG for Private Endpoints subnet"
-  type        = string
-  default     = "nsg-dmz-pe-prd-wus3-01"
-}
-
-variable "nsg_tools_name" {
-  description = "The name of the NSG for Tools subnet"
-  type        = string
-  default     = "nsg-dmz-tools-prd-wus3-01"
-}
-
-variable "nsg_ifw_mgmt_name" {
-  description = "The name of the NSG for Ingress Firewall Management subnet"
-  type        = string
-  default     = "nsg-dmz-ifw-mgmt-prd-wus3-01"
-}
-
-variable "nsg_ifw_untrust_name" {
-  description = "The name of the NSG for Ingress Firewall Untrust subnet"
-  type        = string
-  default     = "nsg-dmz-ifw-untrust-prd-wus3-01"
-}
-
-variable "nsg_ifw_trust_name" {
-  description = "The name of the NSG for Ingress Firewall Trust subnet"
-  type        = string
-  default     = "nsg-dmz-ifw-trust-prd-wus3-01"
+  default     = "rg-nsg-dmz-prd-eus2-01"
 }
 
 variable "vnet_name" {
-  description = "The name of the DMZ VNet"
+  description = "Name of the DMZ VNet"
   type        = string
-  default     = "vnet-dmz-prd-wus3-01"
+  default     = "vnet-dmz-prd-eus2-01"
+}
+
+variable "nsg_pe_name" {
+  description = "Name of the NSG for Private Endpoints subnet"
+  type        = string
+  default     = "nsg-dmz-pe-prd-eus2-01"
+}
+
+variable "nsg_tools_name" {
+  description = "Name of the NSG for Tools subnet"
+  type        = string
+  default     = "nsg-dmz-tools-prd-eus2-01"
+}
+
+variable "nsg_ns_mgmt_name" {
+  description = "Name of the NSG for NetScaler Management subnet"
+  type        = string
+  default     = "nsg-dmz-ns-mgmt-prd-eus2-01"
+}
+
+variable "nsg_ns_client_name" {
+  description = "Name of the NSG for NetScaler Client subnet"
+  type        = string
+  default     = "nsg-dmz-ns-client-prd-eus2-01"
+}
+
+variable "nsg_ns_server_name" {
+  description = "Name of the NSG for NetScaler Server subnet"
+  type        = string
+  default     = "nsg-dmz-ns-server-prd-eus2-01"
+}
+
+variable "nsg_ifw_mgmt_name" {
+  description = "Name of the NSG for Ingress Firewall Management subnet"
+  type        = string
+  default     = "nsg-dmz-ifw-mgmt-prd-eus2-01"
+}
+
+variable "nsg_ifw_untrust_name" {
+  description = "Name of the NSG for Ingress Firewall Untrust subnet"
+  type        = string
+  default     = "nsg-dmz-ifw-untrust-prd-eus2-01"
+}
+
+variable "nsg_ifw_trust_name" {
+  description = "Name of the NSG for Ingress Firewall Trust subnet"
+  type        = string
+  default     = "nsg-dmz-ifw-trust-prd-eus2-01"
 }
 
 variable "subnet_pe_name" {
-  description = "The name of the Private Endpoints subnet"
+  description = "Name of the Private Endpoints subnet"
   type        = string
-  default     = "snet-pe-dmz-wus3-01"
+  default     = "snet-pe-dmz-eus2-01"
 }
 
 variable "subnet_tools_name" {
-  description = "The name of the Tools subnet"
+  description = "Name of the Tools subnet"
   type        = string
-  default     = "snet-tools-dmz-wus3-01"
+  default     = "snet-tools-dmz-eus2-01"
+}
+
+variable "subnet_ns_mgmt_name" {
+  description = "Name of the NetScaler Management subnet"
+  type        = string
+  default     = "snet-ns-mgmt-dmz-eus2-01"
+}
+
+variable "subnet_ns_client_name" {
+  description = "Name of the NetScaler Client subnet"
+  type        = string
+  default     = "snet-ns-client-dmz-eus2-01"
+}
+
+variable "subnet_ns_server_name" {
+  description = "Name of the NetScaler Server subnet"
+  type        = string
+  default     = "snet-ns-server-dmz-eus2-01"
 }
 
 variable "subnet_ifw_mgmt_name" {
-  description = "The name of the Ingress Firewall Management subnet"
+  description = "Name of the Ingress Firewall Management subnet"
   type        = string
-  default     = "snet-ifw-mgmt-dmz-wus3-01"
+  default     = "snet-ifw-mgmt-dmz-eus2-01"
 }
 
 variable "subnet_ifw_untrust_name" {
-  description = "The name of the Ingress Firewall Untrust subnet"
+  description = "Name of the Ingress Firewall Untrust subnet"
   type        = string
-  default     = "snet-ifw-untrust-dmz-wus3-01"
+  default     = "snet-ifw-untrust-dmz-eus2-01"
 }
 
 variable "subnet_ifw_trust_name" {
-  description = "The name of the Ingress Firewall Trust subnet"
+  description = "Name of the Ingress Firewall Trust subnet"
   type        = string
-  default     = "snet-ifw-trust-dmz-wus3-01"
+  default     = "snet-ifw-trust-dmz-eus2-01"
 }
 
 variable "tags" {
@@ -95,35 +125,9 @@ variable "tags" {
     customer      = "Cloud AI Consulting"
     project       = "Secure Cloud Foundations"
     environment   = "Production"
-    deployment_id = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
-    subscription  = "dmz"
+    deployment_id = "7e6e79d1-70cd-4feb-8f93-d22e3f2f6fca"
     managed_by    = "Terraform"
   }
-}
-
-# Remote state configuration variables
-variable "tfstate_resource_group_name" {
-  description = "The resource group name for the Terraform state storage account"
-  type        = string
-  default     = "rg-storage-ncus-01"
-}
-
-variable "tfstate_storage_account_name" {
-  description = "The storage account name for Terraform state"
-  type        = string
-  default     = "sacloudaiconsulting01"
-}
-
-variable "tfstate_container_name" {
-  description = "The container name for Terraform state"
-  type        = string
-  default     = "tfstate"
-}
-
-variable "tfstate_subscription_id" {
-  description = "The subscription ID where the Terraform state storage account resides"
-  type        = string
-  default     = "53fea26b-011b-4520-b157-e31b034c7900"
 }
 
 # ============================================
@@ -139,6 +143,12 @@ variable "customer_name" {
 variable "project_name" {
   description = "Project name for the Landing Zone"
   type        = string
+}
+
+variable "environment" {
+  description = "Environment (production, staging, development)"
+  type        = string
+  default     = "production"
 }
 
 variable "hub_vnet_cidr" {

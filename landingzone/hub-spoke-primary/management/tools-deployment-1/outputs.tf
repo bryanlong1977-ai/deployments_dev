@@ -121,17 +121,17 @@ output "key_vault_prd_private_endpoint_id" {
   value       = azurerm_private_endpoint.kv_prd.id
 }
 
+output "key_vault_prd_private_endpoint_ip" {
+  description = "Private IP address of the Production Key Vault private endpoint"
+  value       = azurerm_private_endpoint.kv_prd.private_service_connection[0].private_ip_address
+}
+
 output "key_vault_nprd_private_endpoint_id" {
   description = "ID of the Non-Production Key Vault private endpoint"
   value       = azurerm_private_endpoint.kv_nprd.id
 }
 
-output "key_vault_prd_private_ip_address" {
-  description = "Private IP address of the Production Key Vault private endpoint"
-  value       = azurerm_private_endpoint.kv_prd.private_service_connection[0].private_ip_address
-}
-
-output "key_vault_nprd_private_ip_address" {
+output "key_vault_nprd_private_endpoint_ip" {
   description = "Private IP address of the Non-Production Key Vault private endpoint"
   value       = azurerm_private_endpoint.kv_nprd.private_service_connection[0].private_ip_address
 }

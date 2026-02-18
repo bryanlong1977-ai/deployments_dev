@@ -105,6 +105,34 @@ resource "azurerm_network_security_rule" "pe_deny_outbound" {
   network_security_group_name = azurerm_network_security_group.pe.name
 }
 
+resource "azurerm_network_security_rule" "pe_allow_vnet_inbound" {
+  name                        = "AllowVNetInbound"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.pe.name
+}
+
+resource "azurerm_network_security_rule" "pe_allow_vnet_outbound" {
+  name                        = "AllowVNetOutbound"
+  priority                    = 100
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.pe.name
+}
+
 resource "azurerm_network_security_rule" "tools_deny_inbound" {
   name                        = "DenyAllInbound"
   priority                    = 4096
@@ -129,6 +157,34 @@ resource "azurerm_network_security_rule" "tools_deny_outbound" {
   destination_port_range      = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.tools.name
+}
+
+resource "azurerm_network_security_rule" "tools_allow_vnet_inbound" {
+  name                        = "AllowVNetInbound"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.tools.name
+}
+
+resource "azurerm_network_security_rule" "tools_allow_vnet_outbound" {
+  name                        = "AllowVNetOutbound"
+  priority                    = 100
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
   resource_group_name         = azurerm_resource_group.nsg.name
   network_security_group_name = azurerm_network_security_group.tools.name
 }
@@ -161,6 +217,34 @@ resource "azurerm_network_security_rule" "inbound_deny_outbound" {
   network_security_group_name = azurerm_network_security_group.inbound.name
 }
 
+resource "azurerm_network_security_rule" "inbound_allow_dns_inbound" {
+  name                        = "AllowDNSInbound"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "53"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.inbound.name
+}
+
+resource "azurerm_network_security_rule" "inbound_allow_vnet_outbound" {
+  name                        = "AllowVNetOutbound"
+  priority                    = 100
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.inbound.name
+}
+
 resource "azurerm_network_security_rule" "outbound_deny_inbound" {
   name                        = "DenyAllInbound"
   priority                    = 4096
@@ -183,6 +267,34 @@ resource "azurerm_network_security_rule" "outbound_deny_outbound" {
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "*"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.outbound.name
+}
+
+resource "azurerm_network_security_rule" "outbound_allow_vnet_inbound" {
+  name                        = "AllowVNetInbound"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.outbound.name
+}
+
+resource "azurerm_network_security_rule" "outbound_allow_dns_outbound" {
+  name                        = "AllowDNSOutbound"
+  priority                    = 100
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "53"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.nsg.name
@@ -217,6 +329,132 @@ resource "azurerm_network_security_rule" "dc_deny_outbound" {
   network_security_group_name = azurerm_network_security_group.dc.name
 }
 
+resource "azurerm_network_security_rule" "dc_allow_vnet_inbound" {
+  name                        = "AllowVNetInbound"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.dc.name
+}
+
+resource "azurerm_network_security_rule" "dc_allow_vnet_outbound" {
+  name                        = "AllowVNetOutbound"
+  priority                    = 100
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.dc.name
+}
+
+resource "azurerm_network_security_rule" "dc_allow_ad_ldap_tcp" {
+  name                        = "AllowADLDAPTCP"
+  priority                    = 110
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "389"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.dc.name
+}
+
+resource "azurerm_network_security_rule" "dc_allow_ad_ldap_udp" {
+  name                        = "AllowADLDAPUDP"
+  priority                    = 111
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Udp"
+  source_port_range           = "*"
+  destination_port_range      = "389"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.dc.name
+}
+
+resource "azurerm_network_security_rule" "dc_allow_ad_ldaps" {
+  name                        = "AllowADLDAPS"
+  priority                    = 112
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "636"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.dc.name
+}
+
+resource "azurerm_network_security_rule" "dc_allow_ad_kerberos_tcp" {
+  name                        = "AllowADKerberosTCP"
+  priority                    = 113
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "88"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.dc.name
+}
+
+resource "azurerm_network_security_rule" "dc_allow_ad_kerberos_udp" {
+  name                        = "AllowADKerberosUDP"
+  priority                    = 114
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Udp"
+  source_port_range           = "*"
+  destination_port_range      = "88"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.dc.name
+}
+
+resource "azurerm_network_security_rule" "dc_allow_ad_dns_tcp" {
+  name                        = "AllowADDNSTCP"
+  priority                    = 115
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "53"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.dc.name
+}
+
+resource "azurerm_network_security_rule" "dc_allow_ad_dns_udp" {
+  name                        = "AllowADDNSUDP"
+  priority                    = 116
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Udp"
+  source_port_range           = "*"
+  destination_port_range      = "53"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.dc.name
+}
+
 resource "azurerm_network_security_rule" "ib_mgmt_deny_inbound" {
   name                        = "DenyAllInbound"
   priority                    = 4096
@@ -240,6 +478,48 @@ resource "azurerm_network_security_rule" "ib_mgmt_deny_outbound" {
   source_port_range           = "*"
   destination_port_range      = "*"
   source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.ib_mgmt.name
+}
+
+resource "azurerm_network_security_rule" "ib_mgmt_allow_vnet_inbound" {
+  name                        = "AllowVNetInbound"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.ib_mgmt.name
+}
+
+resource "azurerm_network_security_rule" "ib_mgmt_allow_vnet_outbound" {
+  name                        = "AllowVNetOutbound"
+  priority                    = 100
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "VirtualNetwork"
+  resource_group_name         = azurerm_resource_group.nsg.name
+  network_security_group_name = azurerm_network_security_group.ib_mgmt.name
+}
+
+resource "azurerm_network_security_rule" "ib_mgmt_allow_https" {
+  name                        = "AllowHTTPS"
+  priority                    = 110
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "443"
+  source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.nsg.name
   network_security_group_name = azurerm_network_security_group.ib_mgmt.name
@@ -273,278 +553,6 @@ resource "azurerm_network_security_rule" "ib_lan1_deny_outbound" {
   network_security_group_name = azurerm_network_security_group.ib_lan1.name
 }
 
-# Allow VNet inbound rules
-resource "azurerm_network_security_rule" "pe_allow_vnet_inbound" {
-  name                        = "AllowVNetInbound"
-  priority                    = 100
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "VirtualNetwork"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.pe.name
-}
-
-resource "azurerm_network_security_rule" "pe_allow_vnet_outbound" {
-  name                        = "AllowVNetOutbound"
-  priority                    = 100
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "VirtualNetwork"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.pe.name
-}
-
-resource "azurerm_network_security_rule" "tools_allow_vnet_inbound" {
-  name                        = "AllowVNetInbound"
-  priority                    = 100
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "VirtualNetwork"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.tools.name
-}
-
-resource "azurerm_network_security_rule" "tools_allow_vnet_outbound" {
-  name                        = "AllowVNetOutbound"
-  priority                    = 100
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "VirtualNetwork"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.tools.name
-}
-
-# DNS Resolver Inbound - Allow DNS traffic
-resource "azurerm_network_security_rule" "inbound_allow_dns_tcp" {
-  name                        = "AllowDnsTcpInbound"
-  priority                    = 100
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_port_range           = "*"
-  destination_port_range      = "53"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.inbound.name
-}
-
-resource "azurerm_network_security_rule" "inbound_allow_dns_udp" {
-  name                        = "AllowDnsUdpInbound"
-  priority                    = 110
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Udp"
-  source_port_range           = "*"
-  destination_port_range      = "53"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.inbound.name
-}
-
-resource "azurerm_network_security_rule" "inbound_allow_vnet_outbound" {
-  name                        = "AllowVNetOutbound"
-  priority                    = 100
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "VirtualNetwork"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.inbound.name
-}
-
-# DNS Resolver Outbound - Allow DNS traffic
-resource "azurerm_network_security_rule" "outbound_allow_dns_tcp" {
-  name                        = "AllowDnsTcpOutbound"
-  priority                    = 100
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_port_range           = "*"
-  destination_port_range      = "53"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.outbound.name
-}
-
-resource "azurerm_network_security_rule" "outbound_allow_dns_udp" {
-  name                        = "AllowDnsUdpOutbound"
-  priority                    = 110
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "Udp"
-  source_port_range           = "*"
-  destination_port_range      = "53"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.outbound.name
-}
-
-resource "azurerm_network_security_rule" "outbound_allow_vnet_inbound" {
-  name                        = "AllowVNetInbound"
-  priority                    = 100
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "VirtualNetwork"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.outbound.name
-}
-
-# Domain Controllers - Allow AD traffic
-resource "azurerm_network_security_rule" "dc_allow_vnet_inbound" {
-  name                        = "AllowVNetInbound"
-  priority                    = 100
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "VirtualNetwork"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.dc.name
-}
-
-resource "azurerm_network_security_rule" "dc_allow_vnet_outbound" {
-  name                        = "AllowVNetOutbound"
-  priority                    = 100
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "VirtualNetwork"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.dc.name
-}
-
-resource "azurerm_network_security_rule" "dc_allow_ldap" {
-  name                        = "AllowLdapInbound"
-  priority                    = 110
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_ranges     = ["389", "636"]
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.dc.name
-}
-
-resource "azurerm_network_security_rule" "dc_allow_kerberos" {
-  name                        = "AllowKerberosInbound"
-  priority                    = 120
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "88"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.dc.name
-}
-
-resource "azurerm_network_security_rule" "dc_allow_dns" {
-  name                        = "AllowDnsInbound"
-  priority                    = 130
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "53"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.dc.name
-}
-
-# Infoblox Management - Allow management traffic
-resource "azurerm_network_security_rule" "ib_mgmt_allow_vnet_inbound" {
-  name                        = "AllowVNetInbound"
-  priority                    = 100
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "VirtualNetwork"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.ib_mgmt.name
-}
-
-resource "azurerm_network_security_rule" "ib_mgmt_allow_vnet_outbound" {
-  name                        = "AllowVNetOutbound"
-  priority                    = 100
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "VirtualNetwork"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.ib_mgmt.name
-}
-
-resource "azurerm_network_security_rule" "ib_mgmt_allow_https" {
-  name                        = "AllowHttpsInbound"
-  priority                    = 110
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_port_range           = "*"
-  destination_port_range      = "443"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.ib_mgmt.name
-}
-
-resource "azurerm_network_security_rule" "ib_mgmt_allow_ssh" {
-  name                        = "AllowSshInbound"
-  priority                    = 120
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_port_range           = "*"
-  destination_port_range      = "22"
-  source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.nsg.name
-  network_security_group_name = azurerm_network_security_group.ib_mgmt.name
-}
-
-# Infoblox LAN1 - Allow DNS and DHCP traffic
 resource "azurerm_network_security_rule" "ib_lan1_allow_vnet_inbound" {
   name                        = "AllowVNetInbound"
   priority                    = 100
@@ -573,12 +581,12 @@ resource "azurerm_network_security_rule" "ib_lan1_allow_vnet_outbound" {
   network_security_group_name = azurerm_network_security_group.ib_lan1.name
 }
 
-resource "azurerm_network_security_rule" "ib_lan1_allow_dns" {
-  name                        = "AllowDnsInbound"
+resource "azurerm_network_security_rule" "ib_lan1_allow_dns_tcp" {
+  name                        = "AllowDNSTCP"
   priority                    = 110
   direction                   = "Inbound"
   access                      = "Allow"
-  protocol                    = "*"
+  protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = "53"
   source_address_prefix       = "VirtualNetwork"
@@ -587,52 +595,52 @@ resource "azurerm_network_security_rule" "ib_lan1_allow_dns" {
   network_security_group_name = azurerm_network_security_group.ib_lan1.name
 }
 
-resource "azurerm_network_security_rule" "ib_lan1_allow_dhcp" {
-  name                        = "AllowDhcpInbound"
-  priority                    = 120
+resource "azurerm_network_security_rule" "ib_lan1_allow_dns_udp" {
+  name                        = "AllowDNSUDP"
+  priority                    = 111
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Udp"
   source_port_range           = "*"
-  destination_port_ranges     = ["67", "68"]
+  destination_port_range      = "53"
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.nsg.name
   network_security_group_name = azurerm_network_security_group.ib_lan1.name
 }
 
-# NSG to Subnet Associations
+# Associate NSGs with Subnets
 resource "azurerm_subnet_network_security_group_association" "pe" {
-  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids[var.subnet_pe_name]
+  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids["snet-pe-idm-eus2-01"]
   network_security_group_id = azurerm_network_security_group.pe.id
 }
 
 resource "azurerm_subnet_network_security_group_association" "tools" {
-  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids[var.subnet_tools_name]
+  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids["snet-tools-idm-eus2-01"]
   network_security_group_id = azurerm_network_security_group.tools.id
 }
 
 resource "azurerm_subnet_network_security_group_association" "inbound" {
-  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids[var.subnet_inbound_name]
+  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids["snet-inbound-idm-eus2-01"]
   network_security_group_id = azurerm_network_security_group.inbound.id
 }
 
 resource "azurerm_subnet_network_security_group_association" "outbound" {
-  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids[var.subnet_outbound_name]
+  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids["snet-outbound-idm-eus2-01"]
   network_security_group_id = azurerm_network_security_group.outbound.id
 }
 
 resource "azurerm_subnet_network_security_group_association" "dc" {
-  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids[var.subnet_dc_name]
+  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids["snet-dc-idm-eus2-01"]
   network_security_group_id = azurerm_network_security_group.dc.id
 }
 
 resource "azurerm_subnet_network_security_group_association" "ib_mgmt" {
-  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids[var.subnet_ib_mgmt_name]
+  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids["snet-ib-mgmt-idm-eus2-01"]
   network_security_group_id = azurerm_network_security_group.ib_mgmt.id
 }
 
 resource "azurerm_subnet_network_security_group_association" "ib_lan1" {
-  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids[var.subnet_ib_lan1_name]
+  subnet_id                 = data.terraform_remote_state.identity_network_deployment_1.outputs.subnet_ids["snet-ib-lan1-idm-eus2-01"]
   network_security_group_id = azurerm_network_security_group.ib_lan1.id
 }

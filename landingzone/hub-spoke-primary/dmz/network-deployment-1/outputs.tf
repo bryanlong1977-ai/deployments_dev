@@ -1,142 +1,219 @@
+output "resource_group_name" {
+  description = "Name of the DMZ network resource group"
+  value       = azurerm_resource_group.network.name
+}
+
+output "resource_group_id" {
+  description = "ID of the DMZ network resource group"
+  value       = azurerm_resource_group.network.id
+}
+
+output "resource_group_location" {
+  description = "Location of the DMZ network resource group"
+  value       = azurerm_resource_group.network.location
+}
+
 output "vnet_id" {
-  description = "The ID of the DMZ virtual network"
+  description = "ID of the DMZ virtual network"
   value       = azurerm_virtual_network.dmz.id
 }
 
 output "vnet_name" {
-  description = "The name of the DMZ virtual network"
+  description = "Name of the DMZ virtual network"
   value       = azurerm_virtual_network.dmz.name
 }
 
 output "vnet_address_space" {
-  description = "The address space of the DMZ virtual network"
+  description = "Address space of the DMZ virtual network"
   value       = azurerm_virtual_network.dmz.address_space
 }
 
-output "resource_group_name" {
-  description = "The name of the DMZ network resource group"
-  value       = azurerm_resource_group.dmz_network.name
-}
-
-output "resource_group_id" {
-  description = "The ID of the DMZ network resource group"
-  value       = azurerm_resource_group.dmz_network.id
-}
-
-output "resource_group_location" {
-  description = "The location of the DMZ network resource group"
-  value       = azurerm_resource_group.dmz_network.location
-}
-
-output "network_watcher_resource_group_name" {
-  description = "The name of the Network Watcher resource group"
-  value       = azurerm_resource_group.network_watcher.name
-}
-
-output "network_watcher_id" {
-  description = "The ID of the Network Watcher"
-  value       = azurerm_network_watcher.dmz.id
-}
-
-output "network_watcher_name" {
-  description = "The name of the Network Watcher"
-  value       = azurerm_network_watcher.dmz.name
-}
-
 output "subnet_pe_id" {
-  description = "The ID of the private endpoints subnet"
+  description = "ID of the private endpoints subnet"
   value       = azurerm_subnet.pe.id
 }
 
 output "subnet_pe_name" {
-  description = "The name of the private endpoints subnet"
+  description = "Name of the private endpoints subnet"
   value       = azurerm_subnet.pe.name
 }
 
 output "subnet_pe_address_prefixes" {
-  description = "The address prefixes of the private endpoints subnet"
+  description = "Address prefixes of the private endpoints subnet"
   value       = azurerm_subnet.pe.address_prefixes
 }
 
 output "subnet_tools_id" {
-  description = "The ID of the tools subnet"
+  description = "ID of the tools subnet"
   value       = azurerm_subnet.tools.id
 }
 
 output "subnet_tools_name" {
-  description = "The name of the tools subnet"
+  description = "Name of the tools subnet"
   value       = azurerm_subnet.tools.name
 }
 
 output "subnet_tools_address_prefixes" {
-  description = "The address prefixes of the tools subnet"
+  description = "Address prefixes of the tools subnet"
   value       = azurerm_subnet.tools.address_prefixes
 }
 
+output "subnet_ns_mgmt_id" {
+  description = "ID of the NetScaler management subnet"
+  value       = azurerm_subnet.ns_mgmt.id
+}
+
+output "subnet_ns_mgmt_name" {
+  description = "Name of the NetScaler management subnet"
+  value       = azurerm_subnet.ns_mgmt.name
+}
+
+output "subnet_ns_mgmt_address_prefixes" {
+  description = "Address prefixes of the NetScaler management subnet"
+  value       = azurerm_subnet.ns_mgmt.address_prefixes
+}
+
+output "subnet_ns_client_id" {
+  description = "ID of the NetScaler client subnet"
+  value       = azurerm_subnet.ns_client.id
+}
+
+output "subnet_ns_client_name" {
+  description = "Name of the NetScaler client subnet"
+  value       = azurerm_subnet.ns_client.name
+}
+
+output "subnet_ns_client_address_prefixes" {
+  description = "Address prefixes of the NetScaler client subnet"
+  value       = azurerm_subnet.ns_client.address_prefixes
+}
+
+output "subnet_ns_server_id" {
+  description = "ID of the NetScaler server subnet"
+  value       = azurerm_subnet.ns_server.id
+}
+
+output "subnet_ns_server_name" {
+  description = "Name of the NetScaler server subnet"
+  value       = azurerm_subnet.ns_server.name
+}
+
+output "subnet_ns_server_address_prefixes" {
+  description = "Address prefixes of the NetScaler server subnet"
+  value       = azurerm_subnet.ns_server.address_prefixes
+}
+
 output "subnet_ifw_mgmt_id" {
-  description = "The ID of the ingress firewall management subnet"
+  description = "ID of the ingress firewall management subnet"
   value       = azurerm_subnet.ifw_mgmt.id
 }
 
 output "subnet_ifw_mgmt_name" {
-  description = "The name of the ingress firewall management subnet"
+  description = "Name of the ingress firewall management subnet"
   value       = azurerm_subnet.ifw_mgmt.name
 }
 
 output "subnet_ifw_mgmt_address_prefixes" {
-  description = "The address prefixes of the ingress firewall management subnet"
+  description = "Address prefixes of the ingress firewall management subnet"
   value       = azurerm_subnet.ifw_mgmt.address_prefixes
 }
 
 output "subnet_ifw_untrust_id" {
-  description = "The ID of the ingress firewall untrust subnet"
+  description = "ID of the ingress firewall untrust subnet"
   value       = azurerm_subnet.ifw_untrust.id
 }
 
 output "subnet_ifw_untrust_name" {
-  description = "The name of the ingress firewall untrust subnet"
+  description = "Name of the ingress firewall untrust subnet"
   value       = azurerm_subnet.ifw_untrust.name
 }
 
 output "subnet_ifw_untrust_address_prefixes" {
-  description = "The address prefixes of the ingress firewall untrust subnet"
+  description = "Address prefixes of the ingress firewall untrust subnet"
   value       = azurerm_subnet.ifw_untrust.address_prefixes
 }
 
 output "subnet_ifw_trust_id" {
-  description = "The ID of the ingress firewall trust subnet"
+  description = "ID of the ingress firewall trust subnet"
   value       = azurerm_subnet.ifw_trust.id
 }
 
 output "subnet_ifw_trust_name" {
-  description = "The name of the ingress firewall trust subnet"
+  description = "Name of the ingress firewall trust subnet"
   value       = azurerm_subnet.ifw_trust.name
 }
 
 output "subnet_ifw_trust_address_prefixes" {
-  description = "The address prefixes of the ingress firewall trust subnet"
+  description = "Address prefixes of the ingress firewall trust subnet"
   value       = azurerm_subnet.ifw_trust.address_prefixes
 }
 
-output "all_subnet_ids" {
-  description = "Map of all subnet names to their IDs"
+output "network_watcher_id" {
+  description = "ID of the Network Watcher"
+  value       = azurerm_network_watcher.dmz.id
+}
+
+output "network_watcher_name" {
+  description = "Name of the Network Watcher"
+  value       = azurerm_network_watcher.dmz.name
+}
+
+output "network_watcher_resource_group_name" {
+  description = "Name of the Network Watcher resource group"
+  value       = azurerm_resource_group.network_watcher.name
+}
+
+output "network_watcher_resource_group_id" {
+  description = "ID of the Network Watcher resource group"
+  value       = azurerm_resource_group.network_watcher.id
+}
+
+output "peering_dmz_to_hub_id" {
+  description = "ID of the VNet peering from DMZ to Hub"
+  value       = azurerm_virtual_network_peering.dmz_to_hub.id
+}
+
+output "peering_dmz_to_hub_name" {
+  description = "Name of the VNet peering from DMZ to Hub"
+  value       = azurerm_virtual_network_peering.dmz_to_hub.name
+}
+
+output "peering_hub_to_dmz_id" {
+  description = "ID of the VNet peering from Hub to DMZ"
+  value       = azurerm_virtual_network_peering.hub_to_dmz.id
+}
+
+output "peering_hub_to_dmz_name" {
+  description = "Name of the VNet peering from Hub to DMZ"
+  value       = azurerm_virtual_network_peering.hub_to_dmz.name
+}
+
+output "subnet_ids" {
+  description = "Map of all subnet IDs by purpose"
   value = {
     pe          = azurerm_subnet.pe.id
     tools       = azurerm_subnet.tools.id
+    ns_mgmt     = azurerm_subnet.ns_mgmt.id
+    ns_client   = azurerm_subnet.ns_client.id
+    ns_server   = azurerm_subnet.ns_server.id
     ifw_mgmt    = azurerm_subnet.ifw_mgmt.id
     ifw_untrust = azurerm_subnet.ifw_untrust.id
     ifw_trust   = azurerm_subnet.ifw_trust.id
   }
 }
 
-output "peering_dmz_to_hub_id" {
-  description = "The ID of the DMZ to Hub VNet peering"
-  value       = azurerm_virtual_network_peering.dmz_to_hub.id
-}
-
-output "peering_hub_to_dmz_id" {
-  description = "The ID of the Hub to DMZ VNet peering"
-  value       = azurerm_virtual_network_peering.hub_to_dmz.id
+output "subnet_names" {
+  description = "Map of all subnet names by purpose"
+  value = {
+    pe          = azurerm_subnet.pe.name
+    tools       = azurerm_subnet.tools.name
+    ns_mgmt     = azurerm_subnet.ns_mgmt.name
+    ns_client   = azurerm_subnet.ns_client.name
+    ns_server   = azurerm_subnet.ns_server.name
+    ifw_mgmt    = azurerm_subnet.ifw_mgmt.name
+    ifw_untrust = azurerm_subnet.ifw_untrust.name
+    ifw_trust   = azurerm_subnet.ifw_trust.name
+  }
 }
 
 # ============================================
@@ -146,5 +223,5 @@ output "peering_hub_to_dmz_id" {
 
 output "location" {
   description = "The Azure region of the deployment"
-  value       = azurerm_resource_group.dmz_network.location
+  value       = azurerm_resource_group.network.location
 }

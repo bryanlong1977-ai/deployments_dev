@@ -1,11 +1,3 @@
-# =============================================================================
-# Management Network Deployment 1 - Virtual Network, Subnets, Network Watcher
-# Customer: Cloud AI Consulting
-# Project: Secure Cloud Foundations
-# Environment: Production
-# Region: West US 3
-# =============================================================================
-
 terraform {
   required_version = ">= 1.5.0"
   required_providers {
@@ -21,80 +13,84 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
-# -----------------------------------------------------------------------------
-# Resource Group for Virtual Network
-# -----------------------------------------------------------------------------
-resource "azurerm_resource_group" "network_rg" {
+# Provider for connectivity subscription (for VNet peering)
+provider "azurerm" {
+  alias           = "connectivity"
+  features {}
+  subscription_id = var.connectivity_subscription_id
+}
+
+# Resource Group for Network Resources
+resource "azurerm_resource_group" "network" {
   name     = var.network_resource_group_name
   location = var.region
   tags     = var.tags
 }
 
-# -----------------------------------------------------------------------------
-# Dedicated Resource Group for Network Watcher
-# Network Watcher MUST be in a dedicated RG, not the VNet's RG
-# -----------------------------------------------------------------------------
-resource "azurerm_resource_group" "network_watcher_rg" {
+# Resource Group for Network Watcher (dedicated, separate from VNet RG)
+resource "azurerm_resource_group" "network_watcher" {
   name     = var.network_watcher_resource_group_name
   location = var.region
   tags     = var.tags
 }
 
-# -----------------------------------------------------------------------------
-# Virtual Network - Management VNet
-# -----------------------------------------------------------------------------
-resource "azurerm_virtual_network" "mgmt_vnet" {
+# Virtual Network
+resource "azurerm_virtual_network" "mgmt" {
   name                = var.vnet_name
-  location            = azurerm_resource_group.network_rg.location
-  resource_group_name = azurerm_resource_group.network_rg.name
+  location            = azurerm_resource_group.network.location
+  resource_group_name = azurerm_resource_group.network.name
   address_space       = var.vnet_address_space
   dns_servers         = var.dns_servers
   tags                = var.tags
 }
 
-# -----------------------------------------------------------------------------
-# Subnets
-# -----------------------------------------------------------------------------
-
-# Private Endpoint Subnet
-resource "azurerm_subnet" "snet_pe" {
-  name                              = var.subnet_pe_name
-  resource_group_name               = azurerm_resource_group.network_rg.name
-  virtual_network_name              = azurerm_virtual_network.mgmt_vnet.name
-  address_prefixes                  = [var.subnet_pe_address_prefix]
-  private_endpoint_network_policies = var.private_endpoint_network_policies
+# Subnet - Private Endpoints
+resource "azurerm_subnet" "pe" {
+  name                                          = var.subnet_pe_name
+  resource_group_name                           = azurerm_resource_group.network.name
+  virtual_network_name                          = azurerm_virtual_network.mgmt.name
+  address_prefixes                              = [var.subnet_pe_address_prefix]
+  private_endpoint_network_policies             = var.private_endpoint_network_policies
+  private_link_service_network_policies_enabled = var.private_link_service_network_policies_enabled
 }
 
-# Tools Subnet
-resource "azurerm_subnet" "snet_tools" {
-  name                              = var.subnet_tools_name
-  resource_group_name               = azurerm_resource_group.network_rg.name
-  virtual_network_name              = azurerm_virtual_network.mgmt_vnet.name
-  address_prefixes                  = [var.subnet_tools_address_prefix]
-  private_endpoint_network_policies = var.private_endpoint_network_policies
+# Subnet - Tools
+resource "azurerm_subnet" "tools" {
+  name                 = var.subnet_tools_name
+  resource_group_name  = azurerm_resource_group.network.name
+  virtual_network_name = azurerm_virtual_network.mgmt.name
+  address_prefixes     = [var.subnet_tools_address_prefix]
 }
 
-# -----------------------------------------------------------------------------
-# Network Watcher - In dedicated Resource Group
-# -----------------------------------------------------------------------------
-resource "azurerm_network_watcher" "mgmt_nw" {
+# Network Watcher (in dedicated Resource Group)
+resource "azurerm_network_watcher" "mgmt" {
   name                = var.network_watcher_name
-  location            = azurerm_resource_group.network_watcher_rg.location
-  resource_group_name = azurerm_resource_group.network_watcher_rg.name
+  location            = azurerm_resource_group.network_watcher.location
+  resource_group_name = azurerm_resource_group.network_watcher.name
   tags                = var.tags
 }
 
-# -----------------------------------------------------------------------------
-# VNet Peering - Management to Hub (Spoke-to-Hub peering)
-# Hub side peering will be created in connectivity subscription
-# -----------------------------------------------------------------------------
+# VNet Peering: Management to Hub (spoke side)
 resource "azurerm_virtual_network_peering" "mgmt_to_hub" {
   name                         = var.peering_mgmt_to_hub_name
-  resource_group_name          = azurerm_resource_group.network_rg.name
-  virtual_network_name         = azurerm_virtual_network.mgmt_vnet.name
-  remote_virtual_network_id    = data.terraform_remote_state.connectivity_network_deployment_1.outputs.vnet_id
+  resource_group_name          = azurerm_resource_group.network.name
+  virtual_network_name         = azurerm_virtual_network.mgmt.name
+  remote_virtual_network_id    = data.terraform_remote_state.connectivity_network_deployment_1.outputs.hub_vnet_id
   allow_virtual_network_access = var.peering_allow_virtual_network_access
   allow_forwarded_traffic      = var.peering_allow_forwarded_traffic
-  allow_gateway_transit        = var.spoke_allow_gateway_transit
-  use_remote_gateways          = var.spoke_use_remote_gateways
+  allow_gateway_transit        = var.peering_spoke_allow_gateway_transit
+  use_remote_gateways          = var.peering_spoke_use_remote_gateways
+}
+
+# VNet Peering: Hub to Management (hub side - using connectivity provider)
+resource "azurerm_virtual_network_peering" "hub_to_mgmt" {
+  provider                     = azurerm.connectivity
+  name                         = var.peering_hub_to_mgmt_name
+  resource_group_name          = data.terraform_remote_state.connectivity_network_deployment_1.outputs.hub_resource_group_name
+  virtual_network_name         = data.terraform_remote_state.connectivity_network_deployment_1.outputs.hub_vnet_name
+  remote_virtual_network_id    = azurerm_virtual_network.mgmt.id
+  allow_virtual_network_access = var.peering_allow_virtual_network_access
+  allow_forwarded_traffic      = var.peering_allow_forwarded_traffic
+  allow_gateway_transit        = var.peering_hub_allow_gateway_transit
+  use_remote_gateways          = var.peering_hub_use_remote_gateways
 }

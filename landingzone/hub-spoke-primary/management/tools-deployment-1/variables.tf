@@ -1,13 +1,13 @@
 variable "subscription_id" {
-  description = "The Azure subscription ID where resources will be deployed"
+  description = "The subscription ID where resources will be deployed"
   type        = string
-  default     = "39f647ab-5261-47b0-ad91-1719dcd107a1"
+  default     = "53fea26b-011b-4520-b157-e31b034c7900"
 }
 
 variable "region" {
-  description = "The Azure region where resources will be deployed"
+  description = "The Azure region for resource deployment"
   type        = string
-  default     = "West US 3"
+  default     = "East US 2"
 }
 
 variable "tags" {
@@ -17,7 +17,7 @@ variable "tags" {
     customer      = "Cloud AI Consulting"
     project       = "Secure Cloud Foundations"
     environment   = "Production"
-    deployment_id = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
+    deployment_id = "7e6e79d1-70cd-4feb-8f93-d22e3f2f6fca"
     managed_by    = "Terraform"
   }
 }
@@ -26,26 +26,26 @@ variable "tags" {
 variable "key_vault_resource_group_name" {
   description = "Name of the resource group for Key Vault"
   type        = string
-  default     = "rg-kv-prd-mgmt-wus3-01"
+  default     = "rg-kv-prd-mgmt-eus2-01"
 }
 
 variable "log_analytics_resource_group_name" {
   description = "Name of the resource group for Log Analytics Workspace"
   type        = string
-  default     = "rg-log-prd-mgmt-wus3-01"
+  default     = "rg-log-prd-mgmt-eus2-01"
 }
 
 variable "managed_identity_resource_group_name" {
   description = "Name of the resource group for Managed Identity"
   type        = string
-  default     = "rg-mi-prd-mgmt-wus3-01"
+  default     = "rg-mi-prd-mgmt-eus2-01"
 }
 
 # Log Analytics Workspace Variables
 variable "log_analytics_workspace_name" {
   description = "Name of the Log Analytics Workspace"
   type        = string
-  default     = "law-mgmt-prd-wus3-01"
+  default     = "law-mgmt-prd-eus2-01"
 }
 
 variable "log_analytics_sku" {
@@ -70,20 +70,20 @@ variable "log_analytics_daily_quota_gb" {
 variable "managed_identity_name" {
   description = "Name of the User Assigned Managed Identity"
   type        = string
-  default     = "mi-mgmt-prd-wus3-01"
+  default     = "mi-mgmt-prd-eus2-01"
 }
 
 # Key Vault Variables
 variable "key_vault_prd_name" {
   description = "Name of the Production Key Vault"
   type        = string
-  default     = "kvcloumgmtprdwus301"
+  default     = "kvcloumgmtprdeus201"
 }
 
 variable "key_vault_nprd_name" {
   description = "Name of the Non-Production Key Vault"
   type        = string
-  default     = "kvcloumgmtnprdwus301"
+  default     = "kvcloumgmtnprdeus201"
 }
 
 variable "key_vault_sku" {
@@ -93,7 +93,7 @@ variable "key_vault_sku" {
 }
 
 variable "key_vault_soft_delete_retention_days" {
-  description = "Number of days to retain soft-deleted keys"
+  description = "Soft delete retention days for Key Vault"
   type        = number
   default     = 90
 }
@@ -111,19 +111,19 @@ variable "key_vault_rbac_authorization_enabled" {
 }
 
 variable "key_vault_enabled_for_deployment" {
-  description = "Allow Azure Virtual Machines to retrieve certificates stored as secrets"
+  description = "Enable Key Vault for VM deployment"
   type        = bool
   default     = true
 }
 
 variable "key_vault_enabled_for_disk_encryption" {
-  description = "Allow Azure Disk Encryption to retrieve secrets and unwrap keys"
+  description = "Enable Key Vault for disk encryption"
   type        = bool
   default     = true
 }
 
 variable "key_vault_enabled_for_template_deployment" {
-  description = "Allow Azure Resource Manager to retrieve secrets"
+  description = "Enable Key Vault for template deployment"
   type        = bool
   default     = true
 }
@@ -141,53 +141,40 @@ variable "key_vault_network_acls_default_action" {
 }
 
 variable "key_vault_network_acls_bypass" {
-  description = "Services to bypass Key Vault network ACLs"
+  description = "Bypass setting for Key Vault network ACLs"
   type        = string
   default     = "AzureServices"
 }
 
 # Private Endpoint Variables
-variable "private_endpoint_subnet_name" {
-  description = "Name of the subnet for private endpoints"
-  type        = string
-  default     = "snet-pe-mgmt-wus3-01"
-}
-
 variable "key_vault_prd_private_endpoint_name" {
   description = "Name of the private endpoint for Production Key Vault"
   type        = string
-  default     = "pep-kvcloumgmtprdwus301"
+  default     = "pep-kv-prd-mgmt-eus2-01"
 }
 
 variable "key_vault_nprd_private_endpoint_name" {
   description = "Name of the private endpoint for Non-Production Key Vault"
   type        = string
-  default     = "pep-kvcloumgmtnprdwus301"
+  default     = "pep-kv-nprd-mgmt-eus2-01"
 }
 
-# Remote State Variables
-variable "tfstate_resource_group_name" {
-  description = "Resource group name for Terraform state storage"
+variable "key_vault_prd_private_service_connection_name" {
+  description = "Name of the private service connection for Production Key Vault"
   type        = string
-  default     = "rg-storage-ncus-01"
+  default     = "psc-kv-prd-mgmt-eus2-01"
 }
 
-variable "tfstate_storage_account_name" {
-  description = "Storage account name for Terraform state"
+variable "key_vault_nprd_private_service_connection_name" {
+  description = "Name of the private service connection for Non-Production Key Vault"
   type        = string
-  default     = "sacloudaiconsulting01"
+  default     = "psc-kv-nprd-mgmt-eus2-01"
 }
 
-variable "tfstate_container_name" {
-  description = "Container name for Terraform state"
+variable "key_vault_private_dns_zone_group_name" {
+  description = "Name of the private DNS zone group for Key Vault"
   type        = string
-  default     = "tfstate"
-}
-
-variable "tfstate_subscription_id" {
-  description = "Subscription ID where Terraform state storage resides"
-  type        = string
-  default     = "53fea26b-011b-4520-b157-e31b034c7900"
+  default     = "default"
 }
 
 # ============================================

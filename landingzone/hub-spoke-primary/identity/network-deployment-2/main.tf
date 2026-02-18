@@ -13,29 +13,54 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
-# Provider for Management subscription (for Log Analytics)
+# Provider for Management subscription (for Log Analytics access)
 provider "azurerm" {
   alias           = "management"
   features {}
   subscription_id = var.management_subscription_id
 }
 
-# Local values for common configuration
+# Local variables for tags and common values
 locals {
-  tags = {
-    customer      = var.customer
-    project       = var.project
+  tags = merge(var.tags, {
+    customer      = var.customer_name
+    project       = var.project_name
     environment   = var.environment
     deployment_id = var.deployment_id
-    managed_by    = "terraform"
-  }
+    deployed_by   = "terraform"
+  })
 }
 
-# Diagnostic setting for Identity VNet
-resource "azurerm_monitor_diagnostic_setting" "vnet_diagnostics" {
+# Data source for existing Identity VNet from Network Deployment 1
+data "azurerm_virtual_network" "identity_vnet" {
+  name                = var.vnet_name
+  resource_group_name = var.network_resource_group_name
+}
+
+# Data source for existing Network Watcher from Identity Network Deployment 1
+data "azurerm_network_watcher" "identity_nw" {
+  name                = data.terraform_remote_state.identity_network_deployment_1.outputs.network_watcher_name
+  resource_group_name = data.terraform_remote_state.identity_network_deployment_1.outputs.network_watcher_resource_group_name
+}
+
+# Data source for Log Analytics Workspace from Management subscription
+data "azurerm_log_analytics_workspace" "management_law" {
+  provider            = azurerm.management
+  name                = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_name
+  resource_group_name = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_resource_group_name
+}
+
+# Data source for Network Storage Account from Identity Tools Deployment 1
+data "azurerm_storage_account" "identity_network_storage" {
+  name                = data.terraform_remote_state.identity_tools_deployment_1.outputs.network_storage_account_name
+  resource_group_name = data.terraform_remote_state.identity_tools_deployment_1.outputs.storage_resource_group_name
+}
+
+# Diagnostic settings for Identity VNet
+resource "azurerm_monitor_diagnostic_setting" "identity_vnet_diagnostics" {
   name                       = var.vnet_diagnostic_setting_name
-  target_resource_id         = data.terraform_remote_state.identity_network_deployment_1.outputs.vnet_id
-  log_analytics_workspace_id = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_id
+  target_resource_id         = data.azurerm_virtual_network.identity_vnet.id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.management_law.id
 
   enabled_log {
     category = "VMProtectionAlerts"
@@ -48,12 +73,12 @@ resource "azurerm_monitor_diagnostic_setting" "vnet_diagnostics" {
 }
 
 # Virtual Network Flow Log for Identity VNet
-resource "azurerm_network_watcher_flow_log" "vnet_flow_log" {
+resource "azurerm_network_watcher_flow_log" "identity_vnet_flow_log" {
   name                 = var.vnet_flow_log_name
-  network_watcher_name = data.terraform_remote_state.identity_network_deployment_1.outputs.network_watcher_name
-  resource_group_name  = data.terraform_remote_state.identity_network_deployment_1.outputs.network_watcher_resource_group_name
-  target_resource_id   = data.terraform_remote_state.identity_network_deployment_1.outputs.vnet_id
-  storage_account_id   = data.terraform_remote_state.identity_tools_deployment_1.outputs.network_storage_account_id
+  network_watcher_name = data.azurerm_network_watcher.identity_nw.name
+  resource_group_name  = data.azurerm_network_watcher.identity_nw.resource_group_name
+  target_resource_id   = data.azurerm_virtual_network.identity_vnet.id
+  storage_account_id   = data.azurerm_storage_account.identity_network_storage.id
   enabled              = var.flow_log_enabled
   version              = var.flow_log_version
 
@@ -64,10 +89,10 @@ resource "azurerm_network_watcher_flow_log" "vnet_flow_log" {
 
   traffic_analytics {
     enabled               = var.traffic_analytics_enabled
-    workspace_id          = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_workspace_id
-    workspace_region      = var.management_region
-    workspace_resource_id = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_id
-    interval_in_minutes   = var.traffic_analytics_interval
+    workspace_id          = data.azurerm_log_analytics_workspace.management_law.workspace_id
+    workspace_region      = data.azurerm_log_analytics_workspace.management_law.location
+    workspace_resource_id = data.azurerm_log_analytics_workspace.management_law.id
+    interval_in_minutes   = var.traffic_analytics_interval_minutes
   }
 
   tags = local.tags

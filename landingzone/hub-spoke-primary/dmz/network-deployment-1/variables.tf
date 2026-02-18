@@ -1,11 +1,11 @@
 variable "subscription_id" {
-  description = "The subscription ID for the DMZ subscription where resources will be deployed"
+  description = "The subscription ID for the DMZ subscription"
   type        = string
   default     = "81abf5a8-5c86-4ca7-8af8-8b3596a58d07"
 }
 
 variable "connectivity_subscription_id" {
-  description = "The subscription ID for the Connectivity subscription (for cross-subscription peering)"
+  description = "The subscription ID for the Connectivity subscription"
   type        = string
   default     = "81abf5a8-5c86-4ca7-8af8-8b3596a58d07"
 }
@@ -13,35 +13,47 @@ variable "connectivity_subscription_id" {
 variable "region" {
   description = "The Azure region for resource deployment"
   type        = string
-  default     = "westus3"
+  default     = "eastus2"
+}
+
+variable "tags" {
+  description = "Tags to apply to all resources"
+  type        = map(string)
+  default = {
+    customer      = "Cloud AI Consulting"
+    project       = "Secure Cloud Foundations"
+    environment   = "Production"
+    deployment_id = "7e6e79d1-70cd-4feb-8f93-d22e3f2f6fca"
+    subscription  = "dmz"
+  }
 }
 
 variable "network_resource_group_name" {
   description = "Name of the resource group for DMZ network resources"
   type        = string
-  default     = "rg-network-prd-dmz-wus3-01"
+  default     = "rg-network-prd-dmz-eus2-01"
 }
 
 variable "network_watcher_resource_group_name" {
   description = "Name of the dedicated resource group for Network Watcher"
   type        = string
-  default     = "rg-nw-prd-dmz-wus3-01"
+  default     = "rg-nw-prd-dmz-eus2-01"
 }
 
 variable "vnet_name" {
   description = "Name of the DMZ virtual network"
   type        = string
-  default     = "vnet-dmz-prd-wus3-01"
+  default     = "vnet-dmz-prd-eus2-01"
 }
 
 variable "vnet_address_space" {
   description = "Address space for the DMZ virtual network"
   type        = list(string)
-  default     = ["10.0.6.0/24"]
+  default     = ["10.0.6.0/23"]
 }
 
 variable "dns_servers" {
-  description = "Custom DNS servers for the virtual network. Leave empty to use Azure default DNS."
+  description = "List of DNS servers for the virtual network"
   type        = list(string)
   default     = []
 }
@@ -49,7 +61,7 @@ variable "dns_servers" {
 variable "subnet_pe_name" {
   description = "Name of the private endpoints subnet"
   type        = string
-  default     = "snet-pe-dmz-wus3-01"
+  default     = "snet-pe-dmz-eus2-01"
 }
 
 variable "subnet_pe_address_prefix" {
@@ -58,16 +70,10 @@ variable "subnet_pe_address_prefix" {
   default     = "10.0.6.0/26"
 }
 
-variable "private_endpoint_network_policies" {
-  description = "Network policies for private endpoints subnet"
-  type        = string
-  default     = "Disabled"
-}
-
 variable "subnet_tools_name" {
   description = "Name of the tools subnet"
   type        = string
-  default     = "snet-tools-dmz-wus3-01"
+  default     = "snet-tools-dmz-eus2-01"
 }
 
 variable "subnet_tools_address_prefix" {
@@ -76,46 +82,88 @@ variable "subnet_tools_address_prefix" {
   default     = "10.0.6.64/26"
 }
 
+variable "subnet_ns_mgmt_name" {
+  description = "Name of the NetScaler management subnet"
+  type        = string
+  default     = "snet-ns-mgmt-dmz-eus2-01"
+}
+
+variable "subnet_ns_mgmt_address_prefix" {
+  description = "Address prefix for the NetScaler management subnet"
+  type        = string
+  default     = "10.0.6.128/28"
+}
+
+variable "subnet_ns_client_name" {
+  description = "Name of the NetScaler client subnet"
+  type        = string
+  default     = "snet-ns-client-dmz-eus2-01"
+}
+
+variable "subnet_ns_client_address_prefix" {
+  description = "Address prefix for the NetScaler client subnet"
+  type        = string
+  default     = "10.0.6.160/27"
+}
+
+variable "subnet_ns_server_name" {
+  description = "Name of the NetScaler server subnet"
+  type        = string
+  default     = "snet-ns-server-dmz-eus2-01"
+}
+
+variable "subnet_ns_server_address_prefix" {
+  description = "Address prefix for the NetScaler server subnet"
+  type        = string
+  default     = "10.0.6.192/27"
+}
+
 variable "subnet_ifw_mgmt_name" {
   description = "Name of the ingress firewall management subnet"
   type        = string
-  default     = "snet-ifw-mgmt-dmz-wus3-01"
+  default     = "snet-ifw-mgmt-dmz-eus2-01"
 }
 
 variable "subnet_ifw_mgmt_address_prefix" {
   description = "Address prefix for the ingress firewall management subnet"
   type        = string
-  default     = "10.0.6.128/28"
+  default     = "10.0.6.224/28"
 }
 
 variable "subnet_ifw_untrust_name" {
   description = "Name of the ingress firewall untrust subnet"
   type        = string
-  default     = "snet-ifw-untrust-dmz-wus3-01"
+  default     = "snet-ifw-untrust-dmz-eus2-01"
 }
 
 variable "subnet_ifw_untrust_address_prefix" {
   description = "Address prefix for the ingress firewall untrust subnet"
   type        = string
-  default     = "10.0.6.160/27"
+  default     = "10.0.7.0/27"
 }
 
 variable "subnet_ifw_trust_name" {
   description = "Name of the ingress firewall trust subnet"
   type        = string
-  default     = "snet-ifw-trust-dmz-wus3-01"
+  default     = "snet-ifw-trust-dmz-eus2-01"
 }
 
 variable "subnet_ifw_trust_address_prefix" {
   description = "Address prefix for the ingress firewall trust subnet"
   type        = string
-  default     = "10.0.6.192/27"
+  default     = "10.0.7.32/27"
 }
 
 variable "network_watcher_name" {
   description = "Name of the Network Watcher"
   type        = string
-  default     = "nw-dmz-prd-wus3-01"
+  default     = "nw-dmz-prd-eus2-01"
+}
+
+variable "private_endpoint_network_policies" {
+  description = "Network policies for private endpoints"
+  type        = string
+  default     = "Disabled"
 }
 
 variable "peering_dmz_to_hub_name" {
@@ -148,29 +196,22 @@ variable "peering_allow_gateway_transit_hub" {
   default     = true
 }
 
-variable "peering_allow_gateway_transit_spoke" {
-  description = "Allow gateway transit on spoke side of peering (should be false)"
+variable "peering_allow_gateway_transit_dmz" {
+  description = "Allow gateway transit on DMZ side of peering"
   type        = bool
   default     = false
 }
 
-variable "peering_use_remote_gateways" {
-  description = "Use remote gateways from hub VNet"
+variable "peering_use_remote_gateways_hub" {
+  description = "Use remote gateways on hub side of peering"
   type        = bool
-  default     = true
+  default     = false
 }
 
-variable "tags" {
-  description = "Tags to apply to all resources"
-  type        = map(string)
-  default = {
-    customer      = "Cloud AI Consulting"
-    project       = "Secure Cloud Foundations"
-    environment   = "Production"
-    deployment_id = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
-    subscription  = "dmz"
-    managed_by    = "terraform"
-  }
+variable "peering_use_remote_gateways_dmz" {
+  description = "Use remote gateways on DMZ side of peering"
+  type        = bool
+  default     = true
 }
 
 # ============================================

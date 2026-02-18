@@ -13,14 +13,14 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
-# Provider for Identity subscription (DNS zones and resolver)
+# Provider for Identity subscription (for DNS zone links)
 provider "azurerm" {
   alias           = "identity"
   features {}
   subscription_id = var.identity_subscription_id
 }
 
-# Provider for Connectivity subscription (storage account for flow logs)
+# Provider for Connectivity subscription (for storage account reference)
 provider "azurerm" {
   alias           = "connectivity"
   features {}
@@ -28,42 +28,71 @@ provider "azurerm" {
 }
 
 #--------------------------------------------------------------
-# Data Sources - Reference existing resources from remote state
+# Local Variables
+#--------------------------------------------------------------
+locals {
+  tags = {
+    customer      = var.customer_name
+    project       = var.project_name
+    environment   = var.environment
+    deployment_id = var.deployment_id
+    deployed_by   = "terraform"
+  }
+
+  # Private DNS zones to link to the Management VNet
+  private_dns_zones = var.private_dns_zones
+}
+
+#--------------------------------------------------------------
+# Data Sources - Reference existing resources
 #--------------------------------------------------------------
 
-# Get VNet from Network Deployment 1 (Management)
-locals {
-  mgmt_vnet_id              = data.terraform_remote_state.management_network_deployment_1.outputs.vnet_id
-  mgmt_vnet_name            = data.terraform_remote_state.management_network_deployment_1.outputs.vnet_name
-  mgmt_resource_group_name  = data.terraform_remote_state.management_network_deployment_1.outputs.resource_group_name
-  mgmt_network_watcher_name = data.terraform_remote_state.management_network_deployment_1.outputs.network_watcher_name
-  mgmt_network_watcher_rg   = data.terraform_remote_state.management_network_deployment_1.outputs.network_watcher_resource_group_name
+# Reference the Management VNet from Network Deployment 1
+data "azurerm_virtual_network" "mgmt_vnet" {
+  name                = data.terraform_remote_state.management_network_deployment_1.outputs.vnet_name
+  resource_group_name = data.terraform_remote_state.management_network_deployment_1.outputs.resource_group_name
 }
 
-# Get Log Analytics Workspace from Management Tools Deployment 1
-locals {
-  log_analytics_workspace_id = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_id
+# Reference the Network Watcher from Network Deployment 1
+data "azurerm_network_watcher" "mgmt_nw" {
+  name                = data.terraform_remote_state.management_network_deployment_1.outputs.network_watcher_name
+  resource_group_name = data.terraform_remote_state.management_network_deployment_1.outputs.network_watcher_resource_group_name
 }
 
-# Get Network Storage Account from Connectivity Tools Deployment 1
-locals {
-  network_storage_account_id = data.terraform_remote_state.connectivity_tools_deployment_1.outputs.network_storage_account_id
+# Reference the Log Analytics Workspace from Management Tools Deployment 1
+data "azurerm_log_analytics_workspace" "mgmt_law" {
+  name                = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_name
+  resource_group_name = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_resource_group_name
 }
 
-# Get DNS resources from Identity Network Deployment 1
-locals {
-  private_dns_zone_ids          = data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids
-  dns_forwarding_ruleset_id     = data.terraform_remote_state.identity_network_deployment_1.outputs.dns_forwarding_ruleset_id
+# Reference the Network Storage Account from Management Tools Deployment 2
+data "azurerm_storage_account" "mgmt_ntwk_sa" {
+  name                = data.terraform_remote_state.management_tools_deployment_2.outputs.network_storage_account_name
+  resource_group_name = data.terraform_remote_state.management_tools_deployment_2.outputs.storage_account_resource_group_name
+}
+
+# Reference the DNS Forwarding Ruleset from Identity Network Deployment 1
+data "azurerm_private_dns_resolver_dns_forwarding_ruleset" "identity_ruleset" {
+  provider            = azurerm.identity
+  name                = data.terraform_remote_state.identity_network_deployment_1.outputs.dns_forwarding_ruleset_name
+  resource_group_name = data.terraform_remote_state.identity_network_deployment_1.outputs.dns_resource_group_name
+}
+
+# Reference Private DNS Zones from Identity subscription
+data "azurerm_private_dns_zone" "zones" {
+  provider            = azurerm.identity
+  for_each            = toset(local.private_dns_zones)
+  name                = each.value
+  resource_group_name = data.terraform_remote_state.identity_network_deployment_1.outputs.dns_resource_group_name
 }
 
 #--------------------------------------------------------------
 # Diagnostic Settings for Management VNet
 #--------------------------------------------------------------
-
-resource "azurerm_monitor_diagnostic_setting" "mgmt_vnet_diagnostics" {
+resource "azurerm_monitor_diagnostic_setting" "mgmt_vnet_diag" {
   name                       = var.vnet_diagnostic_setting_name
-  target_resource_id         = local.mgmt_vnet_id
-  log_analytics_workspace_id = local.log_analytics_workspace_id
+  target_resource_id         = data.azurerm_virtual_network.mgmt_vnet.id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.mgmt_law.id
 
   enabled_log {
     category = "VMProtectionAlerts"
@@ -76,46 +105,40 @@ resource "azurerm_monitor_diagnostic_setting" "mgmt_vnet_diagnostics" {
 }
 
 #--------------------------------------------------------------
-# Private DNS Zone Virtual Network Links
+# Link Management VNet to DNS Forwarding Ruleset
 #--------------------------------------------------------------
-
-resource "azurerm_private_dns_zone_virtual_network_link" "mgmt_vnet_dns_links" {
-  provider = azurerm.identity
-  for_each = var.private_dns_zones
-
-  name                  = "vnetlink-${var.vnet_name}-${replace(each.value, ".", "-")}"
-  resource_group_name   = var.dns_resource_group_name
-  private_dns_zone_name = each.value
-  virtual_network_id    = local.mgmt_vnet_id
-  registration_enabled  = var.dns_registration_enabled
-
-  tags = var.tags
+resource "azurerm_private_dns_resolver_virtual_network_link" "mgmt_vnet_dns_link" {
+  provider                      = azurerm.identity
+  name                          = var.dns_ruleset_vnet_link_name
+  dns_forwarding_ruleset_id     = data.azurerm_private_dns_resolver_dns_forwarding_ruleset.identity_ruleset.id
+  virtual_network_id            = data.azurerm_virtual_network.mgmt_vnet.id
+  metadata                      = local.tags
 }
 
 #--------------------------------------------------------------
-# DNS Forwarding Ruleset Virtual Network Link
+# Link Management VNet to Private DNS Zones
 #--------------------------------------------------------------
+resource "azurerm_private_dns_zone_virtual_network_link" "mgmt_vnet_dns_zone_links" {
+  provider              = azurerm.identity
+  for_each              = toset(local.private_dns_zones)
+  name                  = "${var.dns_zone_link_prefix}-${replace(each.value, ".", "-")}"
+  resource_group_name   = data.terraform_remote_state.identity_network_deployment_1.outputs.dns_resource_group_name
+  private_dns_zone_name = each.value
+  virtual_network_id    = data.azurerm_virtual_network.mgmt_vnet.id
+  registration_enabled  = var.dns_zone_auto_registration_enabled
 
-resource "azurerm_private_dns_resolver_virtual_network_link" "mgmt_vnet_dns_resolver_link" {
-  provider = azurerm.identity
-
-  name                      = var.dns_resolver_vnet_link_name
-  dns_forwarding_ruleset_id = local.dns_forwarding_ruleset_id
-  virtual_network_id        = local.mgmt_vnet_id
-
-  metadata = var.tags
+  tags = local.tags
 }
 
 #--------------------------------------------------------------
 # Virtual Network Flow Logs
 #--------------------------------------------------------------
-
 resource "azurerm_network_watcher_flow_log" "mgmt_vnet_flow_log" {
   name                 = var.vnet_flow_log_name
-  network_watcher_name = local.mgmt_network_watcher_name
-  resource_group_name  = local.mgmt_network_watcher_rg
-  target_resource_id   = local.mgmt_vnet_id
-  storage_account_id   = local.network_storage_account_id
+  network_watcher_name = data.azurerm_network_watcher.mgmt_nw.name
+  resource_group_name  = data.azurerm_network_watcher.mgmt_nw.resource_group_name
+  target_resource_id   = data.azurerm_virtual_network.mgmt_vnet.id
+  storage_account_id   = data.azurerm_storage_account.mgmt_ntwk_sa.id
   enabled              = var.flow_log_enabled
   version              = var.flow_log_version
 
@@ -126,11 +149,11 @@ resource "azurerm_network_watcher_flow_log" "mgmt_vnet_flow_log" {
 
   traffic_analytics {
     enabled               = var.traffic_analytics_enabled
-    workspace_id          = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_workspace_id
-    workspace_region      = var.region
-    workspace_resource_id = local.log_analytics_workspace_id
-    interval_in_minutes   = var.traffic_analytics_interval
+    workspace_id          = data.azurerm_log_analytics_workspace.mgmt_law.workspace_id
+    workspace_region      = data.azurerm_log_analytics_workspace.mgmt_law.location
+    workspace_resource_id = data.azurerm_log_analytics_workspace.mgmt_law.id
+    interval_in_minutes   = var.traffic_analytics_interval_minutes
   }
 
-  tags = var.tags
+  tags = local.tags
 }

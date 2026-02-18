@@ -1,7 +1,4 @@
-# =============================================================================
-# Subscription Variables
-# =============================================================================
-
+# Subscription variables
 variable "subscription_id" {
   description = "The subscription ID for the Identity subscription"
   type        = string
@@ -11,57 +8,64 @@ variable "subscription_id" {
 variable "management_subscription_id" {
   description = "The subscription ID for the Management subscription"
   type        = string
-  default     = "39f647ab-5261-47b0-ad91-1719dcd107a1"
+  default     = "53fea26b-011b-4520-b157-e31b034c7900"
 }
 
-# =============================================================================
-# Common Variables
-# =============================================================================
-
-variable "customer" {
-  description = "Customer name for tagging"
+# Project metadata variables
+variable "customer_name" {
+  description = "Name of the customer"
   type        = string
   default     = "Cloud AI Consulting"
 }
 
-variable "project" {
-  description = "Project name for tagging"
+variable "project_name" {
+  description = "Name of the project"
   type        = string
   default     = "Secure Cloud Foundations"
 }
 
 variable "environment" {
-  description = "Environment (Production, Development, etc.)"
+  description = "Environment name (Production, Development, etc.)"
   type        = string
   default     = "Production"
 }
 
 variable "deployment_id" {
-  description = "Unique deployment identifier"
+  description = "Unique identifier for this deployment"
   type        = string
-  default     = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
+  default     = "7e6e79d1-70cd-4feb-8f93-d22e3f2f6fca"
 }
 
 variable "region" {
-  description = "Primary Azure region for deployment"
+  description = "Azure region for resources"
   type        = string
-  default     = "westus3"
+  default     = "eastus2"
 }
 
-variable "management_region" {
-  description = "Azure region for Management subscription resources"
-  type        = string
-  default     = "westus3"
+variable "tags" {
+  description = "Additional tags to apply to resources"
+  type        = map(string)
+  default     = {}
 }
 
-# =============================================================================
-# Diagnostic Settings Variables
-# =============================================================================
+# Network resource names
+variable "vnet_name" {
+  description = "Name of the Identity VNet"
+  type        = string
+  default     = "vnet-idm-prd-eus2-01"
+}
 
+variable "network_resource_group_name" {
+  description = "Name of the network resource group in Identity subscription"
+  type        = string
+  default     = "rg-network-prd-idm-eus2-01"
+}
+
+# Diagnostic settings variables
 variable "vnet_diagnostic_setting_name" {
   description = "Name for the VNet diagnostic setting"
   type        = string
-  default     = "diag-vnet-idm-prd-wus3-01"
+  default     = "diag-vnet-idm-prd-eus2-01"
 }
 
 variable "diagnostic_retention_days" {
@@ -70,30 +74,27 @@ variable "diagnostic_retention_days" {
   default     = 90
 }
 
-# =============================================================================
-# Flow Log Variables
-# =============================================================================
-
+# Flow log variables
 variable "vnet_flow_log_name" {
   description = "Name for the VNet flow log"
   type        = string
-  default     = "fl-vnet-idm-prd-wus3-01"
+  default     = "fl-vnet-idm-prd-eus2-01"
 }
 
 variable "flow_log_enabled" {
-  description = "Enable flow logging"
+  description = "Whether flow logging is enabled"
   type        = bool
   default     = true
 }
 
 variable "flow_log_version" {
-  description = "Flow log version (1 or 2)"
+  description = "Version of the flow log format (1 or 2)"
   type        = number
   default     = 2
 }
 
 variable "flow_log_retention_enabled" {
-  description = "Enable flow log retention"
+  description = "Whether retention policy is enabled for flow logs"
   type        = bool
   default     = true
 }
@@ -105,26 +106,23 @@ variable "flow_log_retention_days" {
 }
 
 variable "traffic_analytics_enabled" {
-  description = "Enable traffic analytics"
+  description = "Whether traffic analytics is enabled"
   type        = bool
   default     = true
 }
 
-variable "traffic_analytics_interval" {
-  description = "Traffic analytics processing interval in minutes (10 or 60)"
+variable "traffic_analytics_interval_minutes" {
+  description = "Interval in minutes for traffic analytics processing (10 or 60)"
   type        = number
   default     = 10
 
   validation {
-    condition     = contains([10, 60], var.traffic_analytics_interval)
-    error_message = "Traffic analytics interval must be 10 or 60 minutes."
+    condition     = contains([10, 60], var.traffic_analytics_interval_minutes)
+    error_message = "Traffic analytics interval must be either 10 or 60 minutes."
   }
 }
 
-# =============================================================================
-# Remote State Configuration Variables
-# =============================================================================
-
+# Remote state configuration variables
 variable "tfstate_resource_group_name" {
   description = "Resource group name for Terraform state storage"
   type        = string
@@ -144,7 +142,7 @@ variable "tfstate_container_name" {
 }
 
 variable "tfstate_subscription_id" {
-  description = "Subscription ID where Terraform state storage resides"
+  description = "Subscription ID where Terraform state storage is located"
   type        = string
   default     = "53fea26b-011b-4520-b157-e31b034c7900"
 }
@@ -153,16 +151,6 @@ variable "tfstate_subscription_id" {
 # Standard Landing Zone Variables
 # These variables are common across all deployments
 # ============================================
-
-variable "customer_name" {
-  description = "Customer name for the Landing Zone"
-  type        = string
-}
-
-variable "project_name" {
-  description = "Project name for the Landing Zone"
-  type        = string
-}
 
 variable "hub_vnet_cidr" {
   description = "CIDR block for the hub VNet"
@@ -186,10 +174,4 @@ variable "enable_bastion" {
   description = "Enable Azure Bastion for secure VM access"
   type        = bool
   default     = true
-}
-
-variable "tags" {
-  description = "Resource tags to apply to all resources"
-  type        = map(string)
-  default     = {}
 }

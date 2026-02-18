@@ -1,17 +1,17 @@
 variable "subscription_id" {
   description = "The Azure subscription ID for the Management subscription"
   type        = string
-  default     = "39f647ab-5261-47b0-ad91-1719dcd107a1"
+  default     = "53fea26b-011b-4520-b157-e31b034c7900"
 }
 
 variable "region" {
   description = "The Azure region for resource deployment"
   type        = string
-  default     = "West US 3"
+  default     = "East US 2"
 }
 
 variable "environment" {
-  description = "The environment name (e.g., Production, Development)"
+  description = "The environment for the deployment"
   type        = string
   default     = "Production"
 }
@@ -19,37 +19,37 @@ variable "environment" {
 variable "nsg_resource_group_name" {
   description = "The name of the resource group for NSGs"
   type        = string
-  default     = "rg-nsg-mgmt-prd-wus3-01"
+  default     = "rg-nsg-mgmt-prd-eus2-01"
 }
 
 variable "nsg_pe_name" {
-  description = "The name of the NSG for the Private Endpoints subnet"
+  description = "The name of the NSG for Private Endpoint subnet"
   type        = string
-  default     = "nsg-mgmt-pe-prd-wus3-01"
+  default     = "nsg-mgmt-pe-prd-eus2-01"
 }
 
 variable "nsg_tools_name" {
-  description = "The name of the NSG for the Tools subnet"
+  description = "The name of the NSG for Tools subnet"
   type        = string
-  default     = "nsg-mgmt-tools-prd-wus3-01"
-}
-
-variable "subnet_pe_name" {
-  description = "The name of the Private Endpoints subnet"
-  type        = string
-  default     = "snet-pe-mgmt-wus3-01"
-}
-
-variable "subnet_tools_name" {
-  description = "The name of the Tools subnet"
-  type        = string
-  default     = "snet-tools-mgmt-wus3-01"
+  default     = "nsg-mgmt-tools-prd-eus2-01"
 }
 
 variable "vnet_name" {
   description = "The name of the Management VNet"
   type        = string
-  default     = "vnet-mgmt-prd-wus3-01"
+  default     = "vnet-mgmt-prd-eus2-01"
+}
+
+variable "subnet_pe_name" {
+  description = "The name of the Private Endpoint subnet"
+  type        = string
+  default     = "snet-pe-mgmt-eus2-01"
+}
+
+variable "subnet_tools_name" {
+  description = "The name of the Tools subnet"
+  type        = string
+  default     = "snet-tools-mgmt-eus2-01"
 }
 
 variable "tags" {
@@ -59,31 +59,31 @@ variable "tags" {
     customer      = "Cloud AI Consulting"
     project       = "Secure Cloud Foundations"
     environment   = "Production"
-    deployment_id = "925e43c3-6edd-4030-9310-0f384ef3ac0b"
-    deployed_by   = "Terraform"
+    deployment_id = "7e6e79d1-70cd-4feb-8f93-d22e3f2f6fca"
+    subscription  = "management"
   }
 }
 
 variable "remote_state_resource_group_name" {
-  description = "Resource group name for Terraform state storage"
+  description = "Resource group name for remote state storage"
   type        = string
   default     = "rg-storage-ncus-01"
 }
 
 variable "remote_state_storage_account_name" {
-  description = "Storage account name for Terraform state"
+  description = "Storage account name for remote state"
   type        = string
   default     = "sacloudaiconsulting01"
 }
 
 variable "remote_state_container_name" {
-  description = "Container name for Terraform state"
+  description = "Container name for remote state"
   type        = string
   default     = "tfstate"
 }
 
 variable "remote_state_subscription_id" {
-  description = "Subscription ID for the Terraform state storage account"
+  description = "Subscription ID for remote state storage"
   type        = string
   default     = "53fea26b-011b-4520-b157-e31b034c7900"
 }

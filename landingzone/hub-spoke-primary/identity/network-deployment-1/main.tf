@@ -13,16 +13,16 @@ provider "azurerm" {
   subscription_id = var.subscription_id
 }
 
-# Provider for connectivity subscription (for VNet peering)
+# Provider for Connectivity subscription (for peering)
 provider "azurerm" {
   alias           = "connectivity"
   features {}
   subscription_id = var.connectivity_subscription_id
 }
 
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Resource Groups
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 # Network Resource Group
 resource "azurerm_resource_group" "network" {
@@ -45,9 +45,9 @@ resource "azurerm_resource_group" "dns" {
   tags     = var.tags
 }
 
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Virtual Network
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 resource "azurerm_virtual_network" "identity" {
   name                = var.vnet_name
@@ -57,15 +57,15 @@ resource "azurerm_virtual_network" "identity" {
   tags                = var.tags
 }
 
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Subnets
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 resource "azurerm_subnet" "private_endpoints" {
-  name                              = var.subnet_private_endpoints_name
+  name                              = var.subnet_pe_name
   resource_group_name               = azurerm_resource_group.network.name
   virtual_network_name              = azurerm_virtual_network.identity.name
-  address_prefixes                  = [var.subnet_private_endpoints_prefix]
+  address_prefixes                  = [var.subnet_pe_address_prefix]
   private_endpoint_network_policies = "Enabled"
 }
 
@@ -73,17 +73,17 @@ resource "azurerm_subnet" "tools" {
   name                 = var.subnet_tools_name
   resource_group_name  = azurerm_resource_group.network.name
   virtual_network_name = azurerm_virtual_network.identity.name
-  address_prefixes     = [var.subnet_tools_prefix]
+  address_prefixes     = [var.subnet_tools_address_prefix]
 }
 
 resource "azurerm_subnet" "dns_inbound" {
-  name                 = var.subnet_dns_inbound_name
+  name                 = var.subnet_inbound_name
   resource_group_name  = azurerm_resource_group.network.name
   virtual_network_name = azurerm_virtual_network.identity.name
-  address_prefixes     = [var.subnet_dns_inbound_prefix]
+  address_prefixes     = [var.subnet_inbound_address_prefix]
 
   delegation {
-    name = "dns-resolver-delegation"
+    name = "Microsoft.Network.dnsResolvers"
     service_delegation {
       name    = "Microsoft.Network/dnsResolvers"
       actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
@@ -92,13 +92,13 @@ resource "azurerm_subnet" "dns_inbound" {
 }
 
 resource "azurerm_subnet" "dns_outbound" {
-  name                 = var.subnet_dns_outbound_name
+  name                 = var.subnet_outbound_name
   resource_group_name  = azurerm_resource_group.network.name
   virtual_network_name = azurerm_virtual_network.identity.name
-  address_prefixes     = [var.subnet_dns_outbound_prefix]
+  address_prefixes     = [var.subnet_outbound_address_prefix]
 
   delegation {
-    name = "dns-resolver-delegation"
+    name = "Microsoft.Network.dnsResolvers"
     service_delegation {
       name    = "Microsoft.Network/dnsResolvers"
       actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
@@ -107,29 +107,29 @@ resource "azurerm_subnet" "dns_outbound" {
 }
 
 resource "azurerm_subnet" "domain_controllers" {
-  name                 = var.subnet_domain_controllers_name
+  name                 = var.subnet_dc_name
   resource_group_name  = azurerm_resource_group.network.name
   virtual_network_name = azurerm_virtual_network.identity.name
-  address_prefixes     = [var.subnet_domain_controllers_prefix]
+  address_prefixes     = [var.subnet_dc_address_prefix]
 }
 
 resource "azurerm_subnet" "infoblox_mgmt" {
-  name                 = var.subnet_infoblox_mgmt_name
+  name                 = var.subnet_ib_mgmt_name
   resource_group_name  = azurerm_resource_group.network.name
   virtual_network_name = azurerm_virtual_network.identity.name
-  address_prefixes     = [var.subnet_infoblox_mgmt_prefix]
+  address_prefixes     = [var.subnet_ib_mgmt_address_prefix]
 }
 
 resource "azurerm_subnet" "infoblox_lan1" {
-  name                 = var.subnet_infoblox_lan1_name
+  name                 = var.subnet_ib_lan1_name
   resource_group_name  = azurerm_resource_group.network.name
   virtual_network_name = azurerm_virtual_network.identity.name
-  address_prefixes     = [var.subnet_infoblox_lan1_prefix]
+  address_prefixes     = [var.subnet_ib_lan1_address_prefix]
 }
 
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Network Watcher
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 resource "azurerm_network_watcher" "identity" {
   name                = var.network_watcher_name
@@ -138,16 +138,15 @@ resource "azurerm_network_watcher" "identity" {
   tags                = var.tags
 }
 
-#--------------------------------------------------------------
-# VNet Peering to Hub
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
+# VNet Peering - Identity to Hub
+#------------------------------------------------------------------------------
 
-# Identity to Hub peering
 resource "azurerm_virtual_network_peering" "identity_to_hub" {
   name                         = var.peering_identity_to_hub_name
   resource_group_name          = azurerm_resource_group.network.name
   virtual_network_name         = azurerm_virtual_network.identity.name
-  remote_virtual_network_id    = data.terraform_remote_state.connectivity_network_deployment_1.outputs.vnet_id
+  remote_virtual_network_id    = data.terraform_remote_state.connectivity_network_1.outputs.vnet_id
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
   allow_gateway_transit        = false
@@ -158,8 +157,8 @@ resource "azurerm_virtual_network_peering" "identity_to_hub" {
 resource "azurerm_virtual_network_peering" "hub_to_identity" {
   provider                     = azurerm.connectivity
   name                         = var.peering_hub_to_identity_name
-  resource_group_name          = data.terraform_remote_state.connectivity_network_deployment_1.outputs.resource_group_name
-  virtual_network_name         = data.terraform_remote_state.connectivity_network_deployment_1.outputs.vnet_name
+  resource_group_name          = data.terraform_remote_state.connectivity_network_1.outputs.resource_group_name
+  virtual_network_name         = data.terraform_remote_state.connectivity_network_1.outputs.vnet_name
   remote_virtual_network_id    = azurerm_virtual_network.identity.id
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
@@ -167,9 +166,9 @@ resource "azurerm_virtual_network_peering" "hub_to_identity" {
   use_remote_gateways          = false
 }
 
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Private DNS Resolver
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 resource "azurerm_private_dns_resolver" "identity" {
   name                = var.dns_resolver_name
@@ -179,63 +178,37 @@ resource "azurerm_private_dns_resolver" "identity" {
   tags                = var.tags
 }
 
+#------------------------------------------------------------------------------
+# DNS Resolver Inbound Endpoint
+#------------------------------------------------------------------------------
+
 resource "azurerm_private_dns_resolver_inbound_endpoint" "identity" {
-  name                    = var.dns_resolver_inbound_endpoint_name
+  name                    = var.dns_inbound_endpoint_name
   private_dns_resolver_id = azurerm_private_dns_resolver.identity.id
   location                = azurerm_resource_group.dns.location
+  tags                    = var.tags
 
   ip_configurations {
     private_ip_allocation_method = "Dynamic"
     subnet_id                    = azurerm_subnet.dns_inbound.id
   }
-
-  tags = var.tags
 }
 
+#------------------------------------------------------------------------------
+# DNS Resolver Outbound Endpoint
+#------------------------------------------------------------------------------
+
 resource "azurerm_private_dns_resolver_outbound_endpoint" "identity" {
-  name                    = var.dns_resolver_outbound_endpoint_name
+  name                    = var.dns_outbound_endpoint_name
   private_dns_resolver_id = azurerm_private_dns_resolver.identity.id
   location                = azurerm_resource_group.dns.location
   subnet_id               = azurerm_subnet.dns_outbound.id
   tags                    = var.tags
 }
 
-#--------------------------------------------------------------
-# Private DNS Zones
-#--------------------------------------------------------------
-
-resource "azurerm_private_dns_zone" "zones" {
-  for_each            = toset(var.private_dns_zones)
-  name                = each.value
-  resource_group_name = azurerm_resource_group.dns.name
-  tags                = var.tags
-}
-
-# Link DNS Zones to Identity VNet
-resource "azurerm_private_dns_zone_virtual_network_link" "identity" {
-  for_each              = azurerm_private_dns_zone.zones
-  name                  = "link-${replace(each.key, ".", "-")}-identity"
-  resource_group_name   = azurerm_resource_group.dns.name
-  private_dns_zone_name = each.value.name
-  virtual_network_id    = azurerm_virtual_network.identity.id
-  registration_enabled  = false
-  tags                  = var.tags
-}
-
-# Link DNS Zones to Hub VNet
-resource "azurerm_private_dns_zone_virtual_network_link" "hub" {
-  for_each              = azurerm_private_dns_zone.zones
-  name                  = "link-${replace(each.key, ".", "-")}-hub"
-  resource_group_name   = azurerm_resource_group.dns.name
-  private_dns_zone_name = each.value.name
-  virtual_network_id    = data.terraform_remote_state.connectivity_network_deployment_1.outputs.vnet_id
-  registration_enabled  = false
-  tags                  = var.tags
-}
-
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 # DNS Forwarding Ruleset
-#--------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 resource "azurerm_private_dns_resolver_dns_forwarding_ruleset" "identity" {
   count                                      = var.dns_forwarding_enabled ? 1 : 0
@@ -248,9 +221,9 @@ resource "azurerm_private_dns_resolver_dns_forwarding_ruleset" "identity" {
 
 # DNS Forwarding Rules
 resource "azurerm_private_dns_resolver_forwarding_rule" "rules" {
-  for_each = var.dns_forwarding_enabled ? { for rule in var.dns_forwarding_rules : rule.domain => rule } : {}
+  for_each = var.dns_forwarding_enabled ? { for idx, rule in var.dns_forwarding_rules : rule.domain => rule } : {}
 
-  name                      = "rule-${replace(each.value.domain, ".", "-")}"
+  name                      = replace(each.value.domain, ".", "-")
   dns_forwarding_ruleset_id = azurerm_private_dns_resolver_dns_forwarding_ruleset.identity[0].id
   domain_name               = "${each.value.domain}."
   enabled                   = each.value.state == "Enabled"
@@ -264,18 +237,43 @@ resource "azurerm_private_dns_resolver_forwarding_rule" "rules" {
   }
 }
 
-# Link DNS Forwarding Ruleset to Identity VNet
+# Link DNS Forwarding Ruleset to VNets
 resource "azurerm_private_dns_resolver_virtual_network_link" "identity" {
   count                     = var.dns_forwarding_enabled ? 1 : 0
-  name                      = "link-identity-vnet"
+  name                      = "link-${var.vnet_name}"
   dns_forwarding_ruleset_id = azurerm_private_dns_resolver_dns_forwarding_ruleset.identity[0].id
   virtual_network_id        = azurerm_virtual_network.identity.id
 }
 
-# Link DNS Forwarding Ruleset to Hub VNet
-resource "azurerm_private_dns_resolver_virtual_network_link" "hub" {
-  count                     = var.dns_forwarding_enabled ? 1 : 0
-  name                      = "link-hub-vnet"
-  dns_forwarding_ruleset_id = azurerm_private_dns_resolver_dns_forwarding_ruleset.identity[0].id
-  virtual_network_id        = data.terraform_remote_state.connectivity_network_deployment_1.outputs.vnet_id
+#------------------------------------------------------------------------------
+# Private DNS Zones
+#------------------------------------------------------------------------------
+
+resource "azurerm_private_dns_zone" "zones" {
+  for_each            = toset(var.private_dns_zones)
+  name                = each.value
+  resource_group_name = azurerm_resource_group.dns.name
+  tags                = var.tags
+}
+
+# Link Private DNS Zones to Identity VNet
+resource "azurerm_private_dns_zone_virtual_network_link" "identity_links" {
+  for_each              = toset(var.private_dns_zones)
+  name                  = "link-${var.vnet_name}"
+  resource_group_name   = azurerm_resource_group.dns.name
+  private_dns_zone_name = azurerm_private_dns_zone.zones[each.key].name
+  virtual_network_id    = azurerm_virtual_network.identity.id
+  registration_enabled  = false
+  tags                  = var.tags
+}
+
+# Link Private DNS Zones to Hub VNet
+resource "azurerm_private_dns_zone_virtual_network_link" "hub_links" {
+  for_each              = toset(var.private_dns_zones)
+  name                  = "link-hub-vnet"
+  resource_group_name   = azurerm_resource_group.dns.name
+  private_dns_zone_name = azurerm_private_dns_zone.zones[each.key].name
+  virtual_network_id    = data.terraform_remote_state.connectivity_network_1.outputs.vnet_id
+  registration_enabled  = false
+  tags                  = var.tags
 }

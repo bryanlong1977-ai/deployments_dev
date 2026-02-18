@@ -3,22 +3,22 @@
 #--------------------------------------------------------------
 
 output "ampls_resource_group_name" {
-  description = "Name of the Azure Monitor Private Link Scope resource group"
+  description = "Name of the AMPLS resource group"
   value       = azurerm_resource_group.ampls_rg.name
 }
 
 output "ampls_resource_group_id" {
-  description = "ID of the Azure Monitor Private Link Scope resource group"
+  description = "ID of the AMPLS resource group"
   value       = azurerm_resource_group.ampls_rg.id
 }
 
 output "storage_resource_group_name" {
-  description = "Name of the storage accounts resource group"
+  description = "Name of the storage resource group"
   value       = azurerm_resource_group.storage_rg.name
 }
 
 output "storage_resource_group_id" {
-  description = "ID of the storage accounts resource group"
+  description = "ID of the storage resource group"
   value       = azurerm_resource_group.storage_rg.id
 }
 
@@ -37,12 +37,12 @@ output "ampls_name" {
 }
 
 output "ampls_private_endpoint_id" {
-  description = "ID of the Azure Monitor Private Link Scope private endpoint"
+  description = "ID of the AMPLS private endpoint"
   value       = azurerm_private_endpoint.ampls_pe.id
 }
 
 output "ampls_private_endpoint_ip" {
-  description = "Private IP addresses of the Azure Monitor Private Link Scope private endpoint"
+  description = "Private IP address of the AMPLS private endpoint"
   value       = azurerm_private_endpoint.ampls_pe.private_service_connection[0].private_ip_address
 }
 
@@ -61,14 +61,34 @@ output "vm_storage_account_name" {
 }
 
 output "vm_storage_account_primary_blob_endpoint" {
-  description = "Primary blob endpoint of the VM diagnostics storage account"
+  description = "Primary blob endpoint of the VM storage account"
   value       = azurerm_storage_account.vm_storage.primary_blob_endpoint
 }
 
 output "vm_storage_account_primary_access_key" {
-  description = "Primary access key of the VM diagnostics storage account"
+  description = "Primary access key of the VM storage account"
   value       = azurerm_storage_account.vm_storage.primary_access_key
   sensitive   = true
+}
+
+output "vm_storage_blob_pe_id" {
+  description = "ID of the VM storage blob private endpoint"
+  value       = azurerm_private_endpoint.vm_storage_blob_pe.id
+}
+
+output "vm_storage_file_pe_id" {
+  description = "ID of the VM storage file private endpoint"
+  value       = azurerm_private_endpoint.vm_storage_file_pe.id
+}
+
+output "vm_storage_queue_pe_id" {
+  description = "ID of the VM storage queue private endpoint"
+  value       = azurerm_private_endpoint.vm_storage_queue_pe.id
+}
+
+output "vm_storage_table_pe_id" {
+  description = "ID of the VM storage table private endpoint"
+  value       = azurerm_private_endpoint.vm_storage_table_pe.id
 }
 
 #--------------------------------------------------------------
@@ -86,38 +106,34 @@ output "ntwk_storage_account_name" {
 }
 
 output "ntwk_storage_account_primary_blob_endpoint" {
-  description = "Primary blob endpoint of the network diagnostics storage account"
+  description = "Primary blob endpoint of the network storage account"
   value       = azurerm_storage_account.ntwk_storage.primary_blob_endpoint
 }
 
 output "ntwk_storage_account_primary_access_key" {
-  description = "Primary access key of the network diagnostics storage account"
+  description = "Primary access key of the network storage account"
   value       = azurerm_storage_account.ntwk_storage.primary_access_key
   sensitive   = true
 }
 
-#--------------------------------------------------------------
-# Private Endpoint Outputs
-#--------------------------------------------------------------
-
-output "vm_storage_private_endpoint_ids" {
-  description = "IDs of the VM storage account private endpoints"
-  value = {
-    blob  = azurerm_private_endpoint.vm_storage_blob_pe.id
-    file  = azurerm_private_endpoint.vm_storage_file_pe.id
-    queue = azurerm_private_endpoint.vm_storage_queue_pe.id
-    table = azurerm_private_endpoint.vm_storage_table_pe.id
-  }
+output "ntwk_storage_blob_pe_id" {
+  description = "ID of the network storage blob private endpoint"
+  value       = azurerm_private_endpoint.ntwk_storage_blob_pe.id
 }
 
-output "ntwk_storage_private_endpoint_ids" {
-  description = "IDs of the network storage account private endpoints"
-  value = {
-    blob  = azurerm_private_endpoint.ntwk_storage_blob_pe.id
-    file  = azurerm_private_endpoint.ntwk_storage_file_pe.id
-    queue = azurerm_private_endpoint.ntwk_storage_queue_pe.id
-    table = azurerm_private_endpoint.ntwk_storage_table_pe.id
-  }
+output "ntwk_storage_file_pe_id" {
+  description = "ID of the network storage file private endpoint"
+  value       = azurerm_private_endpoint.ntwk_storage_file_pe.id
+}
+
+output "ntwk_storage_queue_pe_id" {
+  description = "ID of the network storage queue private endpoint"
+  value       = azurerm_private_endpoint.ntwk_storage_queue_pe.id
+}
+
+output "ntwk_storage_table_pe_id" {
+  description = "ID of the network storage table private endpoint"
+  value       = azurerm_private_endpoint.ntwk_storage_table_pe.id
 }
 
 # ============================================

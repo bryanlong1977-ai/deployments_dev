@@ -14,7 +14,7 @@ data "terraform_remote_state" "dmz_network_deployment_1" {
 }
 
 # Reference Connectivity Network Deployment 2 for Hub Internal Load Balancer IP
-# This provides the Trust Firewall LB IP for routing
+# This is needed to get the Trust Firewall LB frontend IP for the default route
 data "terraform_remote_state" "connectivity_network_deployment_2" {
   backend = "azurerm"
   config = {

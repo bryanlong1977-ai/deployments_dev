@@ -46,14 +46,13 @@ resource "azurerm_storage_account" "vm" {
   public_network_access_enabled   = var.storage_public_network_access_enabled
   allow_nested_items_to_be_public = var.storage_allow_nested_items_public
   shared_access_key_enabled       = var.storage_shared_access_key_enabled
-  https_traffic_only_enabled      = var.storage_https_traffic_only_enabled
 
   blob_properties {
     delete_retention_policy {
-      days = var.storage_blob_delete_retention_days
+      days = var.storage_blob_retention_days
     }
     container_delete_retention_policy {
-      days = var.storage_container_delete_retention_days
+      days = var.storage_container_retention_days
     }
   }
 
@@ -61,8 +60,8 @@ resource "azurerm_storage_account" "vm" {
 }
 
 # Storage Account for Network diagnostics
-resource "azurerm_storage_account" "net" {
-  name                            = var.storage_account_net_name
+resource "azurerm_storage_account" "network" {
+  name                            = var.storage_account_network_name
   resource_group_name             = azurerm_resource_group.storage.name
   location                        = azurerm_resource_group.storage.location
   account_tier                    = var.storage_account_tier
@@ -72,26 +71,25 @@ resource "azurerm_storage_account" "net" {
   public_network_access_enabled   = var.storage_public_network_access_enabled
   allow_nested_items_to_be_public = var.storage_allow_nested_items_public
   shared_access_key_enabled       = var.storage_shared_access_key_enabled
-  https_traffic_only_enabled      = var.storage_https_traffic_only_enabled
 
   blob_properties {
     delete_retention_policy {
-      days = var.storage_blob_delete_retention_days
+      days = var.storage_blob_retention_days
     }
     container_delete_retention_policy {
-      days = var.storage_container_delete_retention_days
+      days = var.storage_container_retention_days
     }
   }
 
   tags = var.tags
 }
 
-# Private Endpoint for VM Storage Account - Blob
+# Private Endpoints for VM Storage Account
 resource "azurerm_private_endpoint" "storage_vm_blob" {
-  name                = var.pe_storage_vm_blob_name
+  name                = "pep-${var.storage_account_vm_name}-blob"
   location            = azurerm_resource_group.storage.location
   resource_group_name = azurerm_resource_group.storage.name
-  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.subnet_ids["snet-pe-dmz-wus3-01"]
+  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.pe_subnet_id
 
   private_service_connection {
     name                           = "psc-${var.storage_account_vm_name}-blob"
@@ -102,18 +100,17 @@ resource "azurerm_private_endpoint" "storage_vm_blob" {
 
   private_dns_zone_group {
     name                 = "pdnszg-blob"
-    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.blob.core.windows.net"]]
+    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_blob_id]
   }
 
   tags = var.tags
 }
 
-# Private Endpoint for VM Storage Account - File
 resource "azurerm_private_endpoint" "storage_vm_file" {
-  name                = var.pe_storage_vm_file_name
+  name                = "pep-${var.storage_account_vm_name}-file"
   location            = azurerm_resource_group.storage.location
   resource_group_name = azurerm_resource_group.storage.name
-  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.subnet_ids["snet-pe-dmz-wus3-01"]
+  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.pe_subnet_id
 
   private_service_connection {
     name                           = "psc-${var.storage_account_vm_name}-file"
@@ -124,18 +121,17 @@ resource "azurerm_private_endpoint" "storage_vm_file" {
 
   private_dns_zone_group {
     name                 = "pdnszg-file"
-    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.file.core.windows.net"]]
+    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_file_id]
   }
 
   tags = var.tags
 }
 
-# Private Endpoint for VM Storage Account - Queue
 resource "azurerm_private_endpoint" "storage_vm_queue" {
-  name                = var.pe_storage_vm_queue_name
+  name                = "pep-${var.storage_account_vm_name}-queue"
   location            = azurerm_resource_group.storage.location
   resource_group_name = azurerm_resource_group.storage.name
-  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.subnet_ids["snet-pe-dmz-wus3-01"]
+  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.pe_subnet_id
 
   private_service_connection {
     name                           = "psc-${var.storage_account_vm_name}-queue"
@@ -146,18 +142,17 @@ resource "azurerm_private_endpoint" "storage_vm_queue" {
 
   private_dns_zone_group {
     name                 = "pdnszg-queue"
-    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.queue.core.windows.net"]]
+    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_queue_id]
   }
 
   tags = var.tags
 }
 
-# Private Endpoint for VM Storage Account - Table
 resource "azurerm_private_endpoint" "storage_vm_table" {
-  name                = var.pe_storage_vm_table_name
+  name                = "pep-${var.storage_account_vm_name}-table"
   location            = azurerm_resource_group.storage.location
   resource_group_name = azurerm_resource_group.storage.name
-  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.subnet_ids["snet-pe-dmz-wus3-01"]
+  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.pe_subnet_id
 
   private_service_connection {
     name                           = "psc-${var.storage_account_vm_name}-table"
@@ -168,101 +163,116 @@ resource "azurerm_private_endpoint" "storage_vm_table" {
 
   private_dns_zone_group {
     name                 = "pdnszg-table"
-    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.table.core.windows.net"]]
+    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_table_id]
   }
 
   tags = var.tags
 }
 
-# Private Endpoint for Net Storage Account - Blob
-resource "azurerm_private_endpoint" "storage_net_blob" {
-  name                = var.pe_storage_net_blob_name
+# Private Endpoints for Network Storage Account
+resource "azurerm_private_endpoint" "storage_network_blob" {
+  name                = "pep-${var.storage_account_network_name}-blob"
   location            = azurerm_resource_group.storage.location
   resource_group_name = azurerm_resource_group.storage.name
-  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.subnet_ids["snet-pe-dmz-wus3-01"]
+  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.pe_subnet_id
 
   private_service_connection {
-    name                           = "psc-${var.storage_account_net_name}-blob"
-    private_connection_resource_id = azurerm_storage_account.net.id
+    name                           = "psc-${var.storage_account_network_name}-blob"
+    private_connection_resource_id = azurerm_storage_account.network.id
     is_manual_connection           = false
     subresource_names              = ["blob"]
   }
 
   private_dns_zone_group {
     name                 = "pdnszg-blob"
-    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.blob.core.windows.net"]]
+    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_blob_id]
   }
 
   tags = var.tags
 }
 
-# Private Endpoint for Net Storage Account - File
-resource "azurerm_private_endpoint" "storage_net_file" {
-  name                = var.pe_storage_net_file_name
+resource "azurerm_private_endpoint" "storage_network_file" {
+  name                = "pep-${var.storage_account_network_name}-file"
   location            = azurerm_resource_group.storage.location
   resource_group_name = azurerm_resource_group.storage.name
-  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.subnet_ids["snet-pe-dmz-wus3-01"]
+  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.pe_subnet_id
 
   private_service_connection {
-    name                           = "psc-${var.storage_account_net_name}-file"
-    private_connection_resource_id = azurerm_storage_account.net.id
+    name                           = "psc-${var.storage_account_network_name}-file"
+    private_connection_resource_id = azurerm_storage_account.network.id
     is_manual_connection           = false
     subresource_names              = ["file"]
   }
 
   private_dns_zone_group {
     name                 = "pdnszg-file"
-    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.file.core.windows.net"]]
+    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_file_id]
   }
 
   tags = var.tags
 }
 
-# Private Endpoint for Net Storage Account - Queue
-resource "azurerm_private_endpoint" "storage_net_queue" {
-  name                = var.pe_storage_net_queue_name
+resource "azurerm_private_endpoint" "storage_network_queue" {
+  name                = "pep-${var.storage_account_network_name}-queue"
   location            = azurerm_resource_group.storage.location
   resource_group_name = azurerm_resource_group.storage.name
-  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.subnet_ids["snet-pe-dmz-wus3-01"]
+  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.pe_subnet_id
 
   private_service_connection {
-    name                           = "psc-${var.storage_account_net_name}-queue"
-    private_connection_resource_id = azurerm_storage_account.net.id
+    name                           = "psc-${var.storage_account_network_name}-queue"
+    private_connection_resource_id = azurerm_storage_account.network.id
     is_manual_connection           = false
     subresource_names              = ["queue"]
   }
 
   private_dns_zone_group {
     name                 = "pdnszg-queue"
-    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.queue.core.windows.net"]]
+    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_queue_id]
   }
 
   tags = var.tags
 }
 
-# Private Endpoint for Net Storage Account - Table
-resource "azurerm_private_endpoint" "storage_net_table" {
-  name                = var.pe_storage_net_table_name
+resource "azurerm_private_endpoint" "storage_network_table" {
+  name                = "pep-${var.storage_account_network_name}-table"
   location            = azurerm_resource_group.storage.location
   resource_group_name = azurerm_resource_group.storage.name
-  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.subnet_ids["snet-pe-dmz-wus3-01"]
+  subnet_id           = data.terraform_remote_state.dmz_network_deployment_1.outputs.pe_subnet_id
 
   private_service_connection {
-    name                           = "psc-${var.storage_account_net_name}-table"
-    private_connection_resource_id = azurerm_storage_account.net.id
+    name                           = "psc-${var.storage_account_network_name}-table"
+    private_connection_resource_id = azurerm_storage_account.network.id
     is_manual_connection           = false
     subresource_names              = ["table"]
   }
 
   private_dns_zone_group {
     name                 = "pdnszg-table"
-    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.table.core.windows.net"]]
+    private_dns_zone_ids = [data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_table_id]
   }
 
   tags = var.tags
 }
 
-# Diagnostic Settings for VM Storage Account
+# Recovery Services Vault
+resource "azurerm_recovery_services_vault" "dmz" {
+  name                          = var.recovery_services_vault_name
+  location                      = azurerm_resource_group.rsv.location
+  resource_group_name           = azurerm_resource_group.rsv.name
+  sku                           = var.rsv_sku
+  storage_mode_type             = var.rsv_storage_mode_type
+  cross_region_restore_enabled  = var.rsv_cross_region_restore_enabled
+  soft_delete_enabled           = var.rsv_soft_delete_enabled
+  public_network_access_enabled = var.rsv_public_network_access_enabled
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  tags = var.tags
+}
+
+# Diagnostic settings for Storage Account VM
 resource "azurerm_monitor_diagnostic_setting" "storage_vm" {
   name                       = "diag-${var.storage_account_vm_name}"
   target_resource_id         = azurerm_storage_account.vm.id
@@ -274,7 +284,6 @@ resource "azurerm_monitor_diagnostic_setting" "storage_vm" {
   }
 }
 
-# Diagnostic Settings for VM Storage Account - Blob Service
 resource "azurerm_monitor_diagnostic_setting" "storage_vm_blob" {
   name                       = "diag-${var.storage_account_vm_name}-blob"
   target_resource_id         = "${azurerm_storage_account.vm.id}/blobServices/default"
@@ -283,11 +292,9 @@ resource "azurerm_monitor_diagnostic_setting" "storage_vm_blob" {
   enabled_log {
     category = "StorageRead"
   }
-
   enabled_log {
     category = "StorageWrite"
   }
-
   enabled_log {
     category = "StorageDelete"
   }
@@ -298,10 +305,10 @@ resource "azurerm_monitor_diagnostic_setting" "storage_vm_blob" {
   }
 }
 
-# Diagnostic Settings for Net Storage Account
-resource "azurerm_monitor_diagnostic_setting" "storage_net" {
-  name                       = "diag-${var.storage_account_net_name}"
-  target_resource_id         = azurerm_storage_account.net.id
+# Diagnostic settings for Storage Account Network
+resource "azurerm_monitor_diagnostic_setting" "storage_network" {
+  name                       = "diag-${var.storage_account_network_name}"
+  target_resource_id         = azurerm_storage_account.network.id
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_id
 
   metric {
@@ -310,26 +317,75 @@ resource "azurerm_monitor_diagnostic_setting" "storage_net" {
   }
 }
 
-# Diagnostic Settings for Net Storage Account - Blob Service
-resource "azurerm_monitor_diagnostic_setting" "storage_net_blob" {
-  name                       = "diag-${var.storage_account_net_name}-blob"
-  target_resource_id         = "${azurerm_storage_account.net.id}/blobServices/default"
+resource "azurerm_monitor_diagnostic_setting" "storage_network_blob" {
+  name                       = "diag-${var.storage_account_network_name}-blob"
+  target_resource_id         = "${azurerm_storage_account.network.id}/blobServices/default"
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_id
 
   enabled_log {
     category = "StorageRead"
   }
-
   enabled_log {
     category = "StorageWrite"
   }
-
   enabled_log {
     category = "StorageDelete"
   }
 
   metric {
     category = "Transaction"
+    enabled  = true
+  }
+}
+
+# Diagnostic settings for Recovery Services Vault
+resource "azurerm_monitor_diagnostic_setting" "rsv" {
+  name                       = "diag-${var.recovery_services_vault_name}"
+  target_resource_id         = azurerm_recovery_services_vault.dmz.id
+  log_analytics_workspace_id = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_id
+
+  enabled_log {
+    category = "CoreAzureBackup"
+  }
+  enabled_log {
+    category = "AddonAzureBackupJobs"
+  }
+  enabled_log {
+    category = "AddonAzureBackupAlerts"
+  }
+  enabled_log {
+    category = "AddonAzureBackupPolicy"
+  }
+  enabled_log {
+    category = "AddonAzureBackupStorage"
+  }
+  enabled_log {
+    category = "AddonAzureBackupProtectedInstance"
+  }
+  enabled_log {
+    category = "AzureSiteRecoveryJobs"
+  }
+  enabled_log {
+    category = "AzureSiteRecoveryEvents"
+  }
+  enabled_log {
+    category = "AzureSiteRecoveryReplicatedItems"
+  }
+  enabled_log {
+    category = "AzureSiteRecoveryReplicationStats"
+  }
+  enabled_log {
+    category = "AzureSiteRecoveryRecoveryPoints"
+  }
+  enabled_log {
+    category = "AzureSiteRecoveryReplicationDataUploadRate"
+  }
+  enabled_log {
+    category = "AzureSiteRecoveryProtectedDiskDataChurn"
+  }
+
+  metric {
+    category = "Health"
     enabled  = true
   }
 }
