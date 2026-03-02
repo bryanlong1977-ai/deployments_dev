@@ -13,7 +13,7 @@ provider "azurerm" {
   subscription_id = var.management_subscription_id
 }
 
-# Get current client configuration for Key Vault tenant_id
+# Get current client configuration for tenant_id and object_id
 data "azurerm_client_config" "this" {}
 
 # ============================================
@@ -21,21 +21,21 @@ data "azurerm_client_config" "this" {}
 # ============================================
 
 # Resource Group for Key Vaults
-resource "azurerm_resource_group" "kv" {
+resource "azurerm_resource_group" "key_vault" {
   name     = var.mgmt_key_vault_prd_resource_group
   location = var.region
   tags     = var.tags
 }
 
 # Resource Group for Log Analytics Workspace
-resource "azurerm_resource_group" "log" {
+resource "azurerm_resource_group" "log_analytics" {
   name     = var.mgmt_log_analytics_workspace_resource_group
   location = var.region
   tags     = var.tags
 }
 
 # Resource Group for Managed Identity
-resource "azurerm_resource_group" "mi" {
+resource "azurerm_resource_group" "managed_identity" {
   name     = var.mgmt_managed_identity_resource_group
   location = var.region
   tags     = var.tags
@@ -48,9 +48,9 @@ resource "azurerm_resource_group" "mi" {
 resource "azurerm_log_analytics_workspace" "this" {
   name                          = var.mgmt_log_analytics_workspace_name
   location                      = var.region
-  resource_group_name           = azurerm_resource_group.log.name
-  sku                           = var.log_analytics_sku
-  retention_in_days             = var.log_analytics_retention_days
+  resource_group_name           = azurerm_resource_group.log_analytics.name
+  sku                           = "PerGB2018"
+  retention_in_days             = 90
   local_authentication_enabled  = false
   internet_ingestion_enabled    = false
   internet_query_enabled        = false
@@ -64,7 +64,7 @@ resource "azurerm_log_analytics_workspace" "this" {
 resource "azurerm_key_vault" "prd" {
   name                          = var.mgmt_key_vault_prd_name
   location                      = var.region
-  resource_group_name           = azurerm_resource_group.kv.name
+  resource_group_name           = azurerm_resource_group.key_vault.name
   tenant_id                     = data.azurerm_client_config.this.tenant_id
   sku_name                      = "standard"
   soft_delete_retention_days    = 90
@@ -80,6 +80,29 @@ resource "azurerm_key_vault" "prd" {
   }
 
   tags = var.tags
+}
+
+# Key Vault Production - Private Endpoint
+resource "azurerm_private_endpoint" "kv_prd" {
+  name                = "pep-${var.mgmt_key_vault_prd_name}"
+  location            = var.region
+  resource_group_name = azurerm_resource_group.key_vault.name
+  subnet_id           = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_ids[var.snet_pe_mgmt_eus2_01_subnet_name]
+  tags                = var.tags
+
+  private_service_connection {
+    name                           = "psc-${var.mgmt_key_vault_prd_name}"
+    private_connection_resource_id = azurerm_key_vault.prd.id
+    subresource_names              = ["vault"]
+    is_manual_connection           = false
+  }
+
+  private_dns_zone_group {
+    name = "default"
+    private_dns_zone_ids = [
+      data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.vaultcore.azure.net"]
+    ]
+  }
 }
 
 # ============================================
@@ -89,7 +112,7 @@ resource "azurerm_key_vault" "prd" {
 resource "azurerm_key_vault" "nprd" {
   name                          = var.mgmt_key_vault_nprd_name
   location                      = var.region
-  resource_group_name           = azurerm_resource_group.kv.name
+  resource_group_name           = azurerm_resource_group.key_vault.name
   tenant_id                     = data.azurerm_client_config.this.tenant_id
   sku_name                      = "standard"
   soft_delete_retention_days    = 90
@@ -107,50 +130,25 @@ resource "azurerm_key_vault" "nprd" {
   tags = var.tags
 }
 
-# ============================================
-# Private Endpoints for Key Vaults
-# ============================================
-
-resource "azurerm_private_endpoint" "kv_prd" {
-  name                = "pep-${var.mgmt_key_vault_prd_name}"
-  location            = var.region
-  resource_group_name = azurerm_resource_group.kv.name
-  subnet_id           = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_ids[var.snet_pe_mgmt_eus2_01_subnet_name]
-  tags                = var.tags
-
-  private_service_connection {
-    name                           = "psc-${var.mgmt_key_vault_prd_name}"
-    private_connection_resource_id = azurerm_key_vault.prd.id
-    is_manual_connection           = false
-    subresource_names              = ["vault"]
-  }
-
-  private_dns_zone_group {
-    name = "default"
-    private_dns_zone_ids = [
-      data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids[var.keyvault_dns_zone_name]
-    ]
-  }
-}
-
+# Key Vault Non-Production - Private Endpoint
 resource "azurerm_private_endpoint" "kv_nprd" {
   name                = "pep-${var.mgmt_key_vault_nprd_name}"
   location            = var.region
-  resource_group_name = azurerm_resource_group.kv.name
+  resource_group_name = azurerm_resource_group.key_vault.name
   subnet_id           = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_ids[var.snet_pe_mgmt_eus2_01_subnet_name]
   tags                = var.tags
 
   private_service_connection {
     name                           = "psc-${var.mgmt_key_vault_nprd_name}"
     private_connection_resource_id = azurerm_key_vault.nprd.id
-    is_manual_connection           = false
     subresource_names              = ["vault"]
+    is_manual_connection           = false
   }
 
   private_dns_zone_group {
     name = "default"
     private_dns_zone_ids = [
-      data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids[var.keyvault_dns_zone_name]
+      data.terraform_remote_state.identity_network_deployment_1.outputs.private_dns_zone_ids["privatelink.vaultcore.azure.net"]
     ]
   }
 }
@@ -162,6 +160,6 @@ resource "azurerm_private_endpoint" "kv_nprd" {
 resource "azurerm_user_assigned_identity" "this" {
   name                = var.mgmt_managed_identity_name
   location            = var.region
-  resource_group_name = azurerm_resource_group.mi.name
+  resource_group_name = azurerm_resource_group.managed_identity.name
   tags                = var.tags
 }

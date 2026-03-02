@@ -17,7 +17,7 @@ data "terraform_remote_state" "connectivity_network_deployment_1" {
 
 # =============================================================================
 # Remote State - Identity Network Deployment 1
-# (VNet ID, resource group name, subnet IDs)
+# (VNet ID for diagnostics and flow logs)
 # =============================================================================
 data "terraform_remote_state" "identity_network_deployment_1" {
   backend = "azurerm"
@@ -34,7 +34,7 @@ data "terraform_remote_state" "identity_network_deployment_1" {
 
 # =============================================================================
 # Remote State - Management Tools Deployment 1
-# (Log Analytics Workspace ID and GUID)
+# (Log Analytics Workspace for diagnostics and traffic analytics)
 # =============================================================================
 data "terraform_remote_state" "management_tools_deployment_1" {
   backend = "azurerm"
@@ -51,7 +51,7 @@ data "terraform_remote_state" "management_tools_deployment_1" {
 
 # =============================================================================
 # Remote State - Identity Tools Deployment 1
-# (Network Storage Account ID for flow logs)
+# (Network Storage Account for flow logs)
 # =============================================================================
 data "terraform_remote_state" "identity_tools_deployment_1" {
   backend = "azurerm"

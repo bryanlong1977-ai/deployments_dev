@@ -1,8 +1,6 @@
 # ============================================
 # Remote State - Management Network Deployment 1
 # ============================================
-# Provides: subnet_ids, vnet_id, vnet_name, resource_group_name
-
 data "terraform_remote_state" "management_network_deployment_1" {
   backend = "azurerm"
   config = {
@@ -18,9 +16,8 @@ data "terraform_remote_state" "management_network_deployment_1" {
 
 # ============================================
 # Remote State - Identity Network Deployment 1
+# (For Private DNS Zone IDs used by Key Vault PEPs)
 # ============================================
-# Provides: private_dns_zone_ids (map of DNS zone name => zone ID)
-
 data "terraform_remote_state" "identity_network_deployment_1" {
   backend = "azurerm"
   config = {

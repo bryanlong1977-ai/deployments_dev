@@ -1,6 +1,6 @@
 variable "connectivity_subscription_id" {
   type        = string
-  description = "The subscription ID for the Connectivity subscription where resources will be deployed."
+  description = "The subscription ID for the connectivity subscription where the route table will be deployed."
 }
 
 variable "region" {
@@ -10,17 +10,17 @@ variable "region" {
 
 variable "connectivity_route_table_name" {
   type        = string
-  description = "The name of the route table for the connectivity hub VNet."
+  description = "The name of the connectivity hub route table."
 }
 
 variable "connectivity_route_table_resource_group" {
   type        = string
-  description = "The name of the resource group for the connectivity route table."
+  description = "The name of the resource group for the connectivity hub route table."
 }
 
 variable "tags" {
   type        = map(string)
-  description = "A map of tags to apply to all resources."
+  description = "A map of tags to apply to all resources in this deployment."
 }
 
 # ============================================
@@ -103,9 +103,13 @@ variable "hub_network_watcher_name" { default = null }
 variable "hub_network_watcher_resource_group" { default = null }
 variable "hub_route_table_name" { default = null }
 variable "hub_route_table_resource_group" { default = null }
+variable "hub_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "hub_storage_account_ntwk_name" { default = null }
+variable "hub_storage_account_ntwk_pe_services" { default = null }
 variable "hub_storage_account_ntwk_resource_group" { default = null }
+variable "hub_storage_account_vm_enable_private_endpoint" { default = null }
 variable "hub_storage_account_vm_name" { default = null }
+variable "hub_storage_account_vm_pe_services" { default = null }
 variable "hub_storage_account_vm_resource_group" { default = null }
 variable "hub_to_identity_peering_name" { default = null }
 variable "hub_to_management_peering_name" { default = null }
@@ -128,12 +132,14 @@ variable "idm_recovery_services_vault_name" { default = null }
 variable "idm_recovery_services_vault_resource_group" { default = null }
 variable "idm_route_table_name" { default = null }
 variable "idm_route_table_resource_group" { default = null }
+variable "idm_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "idm_storage_account_ntwk_name" { default = null }
+variable "idm_storage_account_ntwk_pe_services" { default = null }
 variable "idm_storage_account_ntwk_resource_group" { default = null }
+variable "idm_storage_account_vm_enable_private_endpoint" { default = null }
 variable "idm_storage_account_vm_name" { default = null }
+variable "idm_storage_account_vm_pe_services" { default = null }
 variable "idm_storage_account_vm_resource_group" { default = null }
-variable "management_network_watcher_name" { default = null }
-variable "management_network_watcher_resource_group" { default = null }
 variable "management_nsg_names" { default = null }
 variable "management_nsg_resource_group" { default = null }
 variable "management_resource_group_name" { default = null }
@@ -157,15 +163,17 @@ variable "mgmt_managed_identity_name" { default = null }
 variable "mgmt_managed_identity_resource_group" { default = null }
 variable "mgmt_network_security_group_name" { default = null }
 variable "mgmt_network_security_group_resource_group" { default = null }
-variable "mgmt_network_watcher_name" { default = null }
-variable "mgmt_network_watcher_resource_group" { default = null }
 variable "mgmt_recovery_services_vault_name" { default = null }
 variable "mgmt_recovery_services_vault_resource_group" { default = null }
 variable "mgmt_route_table_name" { default = null }
 variable "mgmt_route_table_resource_group" { default = null }
+variable "mgmt_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_ntwk_name" { default = null }
+variable "mgmt_storage_account_ntwk_pe_services" { default = null }
 variable "mgmt_storage_account_ntwk_resource_group" { default = null }
+variable "mgmt_storage_account_vm_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_vm_name" { default = null }
+variable "mgmt_storage_account_vm_pe_services" { default = null }
 variable "mgmt_storage_account_vm_resource_group" { default = null }
 variable "mgmt_vnet_cidr" { default = null }
 variable "private_dns_resolver_name" { default = null }

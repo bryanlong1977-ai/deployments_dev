@@ -1,6 +1,7 @@
-# ============================================
-# Remote State - Connectivity Network Deployment 1
-# ============================================
+# =============================================================================
+# Remote State: Connectivity Network Deployment 1
+# Provides hub VNet ID, name, resource group name for peering
+# =============================================================================
 data "terraform_remote_state" "connectivity_network_deployment_1" {
   backend = "azurerm"
   config = {

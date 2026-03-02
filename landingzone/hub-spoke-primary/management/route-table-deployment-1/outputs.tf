@@ -8,24 +8,14 @@ output "route_table_name" {
   value       = azurerm_route_table.this.name
 }
 
-output "resource_group_name" {
-  description = "The name of the route table resource group."
+output "route_table_resource_group_name" {
+  description = "The name of the resource group containing the management route table."
   value       = azurerm_resource_group.this.name
 }
 
-output "resource_group_id" {
-  description = "The ID of the route table resource group."
-  value       = azurerm_resource_group.this.id
-}
-
-output "route_table_association_ids" {
+output "subnet_route_table_association_ids" {
   description = "Map of subnet names to their route table association IDs."
   value       = { for k, v in azurerm_subnet_route_table_association.subnets : k => v.id }
-}
-
-output "default_route_id" {
-  description = "The ID of the default route."
-  value       = azurerm_route.this.id
 }
 
 # ============================================
@@ -41,6 +31,16 @@ output "vnet_id" {
 output "vnet_name" {
   description = "The name of the deployed Virtual Network"
   value       = null  # TODO: Set to the correct resource reference
+}
+
+output "resource_group_name" {
+  description = "The name of the resource group"
+  value       = azurerm_resource_group.this.name
+}
+
+output "resource_group_id" {
+  description = "The ID of the resource group"
+  value       = azurerm_resource_group.this.id
 }
 
 output "location" {

@@ -1,6 +1,6 @@
 # ============================================
 # Remote State: Connectivity Network Deployment 1
-# Provides: vnet_id, vnet_name, resource_group_name, network_watcher_id, subnet_ids
+# Provides: vnet_id, vnet_name, resource_group_name, network_watcher_name, network_watcher_resource_group_name, subnet_ids
 # ============================================
 data "terraform_remote_state" "connectivity_network_1" {
   backend = "azurerm"
@@ -9,22 +9,6 @@ data "terraform_remote_state" "connectivity_network_1" {
     storage_account_name = "sacloudaiconsulting01"
     container_name       = "tfstate"
     key                  = "hub-spoke-primary/connectivity/network-deployment-1.tfstate"
-    subscription_id      = "53fea26b-011b-4520-b157-e31b034c7900"
-    use_azuread_auth     = true
-  }
-}
-
-# ============================================
-# Remote State: Identity Network Deployment 1
-# Provides: vnet_id, private_dns_zone_ids, private_dns_resolver_id
-# ============================================
-data "terraform_remote_state" "identity_network_1" {
-  backend = "azurerm"
-  config = {
-    resource_group_name  = "rg-storage-ncus-01"
-    storage_account_name = "sacloudaiconsulting01"
-    container_name       = "tfstate"
-    key                  = "hub-spoke-primary/identity/network-deployment-1.tfstate"
     subscription_id      = "53fea26b-011b-4520-b157-e31b034c7900"
     use_azuread_auth     = true
   }
@@ -48,7 +32,7 @@ data "terraform_remote_state" "management_tools_1" {
 
 # ============================================
 # Remote State: Connectivity Tools Deployment 1
-# Provides: storage_account_ntwk_id (network storage account for flow logs)
+# Provides: storage_account_ntwk_id (for flow log storage)
 # ============================================
 data "terraform_remote_state" "connectivity_tools_1" {
   backend = "azurerm"

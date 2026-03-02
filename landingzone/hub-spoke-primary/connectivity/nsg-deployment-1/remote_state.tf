@@ -1,8 +1,7 @@
 # =============================================================================
-# Remote State References for Connectivity NSG Deployment 1
+# Remote State - Connectivity Network Deployment 1
 # =============================================================================
-
-data "terraform_remote_state" "connectivity_network_1" {
+data "terraform_remote_state" "connectivity_network_deployment_1" {
   backend = "azurerm"
   config = {
     resource_group_name  = "rg-storage-ncus-01"

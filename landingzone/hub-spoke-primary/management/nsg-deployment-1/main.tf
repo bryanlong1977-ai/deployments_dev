@@ -34,7 +34,7 @@ resource "azurerm_network_security_group" "nsgs" {
 }
 
 # =============================================================================
-# NSG-to-Subnet Associations
+# NSG Association to Subnets
 # =============================================================================
 resource "azurerm_subnet_network_security_group_association" "nsgs" {
   for_each                  = var.management_nsg_names
@@ -79,7 +79,7 @@ resource "azurerm_network_security_rule" "deny_all_outbound" {
 }
 
 # =============================================================================
-# Allow VNet Inbound - Allow traffic within the VNet
+# Allow VNet Inbound - one per NSG
 # =============================================================================
 resource "azurerm_network_security_rule" "allow_vnet_inbound" {
   for_each                    = var.management_nsg_names
@@ -97,7 +97,7 @@ resource "azurerm_network_security_rule" "allow_vnet_inbound" {
 }
 
 # =============================================================================
-# Allow Azure Load Balancer Inbound
+# Allow Azure Load Balancer Inbound - one per NSG
 # =============================================================================
 resource "azurerm_network_security_rule" "allow_azure_lb_inbound" {
   for_each                    = var.management_nsg_names
@@ -115,7 +115,7 @@ resource "azurerm_network_security_rule" "allow_azure_lb_inbound" {
 }
 
 # =============================================================================
-# Allow VNet Outbound
+# Allow VNet Outbound - one per NSG
 # =============================================================================
 resource "azurerm_network_security_rule" "allow_vnet_outbound" {
   for_each                    = var.management_nsg_names
@@ -133,11 +133,11 @@ resource "azurerm_network_security_rule" "allow_vnet_outbound" {
 }
 
 # =============================================================================
-# Allow HTTPS Outbound - Required for Azure services and management
+# Allow HTTPS Outbound - one per NSG
 # =============================================================================
 resource "azurerm_network_security_rule" "allow_https_outbound" {
   for_each                    = var.management_nsg_names
-  name                        = "AllowHttpsOutbound"
+  name                        = "AllowHTTPSOutbound"
   priority                    = 110
   direction                   = "Outbound"
   access                      = "Allow"
@@ -151,7 +151,7 @@ resource "azurerm_network_security_rule" "allow_https_outbound" {
 }
 
 # =============================================================================
-# Allow Azure Monitor Outbound - Required for diagnostics and monitoring
+# Allow Azure Monitor Outbound (ports 443, 1886) - one per NSG
 # =============================================================================
 resource "azurerm_network_security_rule" "allow_azure_monitor_outbound" {
   for_each                    = var.management_nsg_names
@@ -161,7 +161,7 @@ resource "azurerm_network_security_rule" "allow_azure_monitor_outbound" {
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "*"
-  destination_port_range      = "443"
+  destination_port_ranges     = ["443", "1886"]
   source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "AzureMonitor"
   resource_group_name         = azurerm_resource_group.this.name
@@ -169,19 +169,37 @@ resource "azurerm_network_security_rule" "allow_azure_monitor_outbound" {
 }
 
 # =============================================================================
-# Allow DNS Outbound - Required for name resolution
+# Allow Storage Outbound - one per NSG
 # =============================================================================
-resource "azurerm_network_security_rule" "allow_dns_outbound" {
+resource "azurerm_network_security_rule" "allow_storage_outbound" {
   for_each                    = var.management_nsg_names
-  name                        = "AllowDnsOutbound"
+  name                        = "AllowStorageOutbound"
   priority                    = 130
   direction                   = "Outbound"
   access                      = "Allow"
-  protocol                    = "*"
+  protocol                    = "Tcp"
   source_port_range           = "*"
-  destination_port_range      = "53"
+  destination_port_range      = "443"
   source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "*"
+  destination_address_prefix  = "Storage"
+  resource_group_name         = azurerm_resource_group.this.name
+  network_security_group_name = azurerm_network_security_group.nsgs[each.key].name
+}
+
+# =============================================================================
+# Allow Key Vault Outbound - one per NSG
+# =============================================================================
+resource "azurerm_network_security_rule" "allow_keyvault_outbound" {
+  for_each                    = var.management_nsg_names
+  name                        = "AllowKeyVaultOutbound"
+  priority                    = 140
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "443"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "AzureKeyVault"
   resource_group_name         = azurerm_resource_group.this.name
   network_security_group_name = azurerm_network_security_group.nsgs[each.key].name
 }

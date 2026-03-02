@@ -13,33 +13,34 @@ provider "azurerm" {
   subscription_id = var.identity_subscription_id
 }
 
+# Provider alias for connectivity subscription (for hub-side peering)
 provider "azurerm" {
   alias           = "connectivity"
   features {}
   subscription_id = var.connectivity_subscription_id
 }
 
-# ==============================================
+# =============================================================================
 # Resource Group - Identity Network
-# ==============================================
+# =============================================================================
 resource "azurerm_resource_group" "this" {
   name     = var.identity_resource_group_name
   location = var.region
   tags     = var.tags
 }
 
-# ==============================================
+# =============================================================================
 # Resource Group - DNS
-# ==============================================
+# =============================================================================
 resource "azurerm_resource_group" "dns" {
   name     = var.dns_resource_group
   location = var.region
   tags     = var.tags
 }
 
-# ==============================================
+# =============================================================================
 # Virtual Network - Identity
-# ==============================================
+# =============================================================================
 resource "azurerm_virtual_network" "this" {
   name                = var.identity_vnet_name
   location            = var.region
@@ -48,9 +49,9 @@ resource "azurerm_virtual_network" "this" {
   tags                = var.tags
 }
 
-# ==============================================
+# =============================================================================
 # Subnets - Identity
-# ==============================================
+# =============================================================================
 resource "azurerm_subnet" "subnets" {
   for_each             = var.identity_subnets
   name                 = each.key
@@ -81,9 +82,9 @@ resource "azurerm_subnet" "subnets" {
   }
 }
 
-# ==============================================
+# =============================================================================
 # VNet Peering - Identity to Hub (spoke side)
-# ==============================================
+# =============================================================================
 resource "azurerm_virtual_network_peering" "spoke_to_hub" {
   name                         = var.identity_to_hub_peering_name
   resource_group_name          = azurerm_resource_group.this.name
@@ -95,9 +96,9 @@ resource "azurerm_virtual_network_peering" "spoke_to_hub" {
   use_remote_gateways          = false
 }
 
-# ==============================================
-# VNet Peering - Hub to Identity (hub side)
-# ==============================================
+# =============================================================================
+# VNet Peering - Hub to Identity (hub side, using connectivity provider)
+# =============================================================================
 resource "azurerm_virtual_network_peering" "hub_to_spoke" {
   provider                     = azurerm.connectivity
   name                         = var.hub_to_identity_peering_name
@@ -110,9 +111,9 @@ resource "azurerm_virtual_network_peering" "hub_to_spoke" {
   use_remote_gateways          = false
 }
 
-# ==============================================
+# =============================================================================
 # Private DNS Resolver
-# ==============================================
+# =============================================================================
 resource "azurerm_private_dns_resolver" "this" {
   name                = var.private_dns_resolver_name
   resource_group_name = azurerm_resource_group.dns.name
@@ -121,9 +122,9 @@ resource "azurerm_private_dns_resolver" "this" {
   tags                = var.tags
 }
 
-# ==============================================
+# =============================================================================
 # DNS Resolver Inbound Endpoint
-# ==============================================
+# =============================================================================
 resource "azurerm_private_dns_resolver_inbound_endpoint" "this" {
   name                    = var.dns_inbound_endpoint_name
   private_dns_resolver_id = azurerm_private_dns_resolver.this.id
@@ -136,9 +137,9 @@ resource "azurerm_private_dns_resolver_inbound_endpoint" "this" {
   }
 }
 
-# ==============================================
+# =============================================================================
 # DNS Resolver Outbound Endpoint
-# ==============================================
+# =============================================================================
 resource "azurerm_private_dns_resolver_outbound_endpoint" "this" {
   name                    = var.dns_outbound_endpoint_name
   private_dns_resolver_id = azurerm_private_dns_resolver.this.id
@@ -147,20 +148,20 @@ resource "azurerm_private_dns_resolver_outbound_endpoint" "this" {
   tags                    = var.tags
 }
 
-# ==============================================
+# =============================================================================
 # DNS Forwarding Ruleset
-# ==============================================
+# =============================================================================
 resource "azurerm_private_dns_resolver_dns_forwarding_ruleset" "this" {
-  name                                       = "dfrs-identity-prd-eus2-01"
+  name                                       = "dfrset-identity-prd-eus2-01"
   resource_group_name                        = azurerm_resource_group.dns.name
   location                                   = var.region
   private_dns_resolver_outbound_endpoint_ids = [azurerm_private_dns_resolver_outbound_endpoint.this.id]
   tags                                       = var.tags
 }
 
-# ==============================================
+# =============================================================================
 # Private DNS Zones
-# ==============================================
+# =============================================================================
 resource "azurerm_private_dns_zone" "zones" {
   for_each            = toset(var.private_dns_zones)
   name                = each.value
@@ -168,9 +169,9 @@ resource "azurerm_private_dns_zone" "zones" {
   tags                = var.tags
 }
 
-# ==============================================
+# =============================================================================
 # Private DNS Zone VNet Links - Identity VNet
-# ==============================================
+# =============================================================================
 resource "azurerm_private_dns_zone_virtual_network_link" "identity" {
   for_each              = toset(var.private_dns_zones)
   name                  = "link-${var.identity_vnet_name}-${replace(each.value, ".", "-")}"
@@ -181,9 +182,9 @@ resource "azurerm_private_dns_zone_virtual_network_link" "identity" {
   tags                  = var.tags
 }
 
-# ==============================================
+# =============================================================================
 # Private DNS Zone VNet Links - Hub VNet
-# ==============================================
+# =============================================================================
 resource "azurerm_private_dns_zone_virtual_network_link" "hub" {
   for_each              = toset(var.private_dns_zones)
   name                  = "link-${var.connectivity_vnet_name}-${replace(each.value, ".", "-")}"

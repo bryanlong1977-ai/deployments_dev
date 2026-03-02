@@ -13,16 +13,11 @@ provider "azurerm" {
   subscription_id = var.connectivity_subscription_id
 }
 
+# Provider alias for identity subscription (DNS zones are there)
 provider "azurerm" {
   alias           = "identity"
   features {}
   subscription_id = var.identity_subscription_id
-}
-
-provider "azurerm" {
-  alias           = "management"
-  features {}
-  subscription_id = var.management_subscription_id
 }
 
 # ============================================
@@ -44,7 +39,7 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
 
 # ============================================
 # Private DNS Zone Virtual Network Links
-# Link Hub VNet to all Private DNS Zones in Identity subscription
+# Link the Hub VNet to all Private DNS Zones in the Identity subscription
 # ============================================
 resource "azurerm_private_dns_zone_virtual_network_link" "dns_links" {
   provider = azurerm.identity
@@ -62,12 +57,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns_links" {
 
 # ============================================
 # Virtual Network Flow Logs
-# Uses Network Watcher from connectivity, network storage account from Tools Deployment 1,
-# and Log Analytics workspace from Management
 # ============================================
 resource "azurerm_network_watcher_flow_log" "this" {
   name                 = "flowlog-${var.connectivity_vnet_name}"
-  network_watcher_id   = data.terraform_remote_state.connectivity_network_1.outputs.network_watcher_id
+  network_watcher_name = data.terraform_remote_state.connectivity_network_1.outputs.network_watcher_name
+  resource_group_name  = data.terraform_remote_state.connectivity_network_1.outputs.network_watcher_resource_group_name
   target_resource_id   = data.terraform_remote_state.connectivity_network_1.outputs.vnet_id
   storage_account_id   = data.terraform_remote_state.connectivity_tools_1.outputs.storage_account_ntwk_id
   enabled              = true
@@ -80,9 +74,9 @@ resource "azurerm_network_watcher_flow_log" "this" {
 
   traffic_analytics {
     enabled               = true
-    workspace_guid        = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_guid
-    workspace_resource_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
+    workspace_id          = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_guid
     workspace_region      = var.region
+    workspace_resource_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
     interval_in_minutes   = 10
   }
 

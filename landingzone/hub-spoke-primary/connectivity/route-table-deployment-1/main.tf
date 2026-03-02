@@ -23,12 +23,13 @@ resource "azurerm_resource_group" "this" {
 }
 
 # =============================================================================
-# Route Table - Created by default, not linked to any subnets
+# Route Table - Hub Connectivity
 # =============================================================================
 resource "azurerm_route_table" "this" {
   name                          = var.connectivity_route_table_name
   location                      = azurerm_resource_group.this.location
   resource_group_name           = azurerm_resource_group.this.name
   bgp_route_propagation_enabled = true
-  tags                          = var.tags
+
+  tags = var.tags
 }

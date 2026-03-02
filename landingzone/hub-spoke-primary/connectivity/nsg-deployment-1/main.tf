@@ -26,8 +26,7 @@ resource "azurerm_resource_group" "this" {
 # Network Security Groups - one per subnet (using for_each)
 # =============================================================================
 resource "azurerm_network_security_group" "nsgs" {
-  for_each = var.connectivity_nsg_names
-
+  for_each            = var.connectivity_nsg_names
   name                = each.value
   location            = var.region
   resource_group_name = azurerm_resource_group.this.name
@@ -38,18 +37,16 @@ resource "azurerm_network_security_group" "nsgs" {
 # NSG-to-Subnet Associations
 # =============================================================================
 resource "azurerm_subnet_network_security_group_association" "nsgs" {
-  for_each = var.connectivity_nsg_names
-
-  subnet_id                 = data.terraform_remote_state.connectivity_network_1.outputs.subnet_ids[each.key]
+  for_each                  = var.connectivity_nsg_names
+  subnet_id                 = data.terraform_remote_state.connectivity_network_deployment_1.outputs.subnet_ids[each.key]
   network_security_group_id = azurerm_network_security_group.nsgs[each.key].id
 }
 
 # =============================================================================
-# Default Deny Inbound Rules (priority 4096)
+# Default Deny Inbound Rules - Priority 4096
 # =============================================================================
 resource "azurerm_network_security_rule" "deny_all_inbound" {
-  for_each = var.connectivity_nsg_names
-
+  for_each                    = var.connectivity_nsg_names
   name                        = "DenyAllInbound"
   priority                    = 4096
   direction                   = "Inbound"
@@ -64,11 +61,10 @@ resource "azurerm_network_security_rule" "deny_all_inbound" {
 }
 
 # =============================================================================
-# Default Deny Outbound Rules (priority 4096)
+# Default Deny Outbound Rules - Priority 4096
 # =============================================================================
 resource "azurerm_network_security_rule" "deny_all_outbound" {
-  for_each = var.connectivity_nsg_names
-
+  for_each                    = var.connectivity_nsg_names
   name                        = "DenyAllOutbound"
   priority                    = 4096
   direction                   = "Outbound"
@@ -83,11 +79,10 @@ resource "azurerm_network_security_rule" "deny_all_outbound" {
 }
 
 # =============================================================================
-# Allow VNet-to-VNet Inbound (priority 100)
+# Allow VNet-to-VNet Inbound - Priority 100
 # =============================================================================
 resource "azurerm_network_security_rule" "allow_vnet_inbound" {
-  for_each = var.connectivity_nsg_names
-
+  for_each                    = var.connectivity_nsg_names
   name                        = "AllowVNetInbound"
   priority                    = 100
   direction                   = "Inbound"
@@ -102,11 +97,10 @@ resource "azurerm_network_security_rule" "allow_vnet_inbound" {
 }
 
 # =============================================================================
-# Allow Azure Load Balancer Inbound (priority 110)
+# Allow Azure Load Balancer Inbound - Priority 110
 # =============================================================================
 resource "azurerm_network_security_rule" "allow_azure_lb_inbound" {
-  for_each = var.connectivity_nsg_names
-
+  for_each                    = var.connectivity_nsg_names
   name                        = "AllowAzureLoadBalancerInbound"
   priority                    = 110
   direction                   = "Inbound"
@@ -121,11 +115,10 @@ resource "azurerm_network_security_rule" "allow_azure_lb_inbound" {
 }
 
 # =============================================================================
-# Allow VNet-to-VNet Outbound (priority 100)
+# Allow VNet-to-VNet Outbound - Priority 100
 # =============================================================================
 resource "azurerm_network_security_rule" "allow_vnet_outbound" {
-  for_each = var.connectivity_nsg_names
-
+  for_each                    = var.connectivity_nsg_names
   name                        = "AllowVNetOutbound"
   priority                    = 100
   direction                   = "Outbound"
@@ -140,11 +133,10 @@ resource "azurerm_network_security_rule" "allow_vnet_outbound" {
 }
 
 # =============================================================================
-# Allow HTTPS Outbound to Azure services (priority 110)
+# Allow HTTPS Outbound to Internet - Priority 110
 # =============================================================================
 resource "azurerm_network_security_rule" "allow_https_outbound" {
-  for_each = var.connectivity_nsg_names
-
+  for_each                    = var.connectivity_nsg_names
   name                        = "AllowHTTPSOutbound"
   priority                    = 110
   direction                   = "Outbound"
@@ -153,7 +145,43 @@ resource "azurerm_network_security_rule" "allow_https_outbound" {
   source_port_range           = "*"
   destination_port_range      = "443"
   source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "AzureCloud"
+  destination_address_prefix  = "Internet"
+  resource_group_name         = azurerm_resource_group.this.name
+  network_security_group_name = azurerm_network_security_group.nsgs[each.key].name
+}
+
+# =============================================================================
+# Allow Azure Storage Outbound - Priority 120
+# =============================================================================
+resource "azurerm_network_security_rule" "allow_storage_outbound" {
+  for_each                    = var.connectivity_nsg_names
+  name                        = "AllowAzureStorageOutbound"
+  priority                    = 120
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "443"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "Storage"
+  resource_group_name         = azurerm_resource_group.this.name
+  network_security_group_name = azurerm_network_security_group.nsgs[each.key].name
+}
+
+# =============================================================================
+# Allow Azure Monitor Outbound - Priority 130
+# =============================================================================
+resource "azurerm_network_security_rule" "allow_azure_monitor_outbound" {
+  for_each                    = var.connectivity_nsg_names
+  name                        = "AllowAzureMonitorOutbound"
+  priority                    = 130
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "443"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = "AzureMonitor"
   resource_group_name         = azurerm_resource_group.this.name
   network_security_group_name = azurerm_network_security_group.nsgs[each.key].name
 }

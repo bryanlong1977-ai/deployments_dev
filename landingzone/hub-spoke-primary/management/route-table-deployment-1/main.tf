@@ -13,18 +13,18 @@ provider "azurerm" {
   subscription_id = var.management_subscription_id
 }
 
-# ==============================================
+# =============================================================================
 # Resource Group for Route Table
-# ==============================================
+# =============================================================================
 resource "azurerm_resource_group" "this" {
   name     = var.management_route_table_resource_group
   location = var.region
   tags     = var.tags
 }
 
-# ==============================================
+# =============================================================================
 # Route Table
-# ==============================================
+# =============================================================================
 resource "azurerm_route_table" "this" {
   name                          = var.management_route_table_name
   location                      = azurerm_resource_group.this.location
@@ -33,42 +33,26 @@ resource "azurerm_route_table" "this" {
   tags                          = var.tags
 }
 
-# ==============================================
-# Route: Default route to Azure Firewall
-# Epic separation is NOT enabled, so create a single
-# default route pointing 0.0.0.0/0 to the Firewall
-# private IP (Azure Load Balancer FW IP) in the hub.
-# Since no firewall is actually deployed in the hub
-# (firewall_type is null), we use a placeholder IP.
-# The next_hop will be updated when the firewall is
-# deployed. Using VirtualAppliance next hop type.
-# ==============================================
-# Note: enable_firewall flag indicates a firewall is
-# expected. The firewall private IP will be provided
-# via the connectivity remote state once deployed.
-# For now, we reference the connectivity network
-# deployment for any needed outputs.
-# ==============================================
-
-# Since there is no firewall deployed yet (firewall_type is null
-# in the landing zone config), but enable_firewall = true,
-# we create the route table and default route structure.
-# The route uses "None" as next hop type until a firewall IP
-# is available. This can be updated later.
+# =============================================================================
+# Default Route - 0.0.0.0/0 to Azure Firewall LB IP in Hub
+# Since enable_epic_separation is false, create a single default route
+# pointing to the Azure Firewall Load Balancer IP in the hub subscription
+# =============================================================================
 resource "azurerm_route" "this" {
-  name                = "route-to-firewall"
-  resource_group_name = azurerm_resource_group.this.name
-  route_table_name    = azurerm_route_table.this.name
-  address_prefix      = "0.0.0.0/0"
-  next_hop_type       = "None"
+  name                   = "route-to-firewall"
+  resource_group_name    = azurerm_resource_group.this.name
+  route_table_name       = azurerm_route_table.this.name
+  address_prefix         = "0.0.0.0/0"
+  next_hop_type          = "VirtualAppliance"
+  next_hop_in_ip_address = data.terraform_remote_state.connectivity_network_deployment_1.outputs.firewall_private_ip
 }
 
-# ==============================================
-# Associate Route Table with Management Subnets
-# ==============================================
+# =============================================================================
+# Subnet-Route Table Associations
+# Associate route table with ALL subnets in the management VNet
+# =============================================================================
 resource "azurerm_subnet_route_table_association" "subnets" {
-  for_each = var.management_subnets
-
-  subnet_id      = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_ids[each.key]
+  for_each       = data.terraform_remote_state.management_network_deployment_1.outputs.subnet_ids
+  subnet_id      = each.value
   route_table_id = azurerm_route_table.this.id
 }

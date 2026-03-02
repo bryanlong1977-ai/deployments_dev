@@ -5,27 +5,12 @@ variable "connectivity_subscription_id" {
 
 variable "region" {
   type        = string
-  description = "The Azure region for all resources in this deployment."
-}
-
-variable "tags" {
-  type        = map(string)
-  description = "A map of tags to apply to all resources."
+  description = "The Azure region for resource deployment."
 }
 
 variable "connectivity_resource_group_name" {
   type        = string
-  description = "The name of the resource group for the hub VNet and subnets."
-}
-
-variable "connectivity_network_watcher_name" {
-  type        = string
-  description = "The name of the Network Watcher resource for the connectivity subscription."
-}
-
-variable "connectivity_network_watcher_resource_group" {
-  type        = string
-  description = "The name of the dedicated resource group for the Network Watcher."
+  description = "The name of the resource group for the hub virtual network."
 }
 
 variable "connectivity_vnet_name" {
@@ -35,14 +20,29 @@ variable "connectivity_vnet_name" {
 
 variable "connectivity_vnet_address_space" {
   type        = string
-  description = "The address space (CIDR) for the hub virtual network."
+  description = "The address space CIDR for the hub virtual network."
 }
 
 variable "connectivity_subnets" {
   type = map(object({
     address_prefix = string
   }))
-  description = "A map of subnet configurations for the hub VNet, keyed by subnet name."
+  description = "Map of subnet configurations for the hub virtual network, keyed by subnet name."
+}
+
+variable "connectivity_network_watcher_name" {
+  type        = string
+  description = "The name of the Network Watcher resource in the connectivity subscription."
+}
+
+variable "connectivity_network_watcher_resource_group" {
+  type        = string
+  description = "The name of the dedicated resource group for the Network Watcher."
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "A map of tags to apply to all resources in this deployment."
 }
 
 # ============================================
@@ -121,9 +121,13 @@ variable "hub_network_watcher_name" { default = null }
 variable "hub_network_watcher_resource_group" { default = null }
 variable "hub_route_table_name" { default = null }
 variable "hub_route_table_resource_group" { default = null }
+variable "hub_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "hub_storage_account_ntwk_name" { default = null }
+variable "hub_storage_account_ntwk_pe_services" { default = null }
 variable "hub_storage_account_ntwk_resource_group" { default = null }
+variable "hub_storage_account_vm_enable_private_endpoint" { default = null }
 variable "hub_storage_account_vm_name" { default = null }
+variable "hub_storage_account_vm_pe_services" { default = null }
 variable "hub_storage_account_vm_resource_group" { default = null }
 variable "hub_to_identity_peering_name" { default = null }
 variable "hub_to_management_peering_name" { default = null }
@@ -146,12 +150,14 @@ variable "idm_recovery_services_vault_name" { default = null }
 variable "idm_recovery_services_vault_resource_group" { default = null }
 variable "idm_route_table_name" { default = null }
 variable "idm_route_table_resource_group" { default = null }
+variable "idm_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "idm_storage_account_ntwk_name" { default = null }
+variable "idm_storage_account_ntwk_pe_services" { default = null }
 variable "idm_storage_account_ntwk_resource_group" { default = null }
+variable "idm_storage_account_vm_enable_private_endpoint" { default = null }
 variable "idm_storage_account_vm_name" { default = null }
+variable "idm_storage_account_vm_pe_services" { default = null }
 variable "idm_storage_account_vm_resource_group" { default = null }
-variable "management_network_watcher_name" { default = null }
-variable "management_network_watcher_resource_group" { default = null }
 variable "management_nsg_names" { default = null }
 variable "management_nsg_resource_group" { default = null }
 variable "management_resource_group_name" { default = null }
@@ -175,15 +181,17 @@ variable "mgmt_managed_identity_name" { default = null }
 variable "mgmt_managed_identity_resource_group" { default = null }
 variable "mgmt_network_security_group_name" { default = null }
 variable "mgmt_network_security_group_resource_group" { default = null }
-variable "mgmt_network_watcher_name" { default = null }
-variable "mgmt_network_watcher_resource_group" { default = null }
 variable "mgmt_recovery_services_vault_name" { default = null }
 variable "mgmt_recovery_services_vault_resource_group" { default = null }
 variable "mgmt_route_table_name" { default = null }
 variable "mgmt_route_table_resource_group" { default = null }
+variable "mgmt_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_ntwk_name" { default = null }
+variable "mgmt_storage_account_ntwk_pe_services" { default = null }
 variable "mgmt_storage_account_ntwk_resource_group" { default = null }
+variable "mgmt_storage_account_vm_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_vm_name" { default = null }
+variable "mgmt_storage_account_vm_pe_services" { default = null }
 variable "mgmt_storage_account_vm_resource_group" { default = null }
 variable "mgmt_vnet_cidr" { default = null }
 variable "private_dns_resolver_name" { default = null }

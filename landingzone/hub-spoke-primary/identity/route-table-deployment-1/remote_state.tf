@@ -1,7 +1,3 @@
-# -----------------------------------------------------------------------------
-# Remote State: Identity Network Deployment 1
-# Used to retrieve subnet IDs for route table associations
-# -----------------------------------------------------------------------------
 data "terraform_remote_state" "identity_network_deployment_1" {
   backend = "azurerm"
   config = {

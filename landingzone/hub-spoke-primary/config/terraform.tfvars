@@ -1,5 +1,5 @@
 # Landing Zone Shared Configuration - Cloud AI Consulting/Secure Cloud Foundations
-# Generated: 2026-02-27T16:08:25.789146+00:00
+# Generated: 2026-03-02T16:50:55.269523+00:00
 # This single terraform.tfvars is shared by ALL deployment steps.
 # Each deployment's variables.tf declares only the variables it needs
 # and maps to this file via -var-file.
@@ -11,9 +11,9 @@ customer_name  = "Cloud AI Consulting"
 project_name   = "Secure Cloud Foundations"
 environment    = "Production"
 region         = "East US 2"
-deployment_id  = "0a47530c-e8eb-4895-83bc-973e0d54a3b3"
+deployment_id  = "9f7feee7-72f3-4867-8ca5-899c248098b5"
 secondary_region = "Central US"
-regional_cidr = "10.0.0.0/16"
+regional_cidr = "10.172.0.0/16"
 topology = "hub-spoke"
 region_type = "primary"
 
@@ -21,82 +21,82 @@ region_type = "primary"
 # Subscriptions
 # ============================================
 connectivity_subscription_id = "81abf5a8-5c86-4ca7-8af8-8b3596a58d07"
-identity_subscription_id = "53fea26b-011b-4520-b157-e31b034c7900"
-management_subscription_id = "53fea26b-011b-4520-b157-e31b034c7900"
+identity_subscription_id = "81abf5a8-5c86-4ca7-8af8-8b3596a58d07"
+management_subscription_id = "81abf5a8-5c86-4ca7-8af8-8b3596a58d07"
 
 # ============================================
 # VNet - Connectivity
 # ============================================
 connectivity_vnet_name = "vnet-hub-prd-eus2-01"
-connectivity_vnet_address_space = "10.0.0.0/22"
+connectivity_vnet_address_space = "10.172.0.0/22"
 
 # Subnets - Connectivity
 connectivity_subnets = {
   snet-pe-hub-eus2-01 = {
-    address_prefix = "10.0.0.0/26"
+    address_prefix = "10.172.0.0/26"
   }
   snet-tools-hub-eus2-01 = {
-    address_prefix = "10.0.0.64/26"
+    address_prefix = "10.172.0.64/26"
   }
 }
 
 connectivity_subnet_cidrs = {
-  "snet-pe-hub-eus2-01" = "10.0.0.0/26"
-  "snet-tools-hub-eus2-01" = "10.0.0.64/26"
+  "snet-pe-hub-eus2-01" = "10.172.0.0/26"
+  "snet-tools-hub-eus2-01" = "10.172.0.64/26"
 }
 
 # ============================================
 # VNet - Identity
 # ============================================
 identity_vnet_name = "vnet-idm-prd-eus2-01"
-identity_vnet_address_space = "10.0.4.0/24"
+identity_vnet_address_space = "10.172.4.0/24"
 
 # Subnets - Identity
 identity_subnets = {
   snet-pe-idm-eus2-01 = {
-    address_prefix = "10.0.4.0/26"
+    address_prefix = "10.172.4.0/26"
   }
   snet-tools-idm-eus2-01 = {
-    address_prefix = "10.0.4.64/26"
+    address_prefix = "10.172.4.64/26"
   }
   snet-inbound-idm-eus2-01 = {
-    address_prefix = "10.0.4.128/28"
+    address_prefix = "10.172.4.128/28"
   }
   snet-outbound-idm-eus2-01 = {
-    address_prefix = "10.0.4.144/28"
+    address_prefix = "10.172.4.144/28"
   }
   snet-dc-idm-eus2-01 = {
-    address_prefix = "10.0.4.160/27"
+    address_prefix = "10.172.4.160/27"
   }
 }
 
 identity_subnet_cidrs = {
-  "snet-pe-idm-eus2-01" = "10.0.4.0/26"
-  "snet-tools-idm-eus2-01" = "10.0.4.64/26"
-  "snet-inbound-idm-eus2-01" = "10.0.4.128/28"
-  "snet-outbound-idm-eus2-01" = "10.0.4.144/28"
-  "snet-dc-idm-eus2-01" = "10.0.4.160/27"
+  "snet-pe-idm-eus2-01" = "10.172.4.0/26"
+  "snet-tools-idm-eus2-01" = "10.172.4.64/26"
+  "snet-inbound-idm-eus2-01" = "10.172.4.128/28"
+  "snet-outbound-idm-eus2-01" = "10.172.4.144/28"
+  "snet-dc-idm-eus2-01" = "10.172.4.160/27"
 }
 
 # ============================================
 # VNet - Management
 # ============================================
 management_vnet_name = "vnet-mgmt-prd-eus2-01"
-management_vnet_address_space = "10.0.5.0/24"
+management_vnet_address_space = "10.172.5.0/24"
 
 # Subnets - Management
 management_subnets = {
   snet-pe-mgmt-eus2-01 = {
-    address_prefix = "10.0.5.0/26"
+    address_prefix = "10.172.5.0/26"
   }
   snet-tools-mgmt-eus2-01 = {
-    address_prefix = "10.0.5.64/26"
+    address_prefix = "10.172.5.64/26"
   }
 }
 
 management_subnet_cidrs = {
-  "snet-pe-mgmt-eus2-01" = "10.0.5.0/26"
-  "snet-tools-mgmt-eus2-01" = "10.0.5.64/26"
+  "snet-pe-mgmt-eus2-01" = "10.172.5.0/26"
+  "snet-tools-mgmt-eus2-01" = "10.172.5.64/26"
 }
 
 # ============================================
@@ -116,8 +116,6 @@ identity_resource_group_name = "rg-network-prd-idm-eus2-01"
 # ============================================
 hub_network_watcher_name = "nw-hub-prd-eus2-01"
 hub_network_watcher_resource_group = "rg-nw-prd-hub-eus2-01"
-mgmt_network_watcher_name = "nw-mgmt-prd-eus2-01"
-mgmt_network_watcher_resource_group = "rg-nw-prd-mgmt-eus2-01"
 
 # ============================================
 # Route Tables
@@ -193,12 +191,16 @@ hub_to_management_peering_name = "peer-hub-to-mgmt-prd-eus2-01"
 # Standard Deployment Resources
 # ============================================
 # Connectivity Subscription - Tools Deployment 1
-hub_azure_monitor_private_link_scope_name = "mpls-hub-prd-eus2-01"
+hub_azure_monitor_private_link_scope_name = "ampls-hub-prd-eus2-01"
 hub_azure_monitor_private_link_scope_resource_group = "rg-mpls-prd-hub-eus2-01"
 hub_storage_account_vm_name = "saclouhubvmprdeus201"
 hub_storage_account_vm_resource_group = "rg-st-prd-hub-eus2-01"
+hub_storage_account_vm_enable_private_endpoint = true
+hub_storage_account_vm_pe_services = ["blob"]
 hub_storage_account_ntwk_name = "saclouhubntwkprdeus201"
 hub_storage_account_ntwk_resource_group = "rg-st-prd-hub-eus2-01"
+hub_storage_account_ntwk_enable_private_endpoint = true
+hub_storage_account_ntwk_pe_services = ["blob"]
 
 # Connectivity Subscription - NSG Deployment 1
 hub_network_security_group_name = "nsg-hub-pe-prd-eus2-01"
@@ -225,8 +227,12 @@ mgmt_recovery_services_vault_name = "rsv-mgmt-prd-eus2-01"
 mgmt_recovery_services_vault_resource_group = "rg-rsv-prd-mgmt-eus2-01"
 mgmt_storage_account_vm_name = "sacloumgmtvmprdeus201"
 mgmt_storage_account_vm_resource_group = "rg-st-prd-mgmt-eus2-01"
+mgmt_storage_account_vm_enable_private_endpoint = true
+mgmt_storage_account_vm_pe_services = ["blob"]
 mgmt_storage_account_ntwk_name = "sacloumgmtntwkprdeus201"
 mgmt_storage_account_ntwk_resource_group = "rg-st-prd-mgmt-eus2-01"
+mgmt_storage_account_ntwk_enable_private_endpoint = true
+mgmt_storage_account_ntwk_pe_services = ["blob"]
 
 # Management Subscription - NSG Deployment 1
 mgmt_network_security_group_name = "nsg-mgmt-pe-prd-eus2-01"
@@ -241,8 +247,12 @@ idm_recovery_services_vault_name = "rsv-idm-prd-eus2-01"
 idm_recovery_services_vault_resource_group = "rg-rsv-prd-idm-eus2-01"
 idm_storage_account_vm_name = "saclouidmvmprdeus201"
 idm_storage_account_vm_resource_group = "rg-st-prd-idm-eus2-01"
+idm_storage_account_vm_enable_private_endpoint = true
+idm_storage_account_vm_pe_services = ["blob"]
 idm_storage_account_ntwk_name = "saclouidmntwkprdeus201"
 idm_storage_account_ntwk_resource_group = "rg-st-prd-idm-eus2-01"
+idm_storage_account_ntwk_enable_private_endpoint = true
+idm_storage_account_ntwk_pe_services = ["blob"]
 
 # Identity Subscription - NSG Deployment 1
 idm_network_security_group_name = "nsg-idm-pe-prd-eus2-01"
@@ -266,10 +276,6 @@ snet_dc_idm_eus2_01_subnet_name = "snet-dc-idm-eus2-01"
 snet_pe_mgmt_eus2_01_subnet_name = "snet-pe-mgmt-eus2-01"
 snet_tools_mgmt_eus2_01_subnet_name = "snet-tools-mgmt-eus2-01"
 
-# Network Watcher - management - Network Deployment 1
-management_network_watcher_name = "nw-mgmt-prd-eus2-01"
-management_network_watcher_resource_group = "rg-nw-prd-mgmt-eus2-01"
-
 # ============================================
 # Feature Flags
 # ============================================
@@ -283,8 +289,8 @@ enable_hub_internal_lb = false
 enable_dmz_external_lb = false
 enable_secondary_region = false
 enable_epic_separation = false
-mgmt_vnet_cidr = "10.0.5.0/24"
-identity_vnet_cidr = "10.0.4.0/24"
+mgmt_vnet_cidr = "10.172.5.0/24"
+identity_vnet_cidr = "10.172.4.0/24"
 
 # ============================================
 # Tags

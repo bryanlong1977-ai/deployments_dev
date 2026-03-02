@@ -13,56 +13,36 @@ provider "azurerm" {
   subscription_id = var.management_subscription_id
 }
 
+# Provider alias for connectivity subscription (for hub-side peering)
 provider "azurerm" {
   alias           = "connectivity"
   features {}
   subscription_id = var.connectivity_subscription_id
 }
 
-# ============================================
-# Resource Group - Network Watcher (dedicated)
-# ============================================
-resource "azurerm_resource_group" "network_watcher" {
-  name     = var.management_network_watcher_resource_group
-  location = var.region
-  tags     = var.tags
-}
-
-# ============================================
-# Resource Group - VNet
-# ============================================
+# =============================================================================
+# Resource Group for Management Network
+# =============================================================================
 resource "azurerm_resource_group" "this" {
   name     = var.management_resource_group_name
   location = var.region
   tags     = var.tags
 }
 
-# ============================================
-# Network Watcher
-# ============================================
-resource "azurerm_network_watcher" "this" {
-  name                = var.management_network_watcher_name
-  location            = var.region
-  resource_group_name = azurerm_resource_group.network_watcher.name
-  tags                = var.tags
-}
-
-# ============================================
-# Virtual Network - Management
-# ============================================
+# =============================================================================
+# Management Virtual Network
+# =============================================================================
 resource "azurerm_virtual_network" "this" {
   name                = var.management_vnet_name
-  location            = var.region
+  location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
   address_space       = [var.management_vnet_address_space]
   tags                = var.tags
-
-  depends_on = [azurerm_network_watcher.this]
 }
 
-# ============================================
+# =============================================================================
 # Subnets
-# ============================================
+# =============================================================================
 resource "azurerm_subnet" "subnets" {
   for_each             = var.management_subnets
   name                 = each.key
@@ -71,9 +51,9 @@ resource "azurerm_subnet" "subnets" {
   address_prefixes     = [each.value.address_prefix]
 }
 
-# ============================================
-# VNet Peering - Management to Hub
-# ============================================
+# =============================================================================
+# VNet Peering: Management to Hub (spoke side)
+# =============================================================================
 resource "azurerm_virtual_network_peering" "mgmt_to_hub" {
   name                         = var.management_to_hub_peering_name
   resource_group_name          = azurerm_resource_group.this.name
@@ -85,9 +65,9 @@ resource "azurerm_virtual_network_peering" "mgmt_to_hub" {
   use_remote_gateways          = false
 }
 
-# ============================================
-# VNet Peering - Hub to Management (cross-subscription)
-# ============================================
+# =============================================================================
+# VNet Peering: Hub to Management (hub side - cross subscription provider)
+# =============================================================================
 resource "azurerm_virtual_network_peering" "hub_to_mgmt" {
   provider                     = azurerm.connectivity
   name                         = var.hub_to_management_peering_name

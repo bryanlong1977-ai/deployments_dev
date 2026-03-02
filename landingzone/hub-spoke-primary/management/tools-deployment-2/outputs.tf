@@ -18,13 +18,8 @@ output "automation_account_resource_group_name" {
 }
 
 output "automation_account_identity_principal_id" {
-  description = "The principal ID of the Automation Account system-assigned managed identity."
+  description = "The principal ID of the Automation Account system-assigned identity."
   value       = azurerm_automation_account.this.identity[0].principal_id
-}
-
-output "automation_account_identity_tenant_id" {
-  description = "The tenant ID of the Automation Account system-assigned managed identity."
-  value       = azurerm_automation_account.this.identity[0].tenant_id
 }
 
 # ============================================
@@ -47,63 +42,59 @@ output "recovery_services_vault_resource_group_name" {
 }
 
 output "recovery_services_vault_identity_principal_id" {
-  description = "The principal ID of the Recovery Services Vault system-assigned managed identity."
+  description = "The principal ID of the Recovery Services Vault system-assigned identity."
   value       = azurerm_recovery_services_vault.this.identity[0].principal_id
 }
 
 # ============================================
-# Storage Account Outputs - VM
+# Storage Account Outputs
 # ============================================
 
 output "storage_account_vm_id" {
-  description = "The ID of the VM diagnostics storage account."
+  description = "The ID of the VM storage account."
   value       = azurerm_storage_account.vm.id
 }
 
 output "storage_account_vm_name" {
-  description = "The name of the VM diagnostics storage account."
+  description = "The name of the VM storage account."
   value       = azurerm_storage_account.vm.name
 }
 
-output "storage_account_vm_primary_blob_endpoint" {
-  description = "The primary blob endpoint of the VM diagnostics storage account."
-  value       = azurerm_storage_account.vm.primary_blob_endpoint
-}
-
-# ============================================
-# Storage Account Outputs - Network
-# ============================================
-
 output "storage_account_ntwk_id" {
-  description = "The ID of the network diagnostics storage account."
+  description = "The ID of the network storage account."
   value       = azurerm_storage_account.ntwk.id
 }
 
 output "storage_account_ntwk_name" {
-  description = "The name of the network diagnostics storage account."
+  description = "The name of the network storage account."
   value       = azurerm_storage_account.ntwk.name
 }
 
-output "storage_account_ntwk_primary_blob_endpoint" {
-  description = "The primary blob endpoint of the network diagnostics storage account."
-  value       = azurerm_storage_account.ntwk.primary_blob_endpoint
-}
-
-output "storage_resource_group_name" {
-  description = "The resource group name for storage accounts."
-  value       = azurerm_resource_group.storage.name
+output "storage_account_resource_group_name" {
+  description = "The resource group name for the storage accounts."
+  value       = azurerm_resource_group.storage_account.name
 }
 
 # ============================================
 # Private Endpoint Outputs
 # ============================================
 
-output "automation_account_private_endpoint_id" {
+output "pe_storage_vm_blob_id" {
+  description = "The ID of the VM storage account blob private endpoint."
+  value       = azurerm_private_endpoint.storage_vm_blob.id
+}
+
+output "pe_storage_ntwk_blob_id" {
+  description = "The ID of the network storage account blob private endpoint."
+  value       = azurerm_private_endpoint.storage_ntwk_blob.id
+}
+
+output "pe_automation_account_id" {
   description = "The ID of the Automation Account private endpoint."
   value       = azurerm_private_endpoint.automation_account.id
 }
 
-output "recovery_services_vault_private_endpoint_id" {
+output "pe_recovery_services_vault_id" {
   description = "The ID of the Recovery Services Vault private endpoint."
   value       = azurerm_private_endpoint.recovery_services_vault.id
 }
@@ -146,9 +137,4 @@ output "storage_account_id" {
 output "storage_account_name" {
   description = "The name of the Storage Account"
   value       = azurerm_storage_account.vm.name
-}
-
-output "storage_account_resource_group_name" {
-  description = "The resource group that contains the Storage Account"
-  value       = azurerm_storage_account.vm.resource_group_name
 }

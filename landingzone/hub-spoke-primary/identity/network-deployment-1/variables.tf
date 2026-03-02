@@ -1,93 +1,98 @@
-variable "region" {
-  type        = string
-  description = "The Azure region for resource deployment"
-}
-
-variable "tags" {
-  type        = map(string)
-  description = "Tags to apply to all resources"
-}
-
 variable "identity_subscription_id" {
   type        = string
-  description = "The subscription ID for the Identity subscription"
+  description = "Subscription ID for the Identity subscription."
 }
 
 variable "connectivity_subscription_id" {
   type        = string
-  description = "The subscription ID for the Connectivity subscription"
+  description = "Subscription ID for the Connectivity subscription."
+}
+
+variable "region" {
+  type        = string
+  description = "Primary Azure region for resource deployment."
+}
+
+variable "tags" {
+  type        = map(string)
+  description = "Tags to apply to all resources."
 }
 
 variable "identity_resource_group_name" {
   type        = string
-  description = "The name of the Identity network resource group"
+  description = "Name of the Identity network resource group."
+}
+
+variable "dns_resource_group" {
+  type        = string
+  description = "Name of the DNS resource group."
 }
 
 variable "identity_vnet_name" {
   type        = string
-  description = "The name of the Identity virtual network"
+  description = "Name of the Identity virtual network."
 }
 
 variable "identity_vnet_address_space" {
   type        = string
-  description = "The address space for the Identity virtual network"
+  description = "Address space for the Identity virtual network."
 }
 
 variable "identity_subnets" {
   type = map(object({
     address_prefix = string
   }))
-  description = "Map of subnet configurations for the Identity virtual network"
-}
-
-variable "connectivity_vnet_name" {
-  type        = string
-  description = "The name of the Connectivity hub virtual network"
-}
-
-variable "identity_to_hub_peering_name" {
-  type        = string
-  description = "The name of the Identity to Hub VNet peering"
-}
-
-variable "hub_to_identity_peering_name" {
-  type        = string
-  description = "The name of the Hub to Identity VNet peering"
-}
-
-variable "private_dns_resolver_name" {
-  type        = string
-  description = "The name of the Private DNS Resolver"
-}
-
-variable "dns_inbound_endpoint_name" {
-  type        = string
-  description = "The name of the DNS Resolver inbound endpoint"
-}
-
-variable "dns_outbound_endpoint_name" {
-  type        = string
-  description = "The name of the DNS Resolver outbound endpoint"
-}
-
-variable "dns_resource_group" {
-  type        = string
-  description = "The name of the DNS resource group"
-}
-
-variable "private_dns_zones" {
-  type        = list(string)
-  description = "List of private DNS zone names to create"
+  description = "Map of subnet configurations for the Identity VNet."
 }
 
 variable "snet_inbound_idm_eus2_01_subnet_name" {
   type        = string
-  description = "The name of the DNS resolver inbound subnet"
+  description = "Name of the DNS resolver inbound subnet."
 }
 
 variable "snet_outbound_idm_eus2_01_subnet_name" {
   type        = string
-  description = "The name of the DNS resolver outbound subnet"
+  description = "Name of the DNS resolver outbound subnet."
+}
+
+variable "identity_to_hub_peering_name" {
+  type        = string
+  description = "Name of the VNet peering from Identity to Hub."
+}
+
+variable "hub_to_identity_peering_name" {
+  type        = string
+  description = "Name of the VNet peering from Hub to Identity."
+}
+
+variable "private_dns_resolver_name" {
+  type        = string
+  description = "Name of the Private DNS Resolver."
+}
+
+variable "dns_inbound_endpoint_name" {
+  type        = string
+  description = "Name of the DNS resolver inbound endpoint."
+}
+
+variable "dns_outbound_endpoint_name" {
+  type        = string
+  description = "Name of the DNS resolver outbound endpoint."
+}
+
+variable "private_dns_zones" {
+  type        = list(string)
+  description = "List of private DNS zone names to create."
+}
+
+variable "connectivity_vnet_name" {
+  type        = string
+  description = "Name of the Connectivity hub virtual network."
+}
+
+variable "dns_forwarding_enabled" {
+  type        = bool
+  description = "Whether DNS forwarding is enabled."
 }
 
 # ============================================
@@ -151,7 +156,6 @@ variable "connectivity_route_table_resource_group" { default = null }
 variable "connectivity_subnet_cidrs" { default = null }
 variable "connectivity_subnets" { default = null }
 variable "connectivity_vnet_address_space" { default = null }
-variable "dns_forwarding_enabled" { default = null }
 variable "dns_subscription" { default = null }
 variable "enable_dmz_external_lb" { default = null }
 variable "enable_dmz_spoke" { default = null }
@@ -168,9 +172,13 @@ variable "hub_network_watcher_name" { default = null }
 variable "hub_network_watcher_resource_group" { default = null }
 variable "hub_route_table_name" { default = null }
 variable "hub_route_table_resource_group" { default = null }
+variable "hub_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "hub_storage_account_ntwk_name" { default = null }
+variable "hub_storage_account_ntwk_pe_services" { default = null }
 variable "hub_storage_account_ntwk_resource_group" { default = null }
+variable "hub_storage_account_vm_enable_private_endpoint" { default = null }
 variable "hub_storage_account_vm_name" { default = null }
+variable "hub_storage_account_vm_pe_services" { default = null }
 variable "hub_storage_account_vm_resource_group" { default = null }
 variable "hub_to_management_peering_name" { default = null }
 variable "hub_to_spoke_peering_name" { default = null }
@@ -186,12 +194,14 @@ variable "idm_recovery_services_vault_name" { default = null }
 variable "idm_recovery_services_vault_resource_group" { default = null }
 variable "idm_route_table_name" { default = null }
 variable "idm_route_table_resource_group" { default = null }
+variable "idm_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "idm_storage_account_ntwk_name" { default = null }
+variable "idm_storage_account_ntwk_pe_services" { default = null }
 variable "idm_storage_account_ntwk_resource_group" { default = null }
+variable "idm_storage_account_vm_enable_private_endpoint" { default = null }
 variable "idm_storage_account_vm_name" { default = null }
+variable "idm_storage_account_vm_pe_services" { default = null }
 variable "idm_storage_account_vm_resource_group" { default = null }
-variable "management_network_watcher_name" { default = null }
-variable "management_network_watcher_resource_group" { default = null }
 variable "management_nsg_names" { default = null }
 variable "management_nsg_resource_group" { default = null }
 variable "management_resource_group_name" { default = null }
@@ -215,15 +225,17 @@ variable "mgmt_managed_identity_name" { default = null }
 variable "mgmt_managed_identity_resource_group" { default = null }
 variable "mgmt_network_security_group_name" { default = null }
 variable "mgmt_network_security_group_resource_group" { default = null }
-variable "mgmt_network_watcher_name" { default = null }
-variable "mgmt_network_watcher_resource_group" { default = null }
 variable "mgmt_recovery_services_vault_name" { default = null }
 variable "mgmt_recovery_services_vault_resource_group" { default = null }
 variable "mgmt_route_table_name" { default = null }
 variable "mgmt_route_table_resource_group" { default = null }
+variable "mgmt_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_ntwk_name" { default = null }
+variable "mgmt_storage_account_ntwk_pe_services" { default = null }
 variable "mgmt_storage_account_ntwk_resource_group" { default = null }
+variable "mgmt_storage_account_vm_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_vm_name" { default = null }
+variable "mgmt_storage_account_vm_pe_services" { default = null }
 variable "mgmt_storage_account_vm_resource_group" { default = null }
 variable "mgmt_vnet_cidr" { default = null }
 variable "region_type" { default = null }

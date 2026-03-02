@@ -20,62 +20,62 @@ variable "tags" {
 
 variable "mgmt_automation_account_name" {
   type        = string
-  description = "Name of the management Automation Account."
+  description = "Name of the Automation Account."
 }
 
 variable "mgmt_automation_account_resource_group" {
   type        = string
-  description = "Resource group name for the management Automation Account."
+  description = "Resource group name for the Automation Account."
 }
 
 variable "mgmt_recovery_services_vault_name" {
   type        = string
-  description = "Name of the management Recovery Services Vault."
+  description = "Name of the Recovery Services Vault."
 }
 
 variable "mgmt_recovery_services_vault_resource_group" {
   type        = string
-  description = "Resource group name for the management Recovery Services Vault."
+  description = "Resource group name for the Recovery Services Vault."
 }
 
 variable "mgmt_storage_account_vm_name" {
   type        = string
-  description = "Name of the management VM diagnostics storage account."
+  description = "Name of the VM storage account."
 }
 
 variable "mgmt_storage_account_vm_resource_group" {
   type        = string
-  description = "Resource group name for the management storage accounts."
+  description = "Resource group name for the VM storage account."
 }
 
 variable "mgmt_storage_account_ntwk_name" {
   type        = string
-  description = "Name of the management network diagnostics storage account."
+  description = "Name of the network storage account."
 }
 
 variable "mgmt_storage_account_ntwk_resource_group" {
   type        = string
-  description = "Resource group name for the management network storage account."
+  description = "Resource group name for the network storage account."
 }
 
 variable "snet_pe_mgmt_eus2_01_subnet_name" {
   type        = string
-  description = "Name of the management private endpoint subnet."
+  description = "Name of the private endpoint subnet in the management VNet."
 }
 
 variable "mgmt_key_vault_prd_name" {
   type        = string
-  description = "Name of the management production Key Vault."
+  description = "Name of the production Key Vault in Management."
 }
 
 variable "mgmt_key_vault_nprd_name" {
   type        = string
-  description = "Name of the management non-production Key Vault."
+  description = "Name of the non-production Key Vault in Management."
 }
 
 variable "mgmt_log_analytics_workspace_name" {
   type        = string
-  description = "Name of the management Log Analytics Workspace."
+  description = "Name of the Log Analytics Workspace in Management."
 }
 
 # ============================================
@@ -161,9 +161,13 @@ variable "hub_network_watcher_name" { default = null }
 variable "hub_network_watcher_resource_group" { default = null }
 variable "hub_route_table_name" { default = null }
 variable "hub_route_table_resource_group" { default = null }
+variable "hub_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "hub_storage_account_ntwk_name" { default = null }
+variable "hub_storage_account_ntwk_pe_services" { default = null }
 variable "hub_storage_account_ntwk_resource_group" { default = null }
+variable "hub_storage_account_vm_enable_private_endpoint" { default = null }
 variable "hub_storage_account_vm_name" { default = null }
+variable "hub_storage_account_vm_pe_services" { default = null }
 variable "hub_storage_account_vm_resource_group" { default = null }
 variable "hub_to_identity_peering_name" { default = null }
 variable "hub_to_management_peering_name" { default = null }
@@ -185,12 +189,14 @@ variable "idm_recovery_services_vault_name" { default = null }
 variable "idm_recovery_services_vault_resource_group" { default = null }
 variable "idm_route_table_name" { default = null }
 variable "idm_route_table_resource_group" { default = null }
+variable "idm_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "idm_storage_account_ntwk_name" { default = null }
+variable "idm_storage_account_ntwk_pe_services" { default = null }
 variable "idm_storage_account_ntwk_resource_group" { default = null }
+variable "idm_storage_account_vm_enable_private_endpoint" { default = null }
 variable "idm_storage_account_vm_name" { default = null }
+variable "idm_storage_account_vm_pe_services" { default = null }
 variable "idm_storage_account_vm_resource_group" { default = null }
-variable "management_network_watcher_name" { default = null }
-variable "management_network_watcher_resource_group" { default = null }
 variable "management_nsg_names" { default = null }
 variable "management_nsg_resource_group" { default = null }
 variable "management_resource_group_name" { default = null }
@@ -208,10 +214,12 @@ variable "mgmt_managed_identity_name" { default = null }
 variable "mgmt_managed_identity_resource_group" { default = null }
 variable "mgmt_network_security_group_name" { default = null }
 variable "mgmt_network_security_group_resource_group" { default = null }
-variable "mgmt_network_watcher_name" { default = null }
-variable "mgmt_network_watcher_resource_group" { default = null }
 variable "mgmt_route_table_name" { default = null }
 variable "mgmt_route_table_resource_group" { default = null }
+variable "mgmt_storage_account_ntwk_enable_private_endpoint" { default = null }
+variable "mgmt_storage_account_ntwk_pe_services" { default = null }
+variable "mgmt_storage_account_vm_enable_private_endpoint" { default = null }
+variable "mgmt_storage_account_vm_pe_services" { default = null }
 variable "mgmt_vnet_cidr" { default = null }
 variable "private_dns_resolver_name" { default = null }
 variable "private_dns_zones" { default = null }

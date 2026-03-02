@@ -23,7 +23,7 @@ resource "azurerm_resource_group" "this" {
 }
 
 # -----------------------------------------------------------------------------
-# Network Security Groups — one per subnet in Identity VNet
+# Network Security Groups — one per subnet in the Identity VNet
 # -----------------------------------------------------------------------------
 resource "azurerm_network_security_group" "nsgs" {
   for_each = var.identity_nsg_names
@@ -83,7 +83,7 @@ resource "azurerm_network_security_rule" "deny_all_outbound" {
 }
 
 # -----------------------------------------------------------------------------
-# Allow VNet-to-VNet Inbound (priority 100)
+# Allow VNet Inbound — all NSGs
 # -----------------------------------------------------------------------------
 resource "azurerm_network_security_rule" "allow_vnet_inbound" {
   for_each = var.identity_nsg_names
@@ -102,9 +102,9 @@ resource "azurerm_network_security_rule" "allow_vnet_inbound" {
 }
 
 # -----------------------------------------------------------------------------
-# Allow Azure Load Balancer Inbound (priority 110)
+# Allow Azure Load Balancer Inbound — all NSGs
 # -----------------------------------------------------------------------------
-resource "azurerm_network_security_rule" "allow_azure_lb_inbound" {
+resource "azurerm_network_security_rule" "allow_alb_inbound" {
   for_each = var.identity_nsg_names
 
   name                        = "AllowAzureLoadBalancerInbound"
@@ -121,7 +121,7 @@ resource "azurerm_network_security_rule" "allow_azure_lb_inbound" {
 }
 
 # -----------------------------------------------------------------------------
-# Allow VNet Outbound (priority 100)
+# Allow VNet Outbound — all NSGs
 # -----------------------------------------------------------------------------
 resource "azurerm_network_security_rule" "allow_vnet_outbound" {
   for_each = var.identity_nsg_names
@@ -140,7 +140,7 @@ resource "azurerm_network_security_rule" "allow_vnet_outbound" {
 }
 
 # -----------------------------------------------------------------------------
-# Allow HTTPS Outbound to Internet (priority 110)
+# Allow HTTPS Outbound — all NSGs (for Azure services / management)
 # -----------------------------------------------------------------------------
 resource "azurerm_network_security_rule" "allow_https_outbound" {
   for_each = var.identity_nsg_names
@@ -153,45 +153,86 @@ resource "azurerm_network_security_rule" "allow_https_outbound" {
   source_port_range           = "*"
   destination_port_range      = "443"
   source_address_prefix       = "VirtualNetwork"
-  destination_address_prefix  = "Internet"
-  resource_group_name         = azurerm_resource_group.this.name
-  network_security_group_name = azurerm_network_security_group.nsgs[each.key].name
-}
-
-# -----------------------------------------------------------------------------
-# Allow DNS Outbound (priority 120) — needed for DNS resolver subnets and DC
-# -----------------------------------------------------------------------------
-resource "azurerm_network_security_rule" "allow_dns_outbound" {
-  for_each = var.identity_nsg_names
-
-  name                        = "AllowDnsOutbound"
-  priority                    = 120
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "*"
-  source_port_range           = "*"
-  destination_port_range      = "53"
-  source_address_prefix       = "VirtualNetwork"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.this.name
   network_security_group_name = azurerm_network_security_group.nsgs[each.key].name
 }
 
 # -----------------------------------------------------------------------------
-# Allow DNS Inbound (priority 120) — needed for DNS resolver inbound endpoint
+# DC subnet — Allow AD DS inbound from VNet (LDAP, Kerberos, DNS, etc.)
 # -----------------------------------------------------------------------------
-resource "azurerm_network_security_rule" "allow_dns_inbound" {
-  for_each = var.identity_nsg_names
-
-  name                        = "AllowDnsInbound"
-  priority                    = 120
+resource "azurerm_network_security_rule" "dc_allow_ad_inbound_tcp" {
+  name                        = "AllowADInboundTcp"
+  priority                    = 200
   direction                   = "Inbound"
   access                      = "Allow"
-  protocol                    = "*"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_ranges     = ["53", "88", "135", "389", "445", "464", "636", "3268", "3269", "5722", "9389", "49152-65535"]
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = var.identity_subnet_cidrs[var.snet_dc_idm_eus2_01_subnet_name]
+  resource_group_name         = azurerm_resource_group.this.name
+  network_security_group_name = azurerm_network_security_group.nsgs[var.snet_dc_idm_eus2_01_subnet_name].name
+}
+
+resource "azurerm_network_security_rule" "dc_allow_ad_inbound_udp" {
+  name                        = "AllowADInboundUdp"
+  priority                    = 210
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Udp"
+  source_port_range           = "*"
+  destination_port_ranges     = ["53", "88", "123", "389", "464", "500", "4500"]
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = var.identity_subnet_cidrs[var.snet_dc_idm_eus2_01_subnet_name]
+  resource_group_name         = azurerm_resource_group.this.name
+  network_security_group_name = azurerm_network_security_group.nsgs[var.snet_dc_idm_eus2_01_subnet_name].name
+}
+
+# -----------------------------------------------------------------------------
+# DNS Resolver Inbound subnet — Allow DNS inbound from VNet
+# -----------------------------------------------------------------------------
+resource "azurerm_network_security_rule" "inbound_allow_dns_tcp" {
+  name                        = "AllowDnsInboundTcp"
+  priority                    = 200
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = "53"
-  source_address_prefix       = var.regional_cidr
-  destination_address_prefix  = "VirtualNetwork"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = var.identity_subnet_cidrs[var.snet_inbound_idm_eus2_01_subnet_name]
   resource_group_name         = azurerm_resource_group.this.name
-  network_security_group_name = azurerm_network_security_group.nsgs[each.key].name
+  network_security_group_name = azurerm_network_security_group.nsgs[var.snet_inbound_idm_eus2_01_subnet_name].name
+}
+
+resource "azurerm_network_security_rule" "inbound_allow_dns_udp" {
+  name                        = "AllowDnsInboundUdp"
+  priority                    = 210
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Udp"
+  source_port_range           = "*"
+  destination_port_range      = "53"
+  source_address_prefix       = "VirtualNetwork"
+  destination_address_prefix  = var.identity_subnet_cidrs[var.snet_inbound_idm_eus2_01_subnet_name]
+  resource_group_name         = azurerm_resource_group.this.name
+  network_security_group_name = azurerm_network_security_group.nsgs[var.snet_inbound_idm_eus2_01_subnet_name].name
+}
+
+# -----------------------------------------------------------------------------
+# DNS Resolver Outbound subnet — Allow DNS outbound
+# -----------------------------------------------------------------------------
+resource "azurerm_network_security_rule" "outbound_allow_dns_tcp" {
+  name                        = "AllowDnsOutboundTcp"
+  priority                    = 200
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "53"
+  source_address_prefix       = var.identity_subnet_cidrs[var.snet_outbound_idm_eus2_01_subnet_name]
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.this.name
+  network_security_group_name = azurerm_network_security_group.nsgs[var.snet_outbound_idm_eus2_01_subnet_name].name
 }

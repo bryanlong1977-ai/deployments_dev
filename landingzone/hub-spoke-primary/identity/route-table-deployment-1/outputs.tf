@@ -1,15 +1,15 @@
 output "route_table_id" {
-  description = "The ID of the identity route table."
+  description = "The ID of the Identity route table."
   value       = azurerm_route_table.this.id
 }
 
 output "route_table_name" {
-  description = "The name of the identity route table."
+  description = "The name of the Identity route table."
   value       = azurerm_route_table.this.name
 }
 
 output "route_table_resource_group_name" {
-  description = "The name of the resource group containing the identity route table."
+  description = "The name of the resource group containing the Identity route table."
   value       = azurerm_resource_group.this.name
 }
 

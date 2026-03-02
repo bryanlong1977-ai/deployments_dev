@@ -13,27 +13,27 @@ provider "azurerm" {
   subscription_id = var.connectivity_subscription_id
 }
 
-# =============================================================================
-# Resource Group for Network Watcher (dedicated RG)
-# =============================================================================
+# ==============================================
+# Resource Group - Network Watcher (dedicated)
+# ==============================================
 resource "azurerm_resource_group" "network_watcher" {
   name     = var.connectivity_network_watcher_resource_group
   location = var.region
   tags     = var.tags
 }
 
-# =============================================================================
-# Resource Group for VNet and Subnets
-# =============================================================================
+# ==============================================
+# Resource Group - VNet
+# ==============================================
 resource "azurerm_resource_group" "this" {
   name     = var.connectivity_resource_group_name
   location = var.region
   tags     = var.tags
 }
 
-# =============================================================================
+# ==============================================
 # Network Watcher
-# =============================================================================
+# ==============================================
 resource "azurerm_network_watcher" "this" {
   name                = var.connectivity_network_watcher_name
   location            = azurerm_resource_group.network_watcher.location
@@ -41,9 +41,9 @@ resource "azurerm_network_watcher" "this" {
   tags                = var.tags
 }
 
-# =============================================================================
-# Virtual Network
-# =============================================================================
+# ==============================================
+# Virtual Network - Hub
+# ==============================================
 resource "azurerm_virtual_network" "this" {
   name                = var.connectivity_vnet_name
   location            = azurerm_resource_group.this.location
@@ -54,9 +54,9 @@ resource "azurerm_virtual_network" "this" {
   depends_on = [azurerm_network_watcher.this]
 }
 
-# =============================================================================
+# ==============================================
 # Subnets
-# =============================================================================
+# ==============================================
 resource "azurerm_subnet" "subnets" {
   for_each             = var.connectivity_subnets
   name                 = each.key

@@ -1,3 +1,6 @@
+# =============================================================================
+# Route Table Outputs
+# =============================================================================
 output "route_table_id" {
   description = "The ID of the connectivity hub route table."
   value       = azurerm_route_table.this.id

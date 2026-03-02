@@ -2,22 +2,22 @@
 # NSG Outputs
 # =============================================================================
 output "nsg_resource_group_name" {
-  description = "The name of the NSG resource group."
+  description = "The name of the NSG resource group"
   value       = azurerm_resource_group.this.name
 }
 
 output "nsg_resource_group_id" {
-  description = "The ID of the NSG resource group."
+  description = "The ID of the NSG resource group"
   value       = azurerm_resource_group.this.id
 }
 
 output "nsg_ids" {
-  description = "Map of subnet name to NSG resource ID."
+  description = "Map of subnet name to NSG ID"
   value       = { for k, v in azurerm_network_security_group.nsgs : k => v.id }
 }
 
 output "nsg_names" {
-  description = "Map of subnet name to NSG name."
+  description = "Map of subnet name to NSG name"
   value       = { for k, v in azurerm_network_security_group.nsgs : k => v.name }
 }
 

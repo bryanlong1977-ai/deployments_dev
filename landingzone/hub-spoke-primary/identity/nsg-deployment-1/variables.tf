@@ -1,31 +1,56 @@
 variable "identity_subscription_id" {
   type        = string
-  description = "The subscription ID for the Identity subscription where NSGs will be deployed."
+  description = "The subscription ID for the Identity subscription."
 }
 
 variable "region" {
   type        = string
-  description = "The Azure region where resources will be deployed."
+  description = "The Azure region for all resources."
 }
 
 variable "tags" {
   type        = map(string)
-  description = "Tags to apply to all resources in this deployment."
+  description = "Tags to apply to all resources."
 }
 
 variable "identity_nsg_resource_group" {
   type        = string
-  description = "Name of the resource group for Identity NSGs."
+  description = "Resource group name for Identity NSGs."
 }
 
 variable "identity_nsg_names" {
   type        = map(string)
-  description = "Map of subnet name to NSG name for the Identity VNet. Key is subnet name, value is NSG name."
+  description = "Map of subnet name to NSG name for the Identity VNet."
 }
 
-variable "regional_cidr" {
+variable "identity_subnet_cidrs" {
+  type        = map(string)
+  description = "Map of subnet name to CIDR for the Identity VNet subnets."
+}
+
+variable "snet_pe_idm_eus2_01_subnet_name" {
   type        = string
-  description = "The regional CIDR block used for DNS inbound rules to allow DNS traffic from all landing zone VNets."
+  description = "Subnet name for the Identity private endpoints subnet."
+}
+
+variable "snet_tools_idm_eus2_01_subnet_name" {
+  type        = string
+  description = "Subnet name for the Identity tools subnet."
+}
+
+variable "snet_inbound_idm_eus2_01_subnet_name" {
+  type        = string
+  description = "Subnet name for the Identity DNS resolver inbound subnet."
+}
+
+variable "snet_outbound_idm_eus2_01_subnet_name" {
+  type        = string
+  description = "Subnet name for the Identity DNS resolver outbound subnet."
+}
+
+variable "snet_dc_idm_eus2_01_subnet_name" {
+  type        = string
+  description = "Subnet name for the Identity domain controllers subnet."
 }
 
 # ============================================
@@ -111,9 +136,13 @@ variable "hub_network_watcher_name" { default = null }
 variable "hub_network_watcher_resource_group" { default = null }
 variable "hub_route_table_name" { default = null }
 variable "hub_route_table_resource_group" { default = null }
+variable "hub_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "hub_storage_account_ntwk_name" { default = null }
+variable "hub_storage_account_ntwk_pe_services" { default = null }
 variable "hub_storage_account_ntwk_resource_group" { default = null }
+variable "hub_storage_account_vm_enable_private_endpoint" { default = null }
 variable "hub_storage_account_vm_name" { default = null }
+variable "hub_storage_account_vm_pe_services" { default = null }
 variable "hub_storage_account_vm_resource_group" { default = null }
 variable "hub_to_identity_peering_name" { default = null }
 variable "hub_to_management_peering_name" { default = null }
@@ -121,7 +150,6 @@ variable "hub_to_spoke_peering_name" { default = null }
 variable "identity_resource_group_name" { default = null }
 variable "identity_route_table_name" { default = null }
 variable "identity_route_table_resource_group" { default = null }
-variable "identity_subnet_cidrs" { default = null }
 variable "identity_subnets" { default = null }
 variable "identity_to_hub_peering_name" { default = null }
 variable "identity_vnet_address_space" { default = null }
@@ -133,12 +161,14 @@ variable "idm_recovery_services_vault_name" { default = null }
 variable "idm_recovery_services_vault_resource_group" { default = null }
 variable "idm_route_table_name" { default = null }
 variable "idm_route_table_resource_group" { default = null }
+variable "idm_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "idm_storage_account_ntwk_name" { default = null }
+variable "idm_storage_account_ntwk_pe_services" { default = null }
 variable "idm_storage_account_ntwk_resource_group" { default = null }
+variable "idm_storage_account_vm_enable_private_endpoint" { default = null }
 variable "idm_storage_account_vm_name" { default = null }
+variable "idm_storage_account_vm_pe_services" { default = null }
 variable "idm_storage_account_vm_resource_group" { default = null }
-variable "management_network_watcher_name" { default = null }
-variable "management_network_watcher_resource_group" { default = null }
 variable "management_nsg_names" { default = null }
 variable "management_nsg_resource_group" { default = null }
 variable "management_resource_group_name" { default = null }
@@ -162,30 +192,28 @@ variable "mgmt_managed_identity_name" { default = null }
 variable "mgmt_managed_identity_resource_group" { default = null }
 variable "mgmt_network_security_group_name" { default = null }
 variable "mgmt_network_security_group_resource_group" { default = null }
-variable "mgmt_network_watcher_name" { default = null }
-variable "mgmt_network_watcher_resource_group" { default = null }
 variable "mgmt_recovery_services_vault_name" { default = null }
 variable "mgmt_recovery_services_vault_resource_group" { default = null }
 variable "mgmt_route_table_name" { default = null }
 variable "mgmt_route_table_resource_group" { default = null }
+variable "mgmt_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_ntwk_name" { default = null }
+variable "mgmt_storage_account_ntwk_pe_services" { default = null }
 variable "mgmt_storage_account_ntwk_resource_group" { default = null }
+variable "mgmt_storage_account_vm_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_vm_name" { default = null }
+variable "mgmt_storage_account_vm_pe_services" { default = null }
 variable "mgmt_storage_account_vm_resource_group" { default = null }
 variable "mgmt_vnet_cidr" { default = null }
 variable "private_dns_resolver_name" { default = null }
 variable "private_dns_zones" { default = null }
 variable "region_type" { default = null }
+variable "regional_cidr" { default = null }
 variable "resource_groups" { default = null }
 variable "secondary_region" { default = null }
-variable "snet_dc_idm_eus2_01_subnet_name" { default = null }
-variable "snet_inbound_idm_eus2_01_subnet_name" { default = null }
-variable "snet_outbound_idm_eus2_01_subnet_name" { default = null }
 variable "snet_pe_hub_eus2_01_subnet_name" { default = null }
-variable "snet_pe_idm_eus2_01_subnet_name" { default = null }
 variable "snet_pe_mgmt_eus2_01_subnet_name" { default = null }
 variable "snet_tools_hub_eus2_01_subnet_name" { default = null }
-variable "snet_tools_idm_eus2_01_subnet_name" { default = null }
 variable "snet_tools_mgmt_eus2_01_subnet_name" { default = null }
 variable "spoke_to_hub_peering_name" { default = null }
 variable "topology" { default = null }

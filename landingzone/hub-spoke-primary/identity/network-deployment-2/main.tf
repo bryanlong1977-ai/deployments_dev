@@ -13,26 +13,20 @@ provider "azurerm" {
   subscription_id = var.identity_subscription_id
 }
 
-provider "azurerm" {
-  alias           = "connectivity"
-  features {}
-  subscription_id = var.connectivity_subscription_id
-}
-
 # =============================================================================
 # Diagnostic Setting for Identity VNet
 # =============================================================================
 resource "azurerm_monitor_diagnostic_setting" "this" {
-  name                       = "diag-vnet-to-law"
+  name                       = "diag-${var.identity_vnet_name}"
   target_resource_id         = data.terraform_remote_state.identity_network_deployment_1.outputs.vnet_id
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_deployment_1.outputs.log_analytics_workspace_id
 
-  enabled_log {
-    category = "VMProtectionAlerts"
-  }
-
   enabled_metric {
     category = "AllMetrics"
+  }
+
+  enabled_log {
+    category = "VMProtectionAlerts"
   }
 }
 
@@ -40,8 +34,7 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
 # Virtual Network Flow Log for Identity VNet
 # =============================================================================
 resource "azurerm_network_watcher_flow_log" "this" {
-  provider             = azurerm.connectivity
-  name                 = "fl-${var.identity_vnet_name}"
+  name                 = "flowlog-${var.identity_vnet_name}"
   network_watcher_id   = data.terraform_remote_state.connectivity_network_deployment_1.outputs.network_watcher_id
   target_resource_id   = data.terraform_remote_state.identity_network_deployment_1.outputs.vnet_id
   storage_account_id   = data.terraform_remote_state.identity_tools_deployment_1.outputs.storage_account_ntwk_id

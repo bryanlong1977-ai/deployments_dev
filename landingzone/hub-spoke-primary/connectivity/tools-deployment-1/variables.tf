@@ -1,51 +1,67 @@
+# =============================================================================
+# Variables for Connectivity Tools Deployment 1
+# =============================================================================
+
 variable "connectivity_subscription_id" {
   type        = string
-  description = "The subscription ID for the Connectivity subscription"
+  description = "The subscription ID for the Connectivity subscription."
 }
 
 variable "region" {
   type        = string
-  description = "The Azure region for resource deployment"
+  description = "The Azure region for resource deployment."
 }
 
 variable "tags" {
   type        = map(string)
-  description = "Tags to apply to all resources"
+  description = "Tags to apply to all resources."
 }
+
+# =============================================================================
+# AMPLS Variables
+# =============================================================================
 
 variable "hub_azure_monitor_private_link_scope_name" {
   type        = string
-  description = "Name of the Azure Monitor Private Link Scope"
+  description = "Name of the Azure Monitor Private Link Scope."
 }
 
 variable "hub_azure_monitor_private_link_scope_resource_group" {
   type        = string
-  description = "Resource group name for the Azure Monitor Private Link Scope"
+  description = "Resource group name for the Azure Monitor Private Link Scope."
 }
+
+# =============================================================================
+# Storage Account Variables
+# =============================================================================
 
 variable "hub_storage_account_vm_name" {
   type        = string
-  description = "Name of the VM storage account in the hub"
+  description = "Name of the VM diagnostics storage account in the hub."
 }
 
 variable "hub_storage_account_vm_resource_group" {
   type        = string
-  description = "Resource group name for the VM storage account in the hub"
+  description = "Resource group name for the VM diagnostics storage account."
 }
 
 variable "hub_storage_account_ntwk_name" {
   type        = string
-  description = "Name of the network storage account in the hub"
+  description = "Name of the network diagnostics storage account in the hub."
 }
 
 variable "hub_storage_account_ntwk_resource_group" {
   type        = string
-  description = "Resource group name for the network storage account in the hub"
+  description = "Resource group name for the network diagnostics storage account."
 }
+
+# =============================================================================
+# Subnet Name Variables (for map lookups)
+# =============================================================================
 
 variable "snet_pe_hub_eus2_01_subnet_name" {
   type        = string
-  description = "Name of the private endpoint subnet in the hub VNet"
+  description = "Name of the private endpoints subnet in the hub VNet."
 }
 
 # ============================================
@@ -128,6 +144,10 @@ variable "hub_network_watcher_name" { default = null }
 variable "hub_network_watcher_resource_group" { default = null }
 variable "hub_route_table_name" { default = null }
 variable "hub_route_table_resource_group" { default = null }
+variable "hub_storage_account_ntwk_enable_private_endpoint" { default = null }
+variable "hub_storage_account_ntwk_pe_services" { default = null }
+variable "hub_storage_account_vm_enable_private_endpoint" { default = null }
+variable "hub_storage_account_vm_pe_services" { default = null }
 variable "hub_to_identity_peering_name" { default = null }
 variable "hub_to_management_peering_name" { default = null }
 variable "hub_to_spoke_peering_name" { default = null }
@@ -149,12 +169,14 @@ variable "idm_recovery_services_vault_name" { default = null }
 variable "idm_recovery_services_vault_resource_group" { default = null }
 variable "idm_route_table_name" { default = null }
 variable "idm_route_table_resource_group" { default = null }
+variable "idm_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "idm_storage_account_ntwk_name" { default = null }
+variable "idm_storage_account_ntwk_pe_services" { default = null }
 variable "idm_storage_account_ntwk_resource_group" { default = null }
+variable "idm_storage_account_vm_enable_private_endpoint" { default = null }
 variable "idm_storage_account_vm_name" { default = null }
+variable "idm_storage_account_vm_pe_services" { default = null }
 variable "idm_storage_account_vm_resource_group" { default = null }
-variable "management_network_watcher_name" { default = null }
-variable "management_network_watcher_resource_group" { default = null }
 variable "management_nsg_names" { default = null }
 variable "management_nsg_resource_group" { default = null }
 variable "management_resource_group_name" { default = null }
@@ -178,15 +200,17 @@ variable "mgmt_managed_identity_name" { default = null }
 variable "mgmt_managed_identity_resource_group" { default = null }
 variable "mgmt_network_security_group_name" { default = null }
 variable "mgmt_network_security_group_resource_group" { default = null }
-variable "mgmt_network_watcher_name" { default = null }
-variable "mgmt_network_watcher_resource_group" { default = null }
 variable "mgmt_recovery_services_vault_name" { default = null }
 variable "mgmt_recovery_services_vault_resource_group" { default = null }
 variable "mgmt_route_table_name" { default = null }
 variable "mgmt_route_table_resource_group" { default = null }
+variable "mgmt_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_ntwk_name" { default = null }
+variable "mgmt_storage_account_ntwk_pe_services" { default = null }
 variable "mgmt_storage_account_ntwk_resource_group" { default = null }
+variable "mgmt_storage_account_vm_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_vm_name" { default = null }
+variable "mgmt_storage_account_vm_pe_services" { default = null }
 variable "mgmt_storage_account_vm_resource_group" { default = null }
 variable "mgmt_vnet_cidr" { default = null }
 variable "private_dns_resolver_name" { default = null }

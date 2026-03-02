@@ -1,6 +1,6 @@
-# =============================================================================
+# ==============================================
 # Resource Group Outputs
-# =============================================================================
+# ==============================================
 output "resource_group_name" {
   description = "The name of the hub VNet resource group."
   value       = azurerm_resource_group.this.name
@@ -16,9 +16,9 @@ output "resource_group_location" {
   value       = azurerm_resource_group.this.location
 }
 
-# =============================================================================
+# ==============================================
 # Network Watcher Outputs
-# =============================================================================
+# ==============================================
 output "network_watcher_name" {
   description = "The name of the Network Watcher."
   value       = azurerm_network_watcher.this.name
@@ -30,18 +30,18 @@ output "network_watcher_id" {
 }
 
 output "network_watcher_resource_group_name" {
-  description = "The name of the Network Watcher resource group."
+  description = "The name of the Network Watcher dedicated resource group."
   value       = azurerm_resource_group.network_watcher.name
 }
 
 output "network_watcher_resource_group_id" {
-  description = "The ID of the Network Watcher resource group."
+  description = "The ID of the Network Watcher dedicated resource group."
   value       = azurerm_resource_group.network_watcher.id
 }
 
-# =============================================================================
+# ==============================================
 # Virtual Network Outputs
-# =============================================================================
+# ==============================================
 output "vnet_name" {
   description = "The name of the hub virtual network."
   value       = azurerm_virtual_network.this.name
@@ -57,21 +57,21 @@ output "vnet_address_space" {
   value       = azurerm_virtual_network.this.address_space
 }
 
-# =============================================================================
+# ==============================================
 # Subnet Outputs
-# =============================================================================
+# ==============================================
 output "subnet_ids" {
-  description = "A map of subnet names to their IDs."
+  description = "Map of subnet names to their IDs."
   value       = { for k, v in azurerm_subnet.subnets : k => v.id }
 }
 
 output "subnet_names" {
-  description = "A map of subnet names to their names (for reference consistency)."
+  description = "Map of subnet names to their names (for consistency)."
   value       = { for k, v in azurerm_subnet.subnets : k => v.name }
 }
 
 output "subnet_address_prefixes" {
-  description = "A map of subnet names to their address prefixes."
+  description = "Map of subnet names to their address prefixes."
   value       = { for k, v in azurerm_subnet.subnets : k => v.address_prefixes }
 }
 

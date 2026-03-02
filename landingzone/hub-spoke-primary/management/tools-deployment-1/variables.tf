@@ -1,47 +1,21 @@
-# ============================================
-# Subscription
-# ============================================
-
 variable "management_subscription_id" {
   type        = string
   description = "The subscription ID for the Management subscription."
 }
 
-# ============================================
-# Identity / Metadata
-# ============================================
-
 variable "region" {
   type        = string
-  description = "Primary Azure region for resource deployment."
+  description = "The Azure region for resource deployment."
 }
 
 variable "tags" {
   type        = map(string)
-  description = "Common tags applied to all resources."
+  description = "Tags to apply to all resources."
 }
-
-# ============================================
-# Log Analytics Workspace
-# ============================================
-
-variable "mgmt_log_analytics_workspace_name" {
-  type        = string
-  description = "Name of the Log Analytics Workspace."
-}
-
-variable "mgmt_log_analytics_workspace_resource_group" {
-  type        = string
-  description = "Resource group name for the Log Analytics Workspace."
-}
-
-# ============================================
-# Key Vault - Production
-# ============================================
 
 variable "mgmt_key_vault_prd_name" {
   type        = string
-  description = "Name of the production Key Vault."
+  description = "Name of the production Key Vault in the management subscription."
 }
 
 variable "mgmt_key_vault_prd_resource_group" {
@@ -49,43 +23,40 @@ variable "mgmt_key_vault_prd_resource_group" {
   description = "Resource group name for the production Key Vault."
 }
 
-# ============================================
-# Key Vault - Non-Production
-# ============================================
-
 variable "mgmt_key_vault_nprd_name" {
   type        = string
-  description = "Name of the non-production Key Vault."
+  description = "Name of the non-production Key Vault in the management subscription."
 }
 
 variable "mgmt_key_vault_nprd_resource_group" {
   type        = string
-  description = "Resource group name for the non-production Key Vault (shares RG with prd)."
+  description = "Resource group name for the non-production Key Vault."
 }
 
-# ============================================
-# Managed Identity
-# ============================================
+variable "mgmt_log_analytics_workspace_name" {
+  type        = string
+  description = "Name of the Log Analytics Workspace in the management subscription."
+}
+
+variable "mgmt_log_analytics_workspace_resource_group" {
+  type        = string
+  description = "Resource group name for the Log Analytics Workspace."
+}
 
 variable "mgmt_managed_identity_name" {
   type        = string
-  description = "Name of the user-assigned managed identity."
+  description = "Name of the User Assigned Managed Identity in the management subscription."
 }
 
 variable "mgmt_managed_identity_resource_group" {
   type        = string
-  description = "Resource group name for the managed identity."
+  description = "Resource group name for the Managed Identity."
 }
-
-# ============================================
-# Subnet Name References
-# ============================================
 
 variable "snet_pe_mgmt_eus2_01_subnet_name" {
   type        = string
   description = "Name of the private endpoint subnet in the management VNet."
 }
-
 
 # ============================================
 # Standard Landing Zone Variables
@@ -125,36 +96,6 @@ variable "enable_vpn_gateway" {
 variable "enable_bastion" {
   description = "Enable Azure Bastion for secure VM access"
   type        = bool
-}
-
-# ============================================
-# REVIEW REQUIRED: Orphaned variable declarations
-# These variables were used in main.tf but are not in shared
-# terraform.tfvars. Update main.tf to use canonical variable names.
-# ============================================
-
-# NOTE: var.keyvault_dns_zone_name is not in shared terraform.tfvars.
-# Replace with the correct canonical variable name from the tfvars file.
-variable "keyvault_dns_zone_name" {
-  description = "REVIEW: This variable is not defined in shared terraform.tfvars"
-  type        = any
-  default     = null
-}
-
-# NOTE: var.log_analytics_retention_days is not in shared terraform.tfvars.
-# Replace with the correct canonical variable name from the tfvars file.
-variable "log_analytics_retention_days" {
-  description = "REVIEW: This variable is not defined in shared terraform.tfvars"
-  type        = any
-  default     = null
-}
-
-# NOTE: var.log_analytics_sku is not in shared terraform.tfvars.
-# Replace with the correct canonical variable name from the tfvars file.
-variable "log_analytics_sku" {
-  description = "REVIEW: This variable is not defined in shared terraform.tfvars"
-  type        = any
-  default     = null
 }
 
 # ---------------------------------------------------------------------------
@@ -200,9 +141,13 @@ variable "hub_network_watcher_name" { default = null }
 variable "hub_network_watcher_resource_group" { default = null }
 variable "hub_route_table_name" { default = null }
 variable "hub_route_table_resource_group" { default = null }
+variable "hub_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "hub_storage_account_ntwk_name" { default = null }
+variable "hub_storage_account_ntwk_pe_services" { default = null }
 variable "hub_storage_account_ntwk_resource_group" { default = null }
+variable "hub_storage_account_vm_enable_private_endpoint" { default = null }
 variable "hub_storage_account_vm_name" { default = null }
+variable "hub_storage_account_vm_pe_services" { default = null }
 variable "hub_storage_account_vm_resource_group" { default = null }
 variable "hub_to_identity_peering_name" { default = null }
 variable "hub_to_management_peering_name" { default = null }
@@ -225,12 +170,14 @@ variable "idm_recovery_services_vault_name" { default = null }
 variable "idm_recovery_services_vault_resource_group" { default = null }
 variable "idm_route_table_name" { default = null }
 variable "idm_route_table_resource_group" { default = null }
+variable "idm_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "idm_storage_account_ntwk_name" { default = null }
+variable "idm_storage_account_ntwk_pe_services" { default = null }
 variable "idm_storage_account_ntwk_resource_group" { default = null }
+variable "idm_storage_account_vm_enable_private_endpoint" { default = null }
 variable "idm_storage_account_vm_name" { default = null }
+variable "idm_storage_account_vm_pe_services" { default = null }
 variable "idm_storage_account_vm_resource_group" { default = null }
-variable "management_network_watcher_name" { default = null }
-variable "management_network_watcher_resource_group" { default = null }
 variable "management_nsg_names" { default = null }
 variable "management_nsg_resource_group" { default = null }
 variable "management_resource_group_name" { default = null }
@@ -245,15 +192,17 @@ variable "mgmt_automation_account_name" { default = null }
 variable "mgmt_automation_account_resource_group" { default = null }
 variable "mgmt_network_security_group_name" { default = null }
 variable "mgmt_network_security_group_resource_group" { default = null }
-variable "mgmt_network_watcher_name" { default = null }
-variable "mgmt_network_watcher_resource_group" { default = null }
 variable "mgmt_recovery_services_vault_name" { default = null }
 variable "mgmt_recovery_services_vault_resource_group" { default = null }
 variable "mgmt_route_table_name" { default = null }
 variable "mgmt_route_table_resource_group" { default = null }
+variable "mgmt_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_ntwk_name" { default = null }
+variable "mgmt_storage_account_ntwk_pe_services" { default = null }
 variable "mgmt_storage_account_ntwk_resource_group" { default = null }
+variable "mgmt_storage_account_vm_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_vm_name" { default = null }
+variable "mgmt_storage_account_vm_pe_services" { default = null }
 variable "mgmt_storage_account_vm_resource_group" { default = null }
 variable "mgmt_vnet_cidr" { default = null }
 variable "private_dns_resolver_name" { default = null }

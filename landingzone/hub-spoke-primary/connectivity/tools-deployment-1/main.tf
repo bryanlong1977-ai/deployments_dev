@@ -13,50 +13,52 @@ provider "azurerm" {
   subscription_id = var.connectivity_subscription_id
 }
 
-# ============================================
+# =============================================================================
 # Resource Groups
-# ============================================
+# =============================================================================
 
-resource "azurerm_resource_group" "mpls" {
+# Resource Group for AMPLS
+resource "azurerm_resource_group" "ampls" {
   name     = var.hub_azure_monitor_private_link_scope_resource_group
   location = var.region
   tags     = var.tags
 }
 
+# Resource Group for Storage Accounts
 resource "azurerm_resource_group" "storage" {
   name     = var.hub_storage_account_vm_resource_group
   location = var.region
   tags     = var.tags
 }
 
-# ============================================
-# Azure Monitor Private Link Scope
-# ============================================
+# =============================================================================
+# Azure Monitor Private Link Scope (AMPLS)
+# =============================================================================
 
 resource "azurerm_monitor_private_link_scope" "this" {
   name                = var.hub_azure_monitor_private_link_scope_name
-  resource_group_name = azurerm_resource_group.mpls.name
+  resource_group_name = azurerm_resource_group.ampls.name
   tags                = var.tags
 }
 
-# Link AMPLS to the Log Analytics Workspace in Management Subscription
+# Link AMPLS to Log Analytics Workspace in Management Subscription
 resource "azurerm_monitor_private_link_scoped_service" "this" {
   name                = "scoped-service-law"
-  resource_group_name = azurerm_resource_group.mpls.name
+  resource_group_name = azurerm_resource_group.ampls.name
   scope_name          = azurerm_monitor_private_link_scope.this.name
   linked_resource_id  = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
 }
 
 # Private Endpoint for AMPLS
-resource "azurerm_private_endpoint" "mpls" {
-  name                = "pep-${var.hub_azure_monitor_private_link_scope_name}"
-  resource_group_name = azurerm_resource_group.mpls.name
+resource "azurerm_private_endpoint" "ampls" {
+  name                = "pe-${var.hub_azure_monitor_private_link_scope_name}"
+  resource_group_name = azurerm_resource_group.ampls.name
   location            = var.region
   subnet_id           = data.terraform_remote_state.connectivity_network_1.outputs.subnet_ids[var.snet_pe_hub_eus2_01_subnet_name]
   tags                = var.tags
 
   private_service_connection {
-    name                           = "psc-${var.hub_azure_monitor_private_link_scope_name}"
+    name                           = "psc-ampls"
     private_connection_resource_id = azurerm_monitor_private_link_scope.this.id
     subresource_names              = ["azuremonitor"]
     is_manual_connection           = false
@@ -72,44 +74,31 @@ resource "azurerm_private_endpoint" "mpls" {
       data.terraform_remote_state.identity_network_1.outputs.private_dns_zone_ids["privatelink.blob.core.windows.net"],
     ]
   }
+
+  depends_on = [azurerm_monitor_private_link_scoped_service.this]
 }
 
-# ============================================
-# Storage Accounts
-# ============================================
+# =============================================================================
+# Storage Account - VM Diagnostics
+# =============================================================================
 
-# VM Storage Account
 resource "azurerm_storage_account" "vm" {
-  name                            = var.hub_storage_account_vm_name
-  resource_group_name             = azurerm_resource_group.storage.name
-  location                        = var.region
-  account_tier                    = "Standard"
-  account_replication_type        = "LRS"
-  min_tls_version                 = "TLS1_2"
-  public_network_access_enabled   = false
+  name                     = var.hub_storage_account_vm_name
+  resource_group_name      = azurerm_resource_group.storage.name
+  location                 = var.region
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  min_tls_version          = "TLS1_2"
+  public_network_access_enabled = false
+
   allow_nested_items_to_be_public = false
-  tags                            = var.tags
+
+  tags = var.tags
 }
 
-# Network Storage Account
-resource "azurerm_storage_account" "ntwk" {
-  name                            = var.hub_storage_account_ntwk_name
-  resource_group_name             = azurerm_resource_group.storage.name
-  location                        = var.region
-  account_tier                    = "Standard"
-  account_replication_type        = "LRS"
-  min_tls_version                 = "TLS1_2"
-  public_network_access_enabled   = false
-  allow_nested_items_to_be_public = false
-  tags                            = var.tags
-}
-
-# ============================================
-# Private Endpoints for VM Storage Account
-# ============================================
-
-resource "azurerm_private_endpoint" "vm_blob" {
-  name                = "pep-${var.hub_storage_account_vm_name}-blob"
+# Private Endpoint for VM Storage Account - Blob
+resource "azurerm_private_endpoint" "storage_vm_blob" {
+  name                = "pe-${var.hub_storage_account_vm_name}-blob"
   resource_group_name = azurerm_resource_group.storage.name
   location            = var.region
   subnet_id           = data.terraform_remote_state.connectivity_network_1.outputs.subnet_ids[var.snet_pe_hub_eus2_01_subnet_name]
@@ -130,170 +119,8 @@ resource "azurerm_private_endpoint" "vm_blob" {
   }
 }
 
-resource "azurerm_private_endpoint" "vm_file" {
-  name                = "pep-${var.hub_storage_account_vm_name}-file"
-  resource_group_name = azurerm_resource_group.storage.name
-  location            = var.region
-  subnet_id           = data.terraform_remote_state.connectivity_network_1.outputs.subnet_ids[var.snet_pe_hub_eus2_01_subnet_name]
-  tags                = var.tags
-
-  private_service_connection {
-    name                           = "psc-${var.hub_storage_account_vm_name}-file"
-    private_connection_resource_id = azurerm_storage_account.vm.id
-    subresource_names              = ["file"]
-    is_manual_connection           = false
-  }
-
-  private_dns_zone_group {
-    name = "file-dns-group"
-    private_dns_zone_ids = [
-      data.terraform_remote_state.identity_network_1.outputs.private_dns_zone_ids["privatelink.file.core.windows.net"],
-    ]
-  }
-}
-
-resource "azurerm_private_endpoint" "vm_queue" {
-  name                = "pep-${var.hub_storage_account_vm_name}-queue"
-  resource_group_name = azurerm_resource_group.storage.name
-  location            = var.region
-  subnet_id           = data.terraform_remote_state.connectivity_network_1.outputs.subnet_ids[var.snet_pe_hub_eus2_01_subnet_name]
-  tags                = var.tags
-
-  private_service_connection {
-    name                           = "psc-${var.hub_storage_account_vm_name}-queue"
-    private_connection_resource_id = azurerm_storage_account.vm.id
-    subresource_names              = ["queue"]
-    is_manual_connection           = false
-  }
-
-  private_dns_zone_group {
-    name = "queue-dns-group"
-    private_dns_zone_ids = [
-      data.terraform_remote_state.identity_network_1.outputs.private_dns_zone_ids["privatelink.queue.core.windows.net"],
-    ]
-  }
-}
-
-resource "azurerm_private_endpoint" "vm_table" {
-  name                = "pep-${var.hub_storage_account_vm_name}-table"
-  resource_group_name = azurerm_resource_group.storage.name
-  location            = var.region
-  subnet_id           = data.terraform_remote_state.connectivity_network_1.outputs.subnet_ids[var.snet_pe_hub_eus2_01_subnet_name]
-  tags                = var.tags
-
-  private_service_connection {
-    name                           = "psc-${var.hub_storage_account_vm_name}-table"
-    private_connection_resource_id = azurerm_storage_account.vm.id
-    subresource_names              = ["table"]
-    is_manual_connection           = false
-  }
-
-  private_dns_zone_group {
-    name = "table-dns-group"
-    private_dns_zone_ids = [
-      data.terraform_remote_state.identity_network_1.outputs.private_dns_zone_ids["privatelink.table.core.windows.net"],
-    ]
-  }
-}
-
-# ============================================
-# Private Endpoints for Network Storage Account
-# ============================================
-
-resource "azurerm_private_endpoint" "ntwk_blob" {
-  name                = "pep-${var.hub_storage_account_ntwk_name}-blob"
-  resource_group_name = azurerm_resource_group.storage.name
-  location            = var.region
-  subnet_id           = data.terraform_remote_state.connectivity_network_1.outputs.subnet_ids[var.snet_pe_hub_eus2_01_subnet_name]
-  tags                = var.tags
-
-  private_service_connection {
-    name                           = "psc-${var.hub_storage_account_ntwk_name}-blob"
-    private_connection_resource_id = azurerm_storage_account.ntwk.id
-    subresource_names              = ["blob"]
-    is_manual_connection           = false
-  }
-
-  private_dns_zone_group {
-    name = "blob-dns-group"
-    private_dns_zone_ids = [
-      data.terraform_remote_state.identity_network_1.outputs.private_dns_zone_ids["privatelink.blob.core.windows.net"],
-    ]
-  }
-}
-
-resource "azurerm_private_endpoint" "ntwk_file" {
-  name                = "pep-${var.hub_storage_account_ntwk_name}-file"
-  resource_group_name = azurerm_resource_group.storage.name
-  location            = var.region
-  subnet_id           = data.terraform_remote_state.connectivity_network_1.outputs.subnet_ids[var.snet_pe_hub_eus2_01_subnet_name]
-  tags                = var.tags
-
-  private_service_connection {
-    name                           = "psc-${var.hub_storage_account_ntwk_name}-file"
-    private_connection_resource_id = azurerm_storage_account.ntwk.id
-    subresource_names              = ["file"]
-    is_manual_connection           = false
-  }
-
-  private_dns_zone_group {
-    name = "file-dns-group"
-    private_dns_zone_ids = [
-      data.terraform_remote_state.identity_network_1.outputs.private_dns_zone_ids["privatelink.file.core.windows.net"],
-    ]
-  }
-}
-
-resource "azurerm_private_endpoint" "ntwk_queue" {
-  name                = "pep-${var.hub_storage_account_ntwk_name}-queue"
-  resource_group_name = azurerm_resource_group.storage.name
-  location            = var.region
-  subnet_id           = data.terraform_remote_state.connectivity_network_1.outputs.subnet_ids[var.snet_pe_hub_eus2_01_subnet_name]
-  tags                = var.tags
-
-  private_service_connection {
-    name                           = "psc-${var.hub_storage_account_ntwk_name}-queue"
-    private_connection_resource_id = azurerm_storage_account.ntwk.id
-    subresource_names              = ["queue"]
-    is_manual_connection           = false
-  }
-
-  private_dns_zone_group {
-    name = "queue-dns-group"
-    private_dns_zone_ids = [
-      data.terraform_remote_state.identity_network_1.outputs.private_dns_zone_ids["privatelink.queue.core.windows.net"],
-    ]
-  }
-}
-
-resource "azurerm_private_endpoint" "ntwk_table" {
-  name                = "pep-${var.hub_storage_account_ntwk_name}-table"
-  resource_group_name = azurerm_resource_group.storage.name
-  location            = var.region
-  subnet_id           = data.terraform_remote_state.connectivity_network_1.outputs.subnet_ids[var.snet_pe_hub_eus2_01_subnet_name]
-  tags                = var.tags
-
-  private_service_connection {
-    name                           = "psc-${var.hub_storage_account_ntwk_name}-table"
-    private_connection_resource_id = azurerm_storage_account.ntwk.id
-    subresource_names              = ["table"]
-    is_manual_connection           = false
-  }
-
-  private_dns_zone_group {
-    name = "table-dns-group"
-    private_dns_zone_ids = [
-      data.terraform_remote_state.identity_network_1.outputs.private_dns_zone_ids["privatelink.table.core.windows.net"],
-    ]
-  }
-}
-
-# ============================================
-# Diagnostic Settings - Storage Accounts
-# ============================================
-
-# VM Storage Account - Account level diagnostics
-resource "azurerm_monitor_diagnostic_setting" "vm_storage" {
+# Diagnostic Settings for VM Storage Account
+resource "azurerm_monitor_diagnostic_setting" "storage_vm" {
   name                       = "diag-${var.hub_storage_account_vm_name}"
   target_resource_id         = azurerm_storage_account.vm.id
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
@@ -303,8 +130,8 @@ resource "azurerm_monitor_diagnostic_setting" "vm_storage" {
   }
 }
 
-# VM Storage Account - Blob service diagnostics
-resource "azurerm_monitor_diagnostic_setting" "vm_storage_blob" {
+# Diagnostic Settings for VM Storage Account - Blob Service
+resource "azurerm_monitor_diagnostic_setting" "storage_vm_blob" {
   name                       = "diag-${var.hub_storage_account_vm_name}-blob"
   target_resource_id         = "${azurerm_storage_account.vm.id}/blobServices/default"
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
@@ -326,8 +153,8 @@ resource "azurerm_monitor_diagnostic_setting" "vm_storage_blob" {
   }
 }
 
-# VM Storage Account - File service diagnostics
-resource "azurerm_monitor_diagnostic_setting" "vm_storage_file" {
+# Diagnostic Settings for VM Storage Account - File Service
+resource "azurerm_monitor_diagnostic_setting" "storage_vm_file" {
   name                       = "diag-${var.hub_storage_account_vm_name}-file"
   target_resource_id         = "${azurerm_storage_account.vm.id}/fileServices/default"
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
@@ -349,8 +176,8 @@ resource "azurerm_monitor_diagnostic_setting" "vm_storage_file" {
   }
 }
 
-# VM Storage Account - Queue service diagnostics
-resource "azurerm_monitor_diagnostic_setting" "vm_storage_queue" {
+# Diagnostic Settings for VM Storage Account - Queue Service
+resource "azurerm_monitor_diagnostic_setting" "storage_vm_queue" {
   name                       = "diag-${var.hub_storage_account_vm_name}-queue"
   target_resource_id         = "${azurerm_storage_account.vm.id}/queueServices/default"
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
@@ -372,8 +199,8 @@ resource "azurerm_monitor_diagnostic_setting" "vm_storage_queue" {
   }
 }
 
-# VM Storage Account - Table service diagnostics
-resource "azurerm_monitor_diagnostic_setting" "vm_storage_table" {
+# Diagnostic Settings for VM Storage Account - Table Service
+resource "azurerm_monitor_diagnostic_setting" "storage_vm_table" {
   name                       = "diag-${var.hub_storage_account_vm_name}-table"
   target_resource_id         = "${azurerm_storage_account.vm.id}/tableServices/default"
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
@@ -395,8 +222,49 @@ resource "azurerm_monitor_diagnostic_setting" "vm_storage_table" {
   }
 }
 
-# Network Storage Account - Account level diagnostics
-resource "azurerm_monitor_diagnostic_setting" "ntwk_storage" {
+# =============================================================================
+# Storage Account - Network Diagnostics
+# =============================================================================
+
+resource "azurerm_storage_account" "ntwk" {
+  name                     = var.hub_storage_account_ntwk_name
+  resource_group_name      = azurerm_resource_group.storage.name
+  location                 = var.region
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  min_tls_version          = "TLS1_2"
+  public_network_access_enabled = false
+
+  allow_nested_items_to_be_public = false
+
+  tags = var.tags
+}
+
+# Private Endpoint for Network Storage Account - Blob
+resource "azurerm_private_endpoint" "storage_ntwk_blob" {
+  name                = "pe-${var.hub_storage_account_ntwk_name}-blob"
+  resource_group_name = azurerm_resource_group.storage.name
+  location            = var.region
+  subnet_id           = data.terraform_remote_state.connectivity_network_1.outputs.subnet_ids[var.snet_pe_hub_eus2_01_subnet_name]
+  tags                = var.tags
+
+  private_service_connection {
+    name                           = "psc-${var.hub_storage_account_ntwk_name}-blob"
+    private_connection_resource_id = azurerm_storage_account.ntwk.id
+    subresource_names              = ["blob"]
+    is_manual_connection           = false
+  }
+
+  private_dns_zone_group {
+    name = "blob-dns-group"
+    private_dns_zone_ids = [
+      data.terraform_remote_state.identity_network_1.outputs.private_dns_zone_ids["privatelink.blob.core.windows.net"],
+    ]
+  }
+}
+
+# Diagnostic Settings for Network Storage Account
+resource "azurerm_monitor_diagnostic_setting" "storage_ntwk" {
   name                       = "diag-${var.hub_storage_account_ntwk_name}"
   target_resource_id         = azurerm_storage_account.ntwk.id
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
@@ -406,8 +274,8 @@ resource "azurerm_monitor_diagnostic_setting" "ntwk_storage" {
   }
 }
 
-# Network Storage Account - Blob service diagnostics
-resource "azurerm_monitor_diagnostic_setting" "ntwk_storage_blob" {
+# Diagnostic Settings for Network Storage Account - Blob Service
+resource "azurerm_monitor_diagnostic_setting" "storage_ntwk_blob" {
   name                       = "diag-${var.hub_storage_account_ntwk_name}-blob"
   target_resource_id         = "${azurerm_storage_account.ntwk.id}/blobServices/default"
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
@@ -429,8 +297,8 @@ resource "azurerm_monitor_diagnostic_setting" "ntwk_storage_blob" {
   }
 }
 
-# Network Storage Account - File service diagnostics
-resource "azurerm_monitor_diagnostic_setting" "ntwk_storage_file" {
+# Diagnostic Settings for Network Storage Account - File Service
+resource "azurerm_monitor_diagnostic_setting" "storage_ntwk_file" {
   name                       = "diag-${var.hub_storage_account_ntwk_name}-file"
   target_resource_id         = "${azurerm_storage_account.ntwk.id}/fileServices/default"
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
@@ -452,8 +320,8 @@ resource "azurerm_monitor_diagnostic_setting" "ntwk_storage_file" {
   }
 }
 
-# Network Storage Account - Queue service diagnostics
-resource "azurerm_monitor_diagnostic_setting" "ntwk_storage_queue" {
+# Diagnostic Settings for Network Storage Account - Queue Service
+resource "azurerm_monitor_diagnostic_setting" "storage_ntwk_queue" {
   name                       = "diag-${var.hub_storage_account_ntwk_name}-queue"
   target_resource_id         = "${azurerm_storage_account.ntwk.id}/queueServices/default"
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id
@@ -475,8 +343,8 @@ resource "azurerm_monitor_diagnostic_setting" "ntwk_storage_queue" {
   }
 }
 
-# Network Storage Account - Table service diagnostics
-resource "azurerm_monitor_diagnostic_setting" "ntwk_storage_table" {
+# Diagnostic Settings for Network Storage Account - Table Service
+resource "azurerm_monitor_diagnostic_setting" "storage_ntwk_table" {
   name                       = "diag-${var.hub_storage_account_ntwk_name}-table"
   target_resource_id         = "${azurerm_storage_account.ntwk.id}/tableServices/default"
   log_analytics_workspace_id = data.terraform_remote_state.management_tools_1.outputs.log_analytics_workspace_id

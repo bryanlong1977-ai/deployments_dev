@@ -1,3 +1,7 @@
+# =============================================================================
+# Variables for Identity Tools Deployment 1
+# =============================================================================
+
 variable "identity_subscription_id" {
   type        = string
   description = "The subscription ID for the Identity subscription."
@@ -13,6 +17,10 @@ variable "tags" {
   description = "Tags to apply to all resources."
 }
 
+# =============================================================================
+# Recovery Services Vault
+# =============================================================================
+
 variable "idm_recovery_services_vault_name" {
   type        = string
   description = "Name of the Identity Recovery Services Vault."
@@ -23,6 +31,10 @@ variable "idm_recovery_services_vault_resource_group" {
   description = "Resource group name for the Identity Recovery Services Vault."
 }
 
+# =============================================================================
+# Storage Account - VM
+# =============================================================================
+
 variable "idm_storage_account_vm_name" {
   type        = string
   description = "Name of the Identity VM diagnostics storage account."
@@ -30,8 +42,22 @@ variable "idm_storage_account_vm_name" {
 
 variable "idm_storage_account_vm_resource_group" {
   type        = string
-  description = "Resource group name for the Identity storage accounts."
+  description = "Resource group name for the Identity VM storage account."
 }
+
+variable "idm_storage_account_vm_enable_private_endpoint" {
+  type        = bool
+  description = "Whether to enable private endpoint for the VM storage account."
+}
+
+variable "idm_storage_account_vm_pe_services" {
+  type        = list(string)
+  description = "Private endpoint services for the VM storage account."
+}
+
+# =============================================================================
+# Storage Account - Network
+# =============================================================================
 
 variable "idm_storage_account_ntwk_name" {
   type        = string
@@ -42,6 +68,20 @@ variable "idm_storage_account_ntwk_resource_group" {
   type        = string
   description = "Resource group name for the Identity network storage account."
 }
+
+variable "idm_storage_account_ntwk_enable_private_endpoint" {
+  type        = bool
+  description = "Whether to enable private endpoint for the network storage account."
+}
+
+variable "idm_storage_account_ntwk_pe_services" {
+  type        = list(string)
+  description = "Private endpoint services for the network storage account."
+}
+
+# =============================================================================
+# Subnet Name for Private Endpoints
+# =============================================================================
 
 variable "snet_pe_idm_eus2_01_subnet_name" {
   type        = string
@@ -131,9 +171,13 @@ variable "hub_network_watcher_name" { default = null }
 variable "hub_network_watcher_resource_group" { default = null }
 variable "hub_route_table_name" { default = null }
 variable "hub_route_table_resource_group" { default = null }
+variable "hub_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "hub_storage_account_ntwk_name" { default = null }
+variable "hub_storage_account_ntwk_pe_services" { default = null }
 variable "hub_storage_account_ntwk_resource_group" { default = null }
+variable "hub_storage_account_vm_enable_private_endpoint" { default = null }
 variable "hub_storage_account_vm_name" { default = null }
+variable "hub_storage_account_vm_pe_services" { default = null }
 variable "hub_storage_account_vm_resource_group" { default = null }
 variable "hub_to_identity_peering_name" { default = null }
 variable "hub_to_management_peering_name" { default = null }
@@ -153,8 +197,6 @@ variable "idm_network_security_group_name" { default = null }
 variable "idm_network_security_group_resource_group" { default = null }
 variable "idm_route_table_name" { default = null }
 variable "idm_route_table_resource_group" { default = null }
-variable "management_network_watcher_name" { default = null }
-variable "management_network_watcher_resource_group" { default = null }
 variable "management_nsg_names" { default = null }
 variable "management_nsg_resource_group" { default = null }
 variable "management_resource_group_name" { default = null }
@@ -178,15 +220,17 @@ variable "mgmt_managed_identity_name" { default = null }
 variable "mgmt_managed_identity_resource_group" { default = null }
 variable "mgmt_network_security_group_name" { default = null }
 variable "mgmt_network_security_group_resource_group" { default = null }
-variable "mgmt_network_watcher_name" { default = null }
-variable "mgmt_network_watcher_resource_group" { default = null }
 variable "mgmt_recovery_services_vault_name" { default = null }
 variable "mgmt_recovery_services_vault_resource_group" { default = null }
 variable "mgmt_route_table_name" { default = null }
 variable "mgmt_route_table_resource_group" { default = null }
+variable "mgmt_storage_account_ntwk_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_ntwk_name" { default = null }
+variable "mgmt_storage_account_ntwk_pe_services" { default = null }
 variable "mgmt_storage_account_ntwk_resource_group" { default = null }
+variable "mgmt_storage_account_vm_enable_private_endpoint" { default = null }
 variable "mgmt_storage_account_vm_name" { default = null }
+variable "mgmt_storage_account_vm_pe_services" { default = null }
 variable "mgmt_storage_account_vm_resource_group" { default = null }
 variable "mgmt_vnet_cidr" { default = null }
 variable "private_dns_resolver_name" { default = null }

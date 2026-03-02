@@ -3,12 +3,12 @@
 # =============================================================================
 
 output "nsg_resource_group_name" {
-  description = "The name of the resource group containing the NSGs."
+  description = "The name of the NSG resource group."
   value       = azurerm_resource_group.this.name
 }
 
 output "nsg_resource_group_id" {
-  description = "The ID of the resource group containing the NSGs."
+  description = "The ID of the NSG resource group."
   value       = azurerm_resource_group.this.id
 }
 
